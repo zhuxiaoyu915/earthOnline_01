@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>draw_test</title>
+<style>
+#my_painter{position:relative;width:1000px;height:500px;}
+#base_canvas{position:absolute;top:0px;left:0px}
+#event_canvas{position:absolute;top:0px;left:0px}
+</style>
+</head>
+<body>
+	<script src = "mouse.js"></script>
+	<script src = "mouse_event.js"></script>
+	<script src = "button_draw_up.js"></script>
+	<h1>HTML Canvas Event Demo - By Gloomy Fish</h1>
+	<pre>Press W, A, S, D keys to move</pre>
+	<input type ="button" value = "拼版抬起" onclick = "draw_up()"> 
+	<div id="my_painter">
+		<canvas id="base_canvas" tabindex="0" width = 1000px height = 500px></canvas>
+		<canvas id="event_canvas" tabindex="1" width = 1000px height = 500px></canvas>
+	</div>	
+</body>
+</html>
