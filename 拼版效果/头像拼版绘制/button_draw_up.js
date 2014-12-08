@@ -52,7 +52,7 @@
 			event_context.shadowColor = 'rgba(0,0,0,0.5)';
 			event_context.lineWidth = 4;
 			event_context.fillStyle = "#ecf0f1";
-			event_context.strokeStyle = "#ecf0f1";
+			event_context.strokeStyle = "#99bbbb";
 
 			event_context.moveTo(p1_x,p1_y);
 			event_context.lineTo(p2_x,p2_y);
@@ -61,14 +61,23 @@
 			event_context.lineTo(p5_x,p5_y);
 			event_context.lineTo(p6_x,p6_y);
 			event_context.lineTo(p1_x,p1_y);
-			//event_context.stroke();
 			event_context.fill();
 			event_context.closePath();
 			
+			event_context.beginPath();
 			event_context.shadowOffsetX = 0;
 			event_context.shadowOffsetY = 0;
 			event_context.shadowBlur = 0;
 			event_context.shadowColor = 'rgba(0,0,0,0.5)';
+			event_context.moveTo(p1_x,p1_y);
+			event_context.lineTo(p2_x,p2_y);
+			event_context.lineTo(p3_x,p3_y);
+			event_context.lineTo(p4_x,p4_y);
+			event_context.lineTo(p5_x,p5_y);
+			event_context.lineTo(p6_x,p6_y);
+			event_context.lineTo(p1_x,p1_y);
+			event_context.stroke();
+			event_context.closePath();
 			event_context.drawImage(base_1,x-50,y-40,100,80);
 			
 			x = x-1;
