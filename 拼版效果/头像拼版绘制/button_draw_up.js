@@ -10,7 +10,7 @@
 
 	var strokeColor = "#99bbbb";
 	var fillColor = "#99bbbb";
-	drawBgColor(n,map_array,map_info,context,strokeColor,fillColor);
+	drawBgColor(n,map_array,map_info,context,strokeColor,fillColor,0);
 	
 	//顶层图片设置间隙重绘
 	var event_canvas = document.getElementById("special_canvas");
@@ -25,7 +25,6 @@
 	var b = 1;
 	var base_1 = new Image();
 	base_1.onload = function(){
-			//context.drawImage(base_1,x,y,100,80);
 	}
 	base_1.src = 'images/tree.png';
 	

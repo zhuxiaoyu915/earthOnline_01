@@ -1,5 +1,5 @@
 ﻿
-function draw_character(move,loc){
+function draw_character(move,loc,chara_image_1){
 	//绘制参数
 	var canvas = document.getElementById("event_canvas");
 	var cxt = canvas.getContext("2d");
@@ -9,7 +9,10 @@ function draw_character(move,loc){
 	//图片加载
 	var chara_image_1 = new Image();
 	chara_image_1.onload = function(){
-		cxt.drawImage(chara_image_1,map_array[loc_num].x-40,map_array[loc_num].y-30,80,60);
+		if(!move){
+			var loc_num = parseInt(chara_info[1]);
+			cxt.drawImage(chara_image_1,map_array[loc_num].x-40,map_array[loc_num].y-30,80,60);
+		}
 	}
 	chara_image_1.src = 'images/sheep.png';
 	
