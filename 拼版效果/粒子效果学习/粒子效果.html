@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <script type="text/javascript" src="http://sandbox.runjs.cn/uploads/rs/60/5l2za5rc/Vector.js"></script>
+    <script type="text/javascript" src="Vector.js"></script>
     <script>
         var textSize = 6;
         var text0 = "Hi,2013";
@@ -18,7 +18,7 @@
 
         var width = 550;
         var height = 400;
-        var fps = 60;
+        var fps = 6;
 
         var canvas = document.createElement("canvas");
         canvas.style.background = "black";
@@ -54,13 +54,14 @@
             }
         }
 
-        function initTextPoints(n){
-            var n = n||4;
+        function initTextPoints(n){//初始化文字的坐标点
+            var n = n||4;//如果n不存在，那么n = 4;否则n = n;
             ctx.font = "bold 12px serif"
             ctx.textAlign = "left";
             ctx.textBaseline = "top";
             ctx.fillText(text0, 0, 0, width);
             ctx.fillText(text1, 0, 20, width);
+			//cxt.measureText(text-a)可以检测text-a这个字符串的高度和宽度
             var w = Math.max(ctx.measureText(text0).width, ctx.measureText(text0).width);
             
             var offsetX = (width-w*n)>>1;
@@ -69,6 +70,7 @@
             textPoints = [];
             var data = ctx.getImageData(0, 0, width, height).data;
             for (var i = 0, wl = width * 4; i < data.length; i += 4){
+				//是通过读取全图来获得
                 if (data[i + 3] > 100) {
                     x = (i % wl) / 4;
                     y = parseInt(i / wl)
