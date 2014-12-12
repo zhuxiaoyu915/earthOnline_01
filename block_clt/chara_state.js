@@ -57,7 +57,7 @@ function chara_ready_finish(canvas,chara,map_info,map_array,up_num,character_mov
 			localStorage.temporary_character_loc = loc_num;
 			//重绘角色
 			var loc_bgc = map_array[loc_num];
-			drawBgColor(loc_bgc,map_array,canvas,color_char,color_char,shadow,alpha);
+			drawBgColor(loc_bgc,map_array,canvas,color_char,color_char,0,1);
 			//drawBggColor(loc_num,map_array,color_char,canvas);
 			temporary_state = false;
 		}

@@ -25,7 +25,6 @@ function drawButton()
 	var canvas = document.getElementById("myCanvas");
 	var cxt = canvas.getContext("2d");
 	
-
 	//特效数据绘制
 	var efficanvas = document.getElementById("effiCanvas");
 	var efficxt = efficanvas.getContext("2d");
@@ -33,9 +32,9 @@ function drawButton()
     var map_height = 5;
 	var map_width = 12;
 	var map_length = 50;
-	map_info_built();
+	var map_info = map_info_built();
 	function map_info_built(){
-	//=============================================================================
+	//============================================================================
 	//=================     map_info的手动设置    =================================
 	var map_info =[];
 	var map_base_info = ({height:map_height,width:map_width,length:map_length});
@@ -316,8 +315,12 @@ function doMouseUp(event) {
 		
 		if(temporary_state){
 			//人物位置的即时更新
+			var loc_c = [];
+			var loc_c_str = localStorage.character;
+			loc_c = loc_c_str.split(";");
+	
 			if(localStorage.temporary_loc == ""){
-				loc_old = parseInt(loc_c[1][0]);
+				loc_old = parseInt(loc_c[1]);
 			}else {
 				loc_old = parseInt(localStorage.temporary_loc);
 			}
