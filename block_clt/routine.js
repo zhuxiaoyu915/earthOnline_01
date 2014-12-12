@@ -11,7 +11,7 @@ function wait_routine(map_array,map_info){
 		if(val != ""){
 			var npc_information = val.split(";");
 			for( m in npc_information){
-				npc_info_detail = npc_information[m].split("/");
+				npc_info_detail = npc_information[m].split("|");
 				npc_info.push(npc_info_detail);
 			}
 			npc_info.push(key);
@@ -45,7 +45,7 @@ function chara_auto_move(map_array,map_info){
 		if(val != ""){
 			var npc_information = val.split(";");
 			for( m in npc_information){
-				npc_info_detail = npc_information[m].split("/");
+				npc_info_detail = npc_information[m].split("|");
 				npc_info.push(npc_info_detail);
 			}
 			npc_info.push(key);
@@ -203,7 +203,7 @@ function chara_auto_move(map_array,map_info){
 		npc_info[1][0] = destination;
 		var npc_inforr = [];
 		for(i = 0;i <npc_info.length -1;i++){
-			var npc_infor = npc_info[i].join("/");
+			var npc_infor = npc_info[i].join("|");
 			npc_inforr.push(npc_infor);
 		}
 		var npc_full_info = npc_inforr.join(";");

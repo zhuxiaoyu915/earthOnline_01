@@ -62,7 +62,7 @@ function drawButton()
 		if(val != ""){
 			var npc_info = val.split(";");
 			for( m in npc_info){
-				npc_info_detail = npc_info[m].split("/");
+				npc_info_detail = npc_info[m].split("|");
 				npc_information.push(npc_info_detail);
 			}
 			npc_information.push(key);
@@ -82,7 +82,7 @@ function drawButton()
 	var loc_c_str = localStorage.character;
 	loc_c_info = loc_c_str.split(";");
 	for(i in loc_c_info){
-		var loc_s = loc_c_info[i].split("/");
+		var loc_s = loc_c_info[i].split("|");
 		loc_c.push(loc_s);
 	}
 	var loc_n = parseInt(loc_c[1][0]);

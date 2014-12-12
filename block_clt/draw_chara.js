@@ -14,7 +14,7 @@ function init_Chara_block(map_array,map_info){
 		if(val != ""){
 			var npc_info = val.split(";");
 			for( m in npc_info){
-				npc_info_detail = npc_info[m].split("/");
+				npc_info_detail = npc_info[m].split("|");
 				npc_information.push(npc_info_detail);
 			}
 		npc_array_all.push(npc_information);

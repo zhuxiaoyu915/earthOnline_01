@@ -159,7 +159,7 @@ function skill_chosed(canvas,map_array,map_info,map_num,skill_num,loc){
 				}else{
 					var orient_loc = loc_num;
 					var desti_loc = num;
-					var skill_efficacy = skill_info[4].split("/");
+					var skill_efficacy = skill_info[4].split("|");
 					var destination = skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,skill_efficacy,skill_info);
 					damage_count(map_array,map_info,destination,skill_info);
 					localStorage.loc_changable = 0;
@@ -246,7 +246,7 @@ function damage_count(map_array,map_info,destination,skill_info){
 					var character = localStorage.getItem(chara_name);
 					var chara_str = character.split(";");
 					for(i in chara_str){
-						var chara_detail = chara_str[i].split("/");
+						var chara_detail = chara_str[i].split("|");
 						chara_info.push(chara_detail);
 					}
 					//计算伤害效果
@@ -256,7 +256,7 @@ function damage_count(map_array,map_info,destination,skill_info){
 					chara_change(chara_info,map_array,map_info);
 					var string_array = [];
 					for(i in chara_info){
-						var string_array_1 = chara_info[i].join("/");
+						var string_array_1 = chara_info[i].join("|");
 						string_array.push(string_array_1);
 					}
 					string_new = string_array.join(";");

@@ -239,7 +239,7 @@ function move_finish(map_array,map_info){
 	var character = localStorage.character;
 	var chara_str = character.split(";");
 	for(i in chara_str){
-		var chara_detail = chara_str[i].split("/");
+		var chara_detail = chara_str[i].split("|");
 		chara_info.push(chara_detail);
 	}
 	//清除原位置在map_info中产生的残留信息
@@ -251,7 +251,7 @@ function move_finish(map_array,map_info){
 				
 	var string_array = [];
 	for(i in chara_info){
-		var string_array_1 = chara_info[i].join("/");
+		var string_array_1 = chara_info[i].join("|");
 		string_array.push(string_array_1);
 	}
 	string_new = string_array.join(";");
