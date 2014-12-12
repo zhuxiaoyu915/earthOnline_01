@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>获取信息</title>
+		<style>
+			h1 {
+				font-size: 18pt;
+				background: #AAAAEE;
+				padding: 5px;
+			}
+			table tr th {
+				background: #DDDDEE;
+				margin: 3px;
+				padding: 3px;
+			}
+			table tr td {
+				background: #EEEEEE;
+				margin: 3px;
+				padding: 3px;
+			}
+			ul li {
+				color: #333366;
+			}
+			#content {position:relative;top:0px;left:0px;z-index:400;width:1400px;height:700px}
+			#canvas1 {position :absolute;top:0px;left:0px;z-index:200}
+			#canvas2 {position :absolute;top:0px;left:0px;z-index:300}
+			#canvas3 {position :absolute;top:0px;left:0px;z-index:400}
+			#canvas4 {position :absolute;top:0px;left:0px;z-index:300}
+		</style>
+		<script type="text/javascript">
+			var WebSocket = window.WebSocket || wondow.MozWebSocket;
+			var socket;
+			var msg;
+			
+			function doOpen() {
+				socket = new WebSocket("ws://192.168.18.46:8800/");
+				socket.addEventListener('open', function(e) {
+					var str1 = "wgw";
+					socket.send("type=login&name=" + str1);
+				});
+				socket.addEventListener('message', function(e) {
+					var value = getScript(e.data);
+					var text;
+					switch(value["result"]) {
+						case "error":
+							text = "<li>" + value["error"] + "</li>" + msg.innerHTML;
+							break;
+						case "talk":
+							text = value["msg"];
+							//获得了传递来的信号变化
+							//发出人物可执行动作信号
+							//character_move();
+							localStorage.message = text;
+							break;
+						case "turnOn":
+						    localStorage.turnOn = 1;
+					}
+					if(text)msg.innerHTML = text;
+				});
+				socket.addEventListener('error', function(e) {
+					alert("error!!");
+				});
+				socket.addEventListener('close', function(e) {
+					msg.innerHTML = "<li>服务器切断</li>" + msg.innerHTML;
+					document.getElementById("openbtn").disabled = false;
+					document.getElementById("infobtn").disabled = true;
+					document.getElementById("closebtn").disabled = true;
+				});
+				msg.innerHTML = "<li>连接服务器成功</li>" + msg.innerHTML;
+				document.getElementById("openbtn").disabled = true;
+				document.getElementById("infobtn").disabled = false;
+				document.getElementById("closebtn").disabled = false;
+			}
+
+			function getScript(value) {
+				var valueArray = value.split("&");
+				var arr;
+				var scriptObj = {};
+				for(var i in valueArray) {
+					arr = valueArray[i].split("=");
+					scriptObj[arr[0]] = arr[1];
+				}
+				return scriptObj;
+			}
+            
+			function doAction() {
+				if(socket.readyState == WebSocket.OPEN) {
+				    //选择提交对象
+					var to = "self";
+					var message = "askforInfo";
+					socket.send("type=talk&target="+to+"&msg="+message);
+					document.getElementById("message").value = "";
+				} else {
+					alert('连接服务器失败。');
+				}
+				return false;
+			}
+
+			function doClose() {
+				if(socket.readyState == WebSocket.OPEN) {
+					socket.close();
+				}
+			}
+
+			function askInfo() {
+			    if(socket.readyState == WebSocket.OPEN) {
+					var to = "self";
+					var message = "askforInfo";
+					socket.send("type=ask&target="+to+"&msg="+message);
+				} else {
+					alert('连接服务器失败。');
+				}
+				return false;
+			}
+	</script>
+	<script src = "initial.js"></script>
+	<script src = "AI.js"></script>
+	<script src = "base_function.js"></script>
+	<script src = "chara_state.js"></script>
+	<script src = "draw_chara.js"></script>
+	<script src = "drawButton.js"></script>
+	<script src = "map_set.js"></script>
+	<script src = "routine.js"></script>
+	<script src = "skill.js"></script>
+	<script src = "draw_character.js"></script>
+	</head>
+	<body onload="initial();">
+		<header>
+			<h1>Web Socket 信息传递</h1>
+		</header>
+		<article>
+			<input type="button" id="openbtn" onclick="doOpen();" value="连接服务器" />
+			<input type="button" id="infobtn" onclick="askInfo();" value="请求数据" />
+			<input type="button" id="drawbtn" onclick="drawButton();" value="开始绘制"/>
+			<input type="button" id="closebtn" onclick="doClose();" value="断开连接" />
+			<hr>
+			    <div id="content">    
+                    <div id = "canvas1"><canvas id = "baseCanvas" width = "1400" height = "700"></canvas></div>
+					<div id = "canvas2"><canvas id = "myCanvas" width = "1400" height = "700"></canvas></div>
+					<div id = "canvas3"><canvas id = "effiCanvas" width = "1400" height = "700"></canvas></div>
+					<div id = "canvas4"><canvas id = "npcCanvas" width = "1400" height = "700"></canvas></div>
+                </div>
+			<hr>
+			<hr>
+			<ul id="msg"></ul>
+		</article>
+	</body>
+</html>
