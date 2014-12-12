@@ -1,9 +1,7 @@
 ﻿//绘制人物----初始化所有静态拼版
 function init_Chara_block(map_array,map_info){
-	draw_character(0,0,map_info,0);
+	draw_character("character",0,0,map_info);
 
-	
-	
 	//读取其他玩家数据
 	var player_info = [];
 	//读取NPC数据

@@ -1,5 +1,5 @@
 ﻿
-function draw_character(move,loc,map_info,chara_image_1){
+function draw_character(chara_name,move,loc,map_info){
 	//绘制参数
 	var canvas = document.getElementById("myCanvas");
 	var cxt = canvas.getContext("2d");
@@ -8,7 +8,9 @@ function draw_character(move,loc,map_info,chara_image_1){
 
 	
 	var chara_info = [];
-	var chara_str = localStorage.character.split(";");
+	var key = chara_name;
+	var desti_chara = localStorage.getItem(key);
+	var chara_str = desti_chara.split(";");
 	for(i in chara_str){
 		chara_info_1 = chara_str[i].split("/");
 		chara_info.push(chara_info_1);
