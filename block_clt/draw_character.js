@@ -4,15 +4,8 @@ function draw_character(move,loc,map_info,chara_image_1){
 	var canvas = document.getElementById("myCanvas");
 	var cxt = canvas.getContext("2d");
 	//图片加载
-	var chara_image_1 = new Image();
-	chara_image_1.onload = function(){
-		if(!move){
-			var loc_num = parseInt(chara_info[1]);
-			cxt.drawImage(chara_image_1,map_array[loc_num].x-40,map_array[loc_num].y-30,80,60);
-			
-		}
-	};
-	chara_image_1.src = 'images/sheep.png';
+	var chara_image_1 = window.chara_image_1;
+
 	
 	var chara_info = [];
 	var chara_str = localStorage.character.split(";");
@@ -28,7 +21,6 @@ function draw_character(move,loc,map_info,chara_image_1){
 		var x = map_array[loc_num].x;
 		var y = map_array[loc_num].y;
 	}
-	
 	
 	var length = map_info[0].length;
 	var length_2 = length - 10;
