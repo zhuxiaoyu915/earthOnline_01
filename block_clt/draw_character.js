@@ -6,7 +6,6 @@ function draw_character(chara_name,move,loc,map_info){
 	//图片加载
 	var chara_image_1 = window.chara_image_1;
 
-	
 	var chara_info = [];
 	var key = chara_name;
 	var desti_chara = localStorage.getItem(key);
@@ -15,14 +14,9 @@ function draw_character(chara_name,move,loc,map_info){
 		chara_info_1 = chara_str[i].split("|");
 		chara_info.push(chara_info_1);
 	}
-	//if(move){
+
 	var x = loc.x;
 	var y = loc.y;
-	//}else{
-	//	var loc_num = parseInt(chara_info[1]);
-	//	var x = map_array[loc_num].x;
-	//	var y = map_array[loc_num].y;
-	//}
 	
 	var length = map_info[0].length;
 	var length_2 = length - 10;
@@ -67,7 +61,6 @@ function draw_character(chara_name,move,loc,map_info){
 	var p6_y = y;
 	point_array.push({x:p6_x , y:p6_y});
 	
-	
 	//绘制
 	//添加底色
 	//添加图片
@@ -75,7 +68,7 @@ function draw_character(chara_name,move,loc,map_info){
 	
 	var shadow_state = move;
 	drawBgColor(loc,map_array,canvas,bgColor,bgColor,shadow_state,1);
-	cxt.drawImage(chara_image_1,loc.x-40,loc.y-30,80,60);
+	cxt.drawImage(chara_image_1,loc.x-40,loc.y-40,80,80);
 	
 	//添加血条
 	var b = parseInt(chara_info[4][0]);
