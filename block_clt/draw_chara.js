@@ -1,6 +1,10 @@
 ﻿//绘制人物----初始化所有静态拼版
 function init_Chara_block(map_array,map_info){
-	draw_character("character",0,0,map_info);
+	//读取主角数据并绘制
+	var chara_info_str = localStorage.character;
+	chara_info = chara_info_str.split(";");
+	var loc_ = map_array[chara_info[1]];
+	draw_character("character",0,loc_,map_info);
 
 	//读取其他玩家数据
 	var player_info = [];

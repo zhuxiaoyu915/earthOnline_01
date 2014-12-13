@@ -5,7 +5,7 @@ function chara_ready(canvas,chara,map_info,map_array,loc){
 	var loc_num = parseInt(chara[1]);
 	var moveable = neighbor_block(loc_num,map_array,map_info,1,1);
 	moveable.push(loc_num);
-	console.log("生成的可移动拼版合集为" + moveable);
+	//console.log("生成的可移动拼版合集为" + moveable);
 	//console.log(map_info);
 	
 	for(i in moveable){
@@ -24,7 +24,7 @@ function chara_ready(canvas,chara,map_info,map_array,loc){
 	}
 	
 	color_char = "#88aaaa";
-	drawCharacter_move(loc,map_array,color_char,canvas,1);
+	draw_character("character",1,loc,map_info);
 	return moveable;
 }
 
@@ -41,9 +41,10 @@ function chara_ready_finish(canvas,chara,map_info,map_array,up_num,character_mov
 		for(i in moveable){
 			var num = parseInt(moveable[i]);
 			if(num == up_num){
-				var color = "#cdd3d7";
-				var loc_bgc = map_array[num];
-				drawBgColor(loc_bgc,map_array,canvas,color,color,0,1);
+				//var color = "#cdd3d7";
+				var loc_bgc = map_array[up_num];
+				draw_character("character",0,loc_bgc,map_info);
+				//drawBgColor(loc_bgc,map_array,canvas,color,color,0,1);
 				//drawBggColor(num,map_array,color,canvas);
 				finished = true;
 				temporary_state = true;

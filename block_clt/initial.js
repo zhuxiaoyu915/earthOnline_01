@@ -12,7 +12,7 @@
 	//本地存储的数据消息
 	localStorage.basedArc = "";
 	//人物属性设置
-	localStorage.character = "探险者;2;#cdd3d7|||;3|3;3|3;0";
+	localStorage.character = "探险者;2;#cdd3d7|images/sheep.png||;3|3;3|3;0";
 	localStorage.loc_changable = 1;//人物位置是否是可以移动的
 	localStorage.temporary_character_loc = "";
 	localStorage.temporary_loc = "";

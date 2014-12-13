@@ -15,14 +15,14 @@ function draw_character(chara_name,move,loc,map_info){
 		chara_info_1 = chara_str[i].split("|");
 		chara_info.push(chara_info_1);
 	}
-	if(move){
-		var x = loc.x;
-		var y = loc.y;
-	}else{
-		var loc_num = parseInt(chara_info[1]);
-		var x = map_array[loc_num].x;
-		var y = map_array[loc_num].y;
-	}
+	//if(move){
+	var x = loc.x;
+	var y = loc.y;
+	//}else{
+	//	var loc_num = parseInt(chara_info[1]);
+	//	var x = map_array[loc_num].x;
+	//	var y = map_array[loc_num].y;
+	//}
 	
 	var length = map_info[0].length;
 	var length_2 = length - 10;
@@ -72,17 +72,10 @@ function draw_character(chara_name,move,loc,map_info){
 	//添加底色
 	//添加图片
 	var bgColor = chara_info[2][0];
-	if(move){
-		drawBgColor(loc,map_array,canvas,bgColor,bgColor,1,1);
-		cxt.drawImage(chara_image_1,loc.x-40,loc.y-30,80,60);
-	}else{
-		var loc ={x:map_array[loc_num].x,y:map_array[loc_num].y};
-		drawBgColor(loc,map_array,canvas,bgColor,bgColor,0,1);
-		console.log("绘制绵羊");
-		cxt.drawImage(chara_image_1,map_array[loc_num].x-40,map_array[loc_num].y-30,80,60);
-		console.log("绘制结束了");
-	}
 	
+	var shadow_state = move;
+	drawBgColor(loc,map_array,canvas,bgColor,bgColor,shadow_state,1);
+	cxt.drawImage(chara_image_1,loc.x-40,loc.y-30,80,60);
 	
 	//添加血条
 	var b = parseInt(chara_info[4][0]);
