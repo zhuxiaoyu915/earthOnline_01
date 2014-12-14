@@ -35,26 +35,6 @@ function init_Chara_block(map_array,map_info){
 	}
 }
 
-//绘制人物----主角面板绘制
-function draw_leader(loc_num,character_info,map_array){
-	var baseCanvas = document.getElementById("baseCanvas");
-	var basecxt = baseCanvas.getContext("2d");
-	basecxt.fillStyle = "red";
-	basecxt.shadowOffsetX = 5;
-	basecxt.shadowOffsetY = 5;
-	basecxt.shadowBlur = 4;
-	basecxt.shadowColor = 'rgba(50,50,50,0.5)';
-	basecxt.beginPath();
-	basecxt.arc(map_array[loc_num].x , map_array[loc_num].y , 5 , 0, Math.PI*2 , true);
-	basecxt.closePath();
-	basecxt.fill();
-	var color = "#cdd3d7";
-	var canvas = document.getElementById("myCanvas");
-	var loc_bgc = map_array[loc_num];
-	drawBgColor(loc_bgc,map_array,canvas,color,color,0,1);
-	//drawBggColor(loc_num,map_array,color,canvas);
-}
-
 //绘制人物----移动拼版
 function drawCharacter_move(loc,array,color,canvas,shadowColor){
     var num = array.length-1;

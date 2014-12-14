@@ -162,7 +162,7 @@ function doMouseDown(event) {
 					skill_chosen_num = i;
 					skill_map_num = skill_loc[i];
 					localStorage.turnOn = 2;
-					skill_chosing(canvas,map_array,map_info,skill_map_num,skill_chosen_num,loc);
+					skill_chosing(map_array,map_info,skill_map_num,skill_chosen_num,loc);
 					skill_move_begin = true;
 				}			
 			}
@@ -197,7 +197,7 @@ function doMouseDown(event) {
 					var skill_num = i;
 					var map_num = skill_loc[i];
 					localStorage.turnOn = 2;
-					skill_chosing(canvas,map_array,map_info,skill_map_num,skill_chosen_num,loc);
+					skill_chosing(map_array,map_info,skill_map_num,skill_chosen_num,loc);
 					skill_move_begin = true;
 				}			
 			}
@@ -230,7 +230,7 @@ function doMouseMove(event) {
 				if(skill_move_begin){
 					cxt = canvas.getContext("2d");
 					cxt.clearRect(0,0,1400,700);
-					skill_chosing(canvas,map_array,map_info,skill_map_num,skill_chosen_num,loc);
+					skill_chosing(map_array,map_info,skill_map_num,skill_chosen_num,loc);
 				}else if (character_move_begin){
 					cxt = canvas.getContext("2d");
 					cxt.clearRect(0,0,1400,700);
@@ -260,15 +260,16 @@ function doMouseUp(event) {
 			if(character_move_begin){
 				whenCharaFinishMove();
 			}else if(skill_move_begin){
+				var canvas = document.getElementById("skillCanvas");
 				cxt = canvas.getContext("2d");
 				cxt.clearRect(0,0,1400,700);
 				skill_move_begin = skill_chosed(canvas,map_array,map_info,skill_map_num,skill_chosen_num,loc);
 				loc_info_now = localStorage.temporary_loc;//获取当前坐标
-				character_info = localStorage.character;
-				draw_leader(loc_info_now,character_info,map_array,map_info);
+				var loc_chara = map_array[loc_info_now];
+				draw_character("character",0,loc_chara,map_info);
 				skill_finish_button();//"结束了"三个字
 				
-				skill_loc_2 = skill_spread(canvas,chara,map_info,map_array,loc_info_now);
+				skill_loc_2 = skill_spread(chara,map_info,map_array,loc_info_now);
 				//console.log("技能释放之后，skill_move_begin值为：" + skill_move_begin);
 			}
 			break;
@@ -331,7 +332,7 @@ function doMouseUp(event) {
 			state = parseInt(map_info[loc_new + 1][0]);
 			map_info[loc_new + 1][0] = state + 1;
 			//技能列表展开
-			skill_loc = skill_spread(canvas,chara,map_info,map_array,finish_info[0]);
+			skill_loc = skill_spread(chara,map_info,map_array,finish_info[0]);
 			
 		}
 		localStorage.temporary_loc = finish_info[0];

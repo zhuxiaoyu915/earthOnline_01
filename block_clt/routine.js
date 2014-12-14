@@ -33,7 +33,7 @@ function wait_routine(map_array,map_info){
 //流程----角色自动运行
 function chara_auto_move(map_array,map_info){
 	//自动初始化
-	//读取下一个可珍惜的npc
+	//读取下一个可执行的npc
 	var moveable_npc =0;
 	while(moveable_npc ==0){
 		var move_turn = parseInt(localStorage.npc_move_turn);
@@ -172,6 +172,8 @@ function chara_auto_move(map_array,map_info){
 				draw_loc_array_y = draw_loc_array_y + frame_distance_y;
 				var loc = {x:draw_loc_array_x, y:draw_loc_array_y};
 				var color = npc_info[2][0];
+				var npc_name = "npc_1";
+				//draw_character(npc_name,1,loc,map_info);
 				drawCharacter_move(loc,map_array,color,npccanvas,1);
 				count++;
 			}else if (count == frame_num){

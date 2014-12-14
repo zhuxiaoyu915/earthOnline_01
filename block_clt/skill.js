@@ -1,6 +1,6 @@
 ﻿//技能
 //技能--技能列表展开
-function skill_spread(canvas,chara,map_info,map_array,loc_num){
+function skill_spread(chara,map_info,map_array,loc_num){
 	//设置0.5s延迟
 	var n = 1;
 	var moveable = neighbor_block(loc_num,map_array,map_info,n,0);
@@ -9,7 +9,7 @@ function skill_spread(canvas,chara,map_info,map_array,loc_num){
 	for(i = 0;i<4;i++){
 		if(moveable[i] >= 0){	
 		skill_loc_num = moveable[i];
-		draw_skill(canvas,skill_num,skill_loc_num);
+		draw_skill(skill_num,skill_loc_num);
 		skill_loc.push(skill_loc_num);
 		skill_num++;
 		}
@@ -18,7 +18,7 @@ function skill_spread(canvas,chara,map_info,map_array,loc_num){
 }
 
 //技能--技能图标绘制
-function draw_skill(canvas,skill_num,skill_loc_num){
+function draw_skill(skill_num,skill_loc_num){
 	//读取技能列表
 	skill_str = localStorage.skill;
 	skill_group = skill_str.split(";");
@@ -39,6 +39,7 @@ function draw_skill(canvas,skill_num,skill_loc_num){
 			break;
 	}
 	var loc_bgc = map_array[skill_loc_num];
+	var canvas = document.getElementById("skillCanvas");
 	drawBgColor(loc_bgc,map_array,canvas,color,color,0,0.5);
 	//drawBggColor(skill_loc_num,map_array,color,canvas,0,0.5);
 	var skill_name = skill_info[0];
@@ -49,7 +50,8 @@ function draw_skill(canvas,skill_num,skill_loc_num){
 }
 
 //技能--技能施放
-function skill_chosing(canvas,map_array,map_info,map_num,skill_num,loc){
+function skill_chosing(map_array,map_info,map_num,skill_num,loc){
+	var canvas = document.getElementById("skillCanvas");
 	var cxt = canvas.getContext("2d");
 	skill_str = localStorage.skill;
 	skill_group = skill_str.split(";");
@@ -77,7 +79,7 @@ function skill_chosing(canvas,map_array,map_info,map_num,skill_num,loc){
 		//读取影响效果
 		//return 0;
 		}
-		var n = parseInt(skill_info[3]);
+		var n = parseInt(skill_info[3]);//n 为技能投放半径
 		var loc_num = localStorage.temporary_character_loc;
 		choseable_block = neighbor_block(loc_num,map_array,map_info,n,0);
 		choseable_block.push(loc_num);

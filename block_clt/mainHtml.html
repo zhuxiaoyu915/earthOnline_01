@@ -27,6 +27,7 @@
 			#canvas2 {position :absolute;top:0px;left:0px;z-index:300}
 			#canvas3 {position :absolute;top:0px;left:0px;z-index:400}
 			#canvas4 {position :absolute;top:0px;left:0px;z-index:300}
+			#canvas5 {position :absolute;top:0px;left:0px;z-index:300}
 		</style>
 		<script type="text/javascript">
 			var WebSocket = window.WebSocket || wondow.MozWebSocket;
@@ -36,9 +37,19 @@
 			//================================================================================
 			//============================图片预加载==========================================
 			var chara_image_1 = new Image();
-			chara_image_1.onload = function(){};chara_image_1.src = 'images/character_1_ps.png';
+			chara_image_1.onload = function(){};chara_image_1.src = 'images/character_1.png';
 			var npc_image_1 = new Image();
-			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_1_ps.png';
+			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_1.png';
+			var npc_image_2 = new Image();
+			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_2.png';
+			var npc_image_3 = new Image();
+			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_3.png';
+			var npc_image_4 = new Image();
+			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_4.png';
+			var npc_image_5 = new Image();
+			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_5.png';
+			var npc_image_6 = new Image();
+			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_6.png';
 			var animal_image_1 = new Image();
 			animal_image_1.onload = function(){};animal_image_1.src = 'images/sheep_1_ps.png';
 			//================================================================================
@@ -150,6 +161,7 @@
 					<div id = "canvas2"><canvas id = "myCanvas" width = "1400" height = "700"></canvas></div>
 					<div id = "canvas3"><canvas id = "effiCanvas" width = "1400" height = "700"></canvas></div>
 					<div id = "canvas4"><canvas id = "npcCanvas" width = "1400" height = "700"></canvas></div>
+					<div id = "canvas5"><canvas id = "skillCanvas" width = "1400" height = "700"></canvas></div>
                 </div>
 			<hr>
 			<hr>

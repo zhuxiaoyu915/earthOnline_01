@@ -4,8 +4,6 @@ function draw_character(chara_name,move,loc,map_info){
 	var canvas = document.getElementById("myCanvas");
 	var cxt = canvas.getContext("2d");
 	//图片加载
-	var chara_image_1 = eval("window.chara_image_" + 1);
-
 	var chara_info = [];
 	var key = chara_name;
 	var desti_chara = localStorage.getItem(key);
@@ -15,6 +13,7 @@ function draw_character(chara_name,move,loc,map_info){
 		chara_info.push(chara_info_1);
 	}
 
+	var chara_image_1 = eval("window."+chara_info[2][1]);
 	var x = loc.x;
 	var y = loc.y;
 	
