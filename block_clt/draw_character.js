@@ -1,12 +1,14 @@
 ﻿
-function draw_character(chara_name,move,loc,map_info){
+function draw_character(chara_name,move,loc,map_info,canvas){
 	//绘制参数
-	var canvas = document.getElementById("myCanvas");
+	var canvas = canvas||document.getElementById("myCanvas");//默认为“myCanvas"
 	var cxt = canvas.getContext("2d");
 	//图片加载
 	var chara_info = [];
 	var key = chara_name;
+
 	var desti_chara = localStorage.getItem(key);
+
 	var chara_str = desti_chara.split(";");
 	for(i in chara_str){
 		chara_info_1 = chara_str[i].split("|");
@@ -16,7 +18,6 @@ function draw_character(chara_name,move,loc,map_info){
 	var chara_image_1 = eval("window."+chara_info[2][1]);
 	var x = loc.x;
 	var y = loc.y;
-	
 	var length = map_info[0].length;
 	var length_2 = length - 10;
 	
@@ -61,14 +62,14 @@ function draw_character(chara_name,move,loc,map_info){
 	point_array.push({x:p6_x , y:p6_y});
 	
 	//绘制
-	//添加底色
-	//添加图片
+	//绘制----(如果是移动中的角色，则清除上一步的图像）
+	if(move)cxt.clearRect(0,0,1400,700);
+	//绘制----添加底色
 	var bgColor = chara_info[2][0];
-	
 	var shadow_state = move;
 	drawBgColor(loc,map_array,canvas,bgColor,bgColor,shadow_state,1);
+	//绘制----添加图片
 	cxt.drawImage(chara_image_1,loc.x-40,loc.y-40,80,80);
-	
 	//添加血条
 	var b = parseInt(chara_info[4][0]);
 	var m = parseInt(chara_info[4][1]);

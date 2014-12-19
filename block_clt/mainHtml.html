@@ -22,12 +22,13 @@
 			ul li {
 				color: #333366;
 			}
-			#content {position:relative;top:0px;left:0px;z-index:400;width:1400px;height:700px}
+			#content {position:relative;top:0px;left:0px;z-index:100;width:1400px;height:700px}
 			#canvas1 {position :absolute;top:0px;left:0px;z-index:200}
 			#canvas2 {position :absolute;top:0px;left:0px;z-index:300}
 			#canvas3 {position :absolute;top:0px;left:0px;z-index:400}
 			#canvas4 {position :absolute;top:0px;left:0px;z-index:300}
-			#canvas5 {position :absolute;top:0px;left:0px;z-index:300}
+			#canvas5 {position :absolute;top:0px;left:0px;z-index:450}
+			#canvas6 {position :absolute;top:0px;left:0px;z-index:250}
 		</style>
 		<script type="text/javascript">
 			var WebSocket = window.WebSocket || wondow.MozWebSocket;
@@ -41,15 +42,15 @@
 			var npc_image_1 = new Image();
 			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_1.png';
 			var npc_image_2 = new Image();
-			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_2.png';
+			npc_image_2.onload = function(){};npc_image_2.src = 'images/npc_2.png';
 			var npc_image_3 = new Image();
-			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_3.png';
+			npc_image_3.onload = function(){};npc_image_3.src = 'images/npc_3.png';
 			var npc_image_4 = new Image();
-			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_4.png';
+			npc_image_4.onload = function(){};npc_image_4.src = 'images/npc_4.png';
 			var npc_image_5 = new Image();
-			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_5.png';
+			npc_image_5.onload = function(){};npc_image_5.src = 'images/npc_5.png';
 			var npc_image_6 = new Image();
-			npc_image_1.onload = function(){};npc_image_1.src = 'images/npc_6.png';
+			npc_image_6.onload = function(){};npc_image_6.src = 'images/npc_6.png';
 			var animal_image_1 = new Image();
 			animal_image_1.onload = function(){};animal_image_1.src = 'images/sheep_1_ps.png';
 			//================================================================================
@@ -162,6 +163,7 @@
 					<div id = "canvas3"><canvas id = "effiCanvas" width = "1400" height = "700"></canvas></div>
 					<div id = "canvas4"><canvas id = "npcCanvas" width = "1400" height = "700"></canvas></div>
 					<div id = "canvas5"><canvas id = "skillCanvas" width = "1400" height = "700"></canvas></div>
+					<div id = "canvas6"><canvas id = "moveCanvas" width = "1400" height = "700"></canvas></div>
                 </div>
 			<hr>
 			<hr>

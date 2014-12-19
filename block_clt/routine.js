@@ -21,25 +21,23 @@ function wait_routine(map_array,map_info){
 			active_num++;
 		}else if(blood_num > 0){
 			active_num++;
-			console.log(npc_info[8]);
 		}
 	}
+	
 	for(i=0;i<active_num;i++){		
-		setTimeout(function a(){chara_auto_move(map_array,map_info);},600*(i+1));
+		setTimeout(function a(){chara_auto_move(map_array,map_info,skill_info);},600*(i+1));
 	}
-	localStorage.turnOn = 1;
+	setTimeout(function b(){localStorage.turnOn = 1;},600*(i+1) + 500);
 }
 
 //流程----角色自动运行
-function chara_auto_move(map_array,map_info){
-	//自动初始化
+function chara_auto_move(map_array,map_info,skill_info){
 	//读取下一个可执行的npc
 	var moveable_npc =0;
 	while(moveable_npc ==0){
 		var move_turn = parseInt(localStorage.npc_move_turn);
 		var str_basic = "npc_";
 		var key = str_basic + move_turn;
-		//console.log("key为： " + key);
 		var val = localStorage.getItem(key);
 		var npc_info = [];
 		if(val != ""){
@@ -135,12 +133,11 @@ function chara_auto_move(map_array,map_info){
 		//按顺序执行动作：
 		//检测
 		loc_num = parseInt(npc_info[1][0]);
-		var s_b = neighbor_block(loc_num,map_array,map_info,sight_length,0);
+		var s_b = neighbor_block(loc_num,map_array,map_info,sight_length,0);//生成视距模块
 		s_b.push(loc_num);
-		var dest = detect_destination(s_b , map_info);
+		var dest = detect_destination(s_b , map_info);//在视距内遍历
 		//移动
-		var destination = route_find(dest,loc_num,map_array,map_info,npc_info);
-		//console.log("loc_num 为： " + loc_num + ". destination 为：" + destination);
+		var destination = route_find(dest,loc_num,map_array,map_info,npc_info);//寻径
 		if(destination == -1){
 			destination = loc_num;
 		}
@@ -148,12 +145,10 @@ function chara_auto_move(map_array,map_info){
 		var baseCanvas = document.getElementById("baseCanvas");
 		var loc_bgc = map_array[loc_num];
 		drawBgColor(loc_bgc,map_array,baseCanvas,"blue","white",0,1);
-		//drawBggColor(loc_num,map_array,"white",baseCanvas,1,1);
 		//移动----循环绘制npc块
 		var npccanvas = document.getElementById("npcCanvas");
 		var context = npccanvas.getContext("2d");
 		//移动----循环绘制npc块----计算距离
-
 		var orient_info = map_array[loc_num];
 		var desti_info = map_array[destination];
 		//移动----循环绘制npc块----计算帧属性
@@ -172,17 +167,21 @@ function chara_auto_move(map_array,map_info){
 				draw_loc_array_y = draw_loc_array_y + frame_distance_y;
 				var loc = {x:draw_loc_array_x, y:draw_loc_array_y};
 				var color = npc_info[2][0];
-				var npc_name = "npc_1";
-				//draw_character(npc_name,1,loc,map_info);
-				drawCharacter_move(loc,map_array,color,npccanvas,1);
+				var num = npc_info.length;
+				var npc_name = npc_info[num -1];
+				var canvas = document.getElementById("npcCanvas");
+				draw_character(npc_name,1,loc,map_info,canvas);
 				count++;
 			}else if (count == frame_num){
 				context.clearRect(0,0,1400,700);
 				var baseCanvas = document.getElementById("baseCanvas");
 				var color = npc_info[2][0];
+				var num = npc_info.length;
+				var npc_name = npc_info[num-1];
 				var loc_bgc = map_array[destination];
-				drawBgColor(loc_bgc,map_array,baseCanvas,color,color,0,1);
-				//drawBggColor(destination,map_array,color,baseCanvas,1,1);
+				//console.log("loc_bgc的值为： " + loc_bgc);
+				//console.log("map_info为：" + map_info);
+				draw_character(npc_name,0,loc_bgc,map_info,baseCanvas);
 				count++;
 			}else{
 				window.clearInterval(intervalID);
@@ -191,7 +190,6 @@ function chara_auto_move(map_array,map_info){
 		var intervalID = window.setInterval(draw_begin , frame_time);
 		
 		//移动----更新map属性（map_info,旧属性去除，新属性添加）
-		//console.log(map_info);
 		var old_info = parseInt(map_info[loc_num + 1][0]);
 		old_info--;
 		map_info[loc_num + 1][0] = old_info;
@@ -199,8 +197,8 @@ function chara_auto_move(map_array,map_info){
 		var new_info = parseInt(map_info[destination + 1][0]);
 		new_info++;
 		map_info[destination + 1][0] = new_info;
-		map_info[destination + 1][2] = npc_info[8];
-		//console.log(map_info);
+		var num = npc_info.length;
+		map_info[destination + 1][2] = npc_info[num -1];
 		//移动----更新npc属性（npc_info 和 localStorage）
 		npc_info[1][0] = destination;
 		var npc_inforr = [];
@@ -211,6 +209,42 @@ function chara_auto_move(map_array,map_info){
 		var npc_full_info = npc_inforr.join(";");
 		localStorage.setItem(key,npc_full_info);
 		//攻击
+		//攻击----读取可选技能列表
+		var skill_num = parseInt(npc_info[8][0]);
+		var skill_array = [];
+		for(i = 1;i < skill_num + 1;i++){
+			var key = npc_info[8][i];
+			var val = localStorage.getItem(key);
+			var skill_info = [];
+			if(val != ""){
+				var skill_information = val.split(",");
+				for(m in skill_information){
+					skill_info_detail = skill_information[m].split("|");
+					skill_info.push(skill_info_detail);
+				}
+			}
+			skill_array.push(skill_info);
+		}
+		//攻击----选取攻击技能
+		//攻击----选取过程暂时跳过，直接选取一号技能施放
+		if(dest != -1){
+			//执行攻击动作
+			for(i in skill_array){
+				if(skill_array[i][1]== 2 && skill_array[i][6] < 0){//指向性伤害类
+					var skill_info = skill_array[i];
+					directional_cast();
+					function directional_cast(){
+						var orient_loc = npc_info[1];
+						var desti_loc = dest;
+						var skill_efficacy = skill_info[4];
+						var canvas = document.getElementById("skillCanvas");
+						var destination = skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,skill_efficacy,skill_info);
+						damage_count(map_array,map_info,destination,skill_info);
+					}
+				}
+			}
+		}
+		
 		//停止
 	}
 	move_turn++;

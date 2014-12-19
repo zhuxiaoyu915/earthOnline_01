@@ -73,7 +73,8 @@ function drawButton()
 	for(i in npc_array_all){
 		var loc_n = parseInt(npc_array_all[i][1][0]);
 		map_info[loc_n + 1][0] = 1;
-		map_info[loc_n + 1][2] = npc_array_all[i][8];
+		var num = npc_array_all[i].length;
+		map_info[loc_n + 1][2] = npc_array_all[i][num - 1];
 		
 	}
 	
@@ -154,7 +155,7 @@ function doMouseDown(event) {
 		}
 		
 	    if(chosen_num == character_loc){
-		    move = chara_ready(canvas,chara,map_info,map_array,loc);
+		    move = chara_ready(chara,map_info,map_array,loc);//将当前位置也添加进来
 			character_move_begin = true;	
 	    }else if(skill_loc != ""){
 			for(i in skill_loc){
@@ -182,7 +183,7 @@ function doMouseDown(event) {
 	    if(chosen_num == character_loc){//点选角色位置
 			var loc_changeable = localStorage.loc_changable;//在施法后，loc_change值设为0，不能再进行位置的更改
 			if(loc_changeable == 1){//如果 = 1,表明没有进行过施法，可以继续移动
-				move = chara_ready(canvas,chara,map_info,map_array,loc);
+				move = chara_ready(chara,map_info,map_array,loc);
 				character_move_begin = true;
 			}else{
 				//console.log("人物角色在释放技能后不能再进行移动");
@@ -194,7 +195,7 @@ function doMouseDown(event) {
 	    }else if(skill_loc != ""){//在drawButton中定义，记录各个技能的位置
 			for(i in skill_loc){
 				if(chosen_num == skill_loc[i]){
-					var skill_num = i;
+					skill_chosen_num = i;
 					var map_num = skill_loc[i];
 					localStorage.turnOn = 2;
 					skill_chosing(map_array,map_info,skill_map_num,skill_chosen_num,loc);
@@ -223,18 +224,24 @@ function doMouseMove(event) {
 				if(character_move_begin){
 					cxt = canvas.getContext("2d");
 					cxt.clearRect(0,0,1400,700);
-					move = chara_ready(canvas,chara,map_info,map_array,loc);
+					//删除skill图层的信息
+					var skillCanvas = document.getElementById("skillCanvas");
+					var skillcxt = skillCanvas.getContext("2d");
+					skillcxt.clearRect(0,0,1400,700);
+					move = chara_ready(chara,map_info,map_array,loc);
 				}    
 				break;
 			case '2':
 				if(skill_move_begin){
-					cxt = canvas.getContext("2d");
-					cxt.clearRect(0,0,1400,700);
 					skill_chosing(map_array,map_info,skill_map_num,skill_chosen_num,loc);
 				}else if (character_move_begin){
 					cxt = canvas.getContext("2d");
 					cxt.clearRect(0,0,1400,700);
-					move = chara_ready(canvas,chara,map_info,map_array,loc);
+					//删除skill图层的信息
+					var skillCanvas = document.getElementById("skillCanvas");
+					var skillcxt = skillCanvas.getContext("2d");
+					skillcxt.clearRect(0,0,1400,700);
+					move = chara_ready(chara,map_info,map_array,loc);
 				}
 				break;
 			case '3':
@@ -254,7 +261,9 @@ function doMouseUp(event) {
 	
 	switch(localStorage.turnOn){
 		case '1':
-			whenCharaFinishMove();			
+			if(character_move_begin){
+			whenCharaFinishMove();	
+			}
 			break;
 		case '2':
 			if(character_move_begin){
@@ -263,28 +272,29 @@ function doMouseUp(event) {
 				var canvas = document.getElementById("skillCanvas");
 				cxt = canvas.getContext("2d");
 				cxt.clearRect(0,0,1400,700);
-				skill_move_begin = skill_chosed(canvas,map_array,map_info,skill_map_num,skill_chosen_num,loc);
+				skill_move_begin = skill_chosed(map_array,map_info,skill_map_num,skill_chosen_num,loc);
 				loc_info_now = localStorage.temporary_loc;//获取当前坐标
-				var loc_chara = map_array[loc_info_now];
-				draw_character("character",0,loc_chara,map_info);
 				skill_finish_button();//"结束了"三个字
-				
 				skill_loc_2 = skill_spread(chara,map_info,map_array,loc_info_now);
-				//console.log("技能释放之后，skill_move_begin值为：" + skill_move_begin);
 			}
 			break;
 		case '3':
-			loc_info_now = localStorage.temporary_loc;
-			color = "#cdd3d7";
+			//人物重绘
 			var canvas = document.getElementById("myCanvas");
+			loc_info_now = localStorage.temporary_loc;
 			var loc_bgc = map_array[loc_info_now];
-			drawBgColor(loc_bgc,map_array,canvas,color,color,0,1);
-			//drawBggColor(loc_info_now,map_array,color,canvas);
+			draw_character("character",0,loc_bgc,map_info);
+			//特效清除
 			var canvas = document.getElementById("effiCanvas");
 			var cxt = canvas.getContext("2d");
 			cxt.clearRect(0,0,1400,700);
-			localStorage.turnOn = 4;//权宜之计
-			//其他角色流程
+			//技能显示清除
+			var canvas2 = document.getElementById("skillCanvas");
+			var cxt2 = canvas2.getContext("2d");
+			cxt2.clearRect(0,0,1400,700);
+			
+			localStorage.turnOn = 4;
+			//进入其他角色流程
 			localStorage.npc_move_turn = 1;
 			wait_routine(map_array,map_info);
 			break;
@@ -336,6 +346,9 @@ function doMouseUp(event) {
 			
 		}
 		localStorage.temporary_loc = finish_info[0];
+		var movecanvas = document.getElementById("moveCanvas");
+		var cxt = movecanvas.getContext("2d");
+		cxt.clearRect(0,0,1400,700);
 	}
 }	
 }

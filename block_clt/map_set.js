@@ -46,7 +46,7 @@ function drawMap(mapArray){
 	var cxt = canvas.getContext("2d");
     cxt.fillStyle = "#FF0000";
 	cxt.strokeStyle = "#0000FF";
-	cxt.lineWidth = 4;
+	cxt.lineWidth = 2;
 	//获得地形方块的个数
 	var num = array.length-1;
 	//获得每个拼版的长度

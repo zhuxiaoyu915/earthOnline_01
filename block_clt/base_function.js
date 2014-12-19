@@ -1,47 +1,6 @@
 ﻿//基础函数----绘制模块的背景色
-function drawBggColor(loc_num,map_array,color,canvas,shadow,alpha){
-    var alpha = alpha||1;
-	var num = map_array.length-1;
-	var len = map_array[num].line_length;
-	var cxt = canvas.getContext("2d");
-	cxt.lineWidth = 5;
-	cxt.fillStyle = color;
-	cxt.strokeStyle = color;
-	//阴影设置
-	cxt.shadowOffsetX = 0;
-	cxt.shadowOffsetY = 0;
-	cxt.shadowBlur = 0;
-	cxt.shadowColor = 'rgba(50,50,50,0.5)';
-	cxt.globalAlpha = alpha;
-	
-	//添加背景色	
-    var loc_x = map_array[loc_num].x;
-    var loc_y = map_array[loc_num].y;
-    var p1_x = loc_x - len;
-	var p1_y = loc_y;
-	var p2_x = loc_x - len/2;
-	var p2_y = loc_y - len/2*1.732;
-	var p3_x = loc_x + len/2;
-	var p3_y = p2_y;
-	var p4_x = loc_x + len;
-	var p4_y = loc_y;
-	var p5_x = p3_x;
-	var p5_y = loc_y + len/2*1.732;
-	var p6_x = p2_x;
-	var p6_y = p5_y;	
-	cxt.beginPath();
-	cxt.moveTo(p1_x,p1_y);
-	cxt.lineTo(p2_x,p2_y);
-	cxt.lineTo(p3_x,p3_y);
-	cxt.lineTo(p4_x,p4_y);
-	cxt.lineTo(p5_x,p5_y);
-	cxt.lineTo(p6_x,p6_y);
-	cxt.lineTo(p1_x,p1_y);
-	cxt.fill();
-	cxt.closePath();
-}
-
 function drawBgColor(loc,map_array,canvas,strokeColor,fillColor,shadow,alpha){
+	//console.log("执行了吗？");
 	var x = loc.x;
 	var y = loc.y;
 	var num = map_array.length -1;
@@ -61,7 +20,7 @@ function drawBgColor(loc,map_array,canvas,strokeColor,fillColor,shadow,alpha){
 	var p6_x = x - length*1;
 	var p6_y = y;
 	
-	context.lineWidth = 4;
+	context.lineWidth = 2;
 	context.fillStyle = fillColor;
 	context.strokeStyle = strokeColor;
 	context.globalAlpha = alpha;
@@ -213,6 +172,16 @@ function draw_skill_efficacy(orient_loc,desti_loc,skill_effi_num,map_array,map_i
 	var count = 0;
 	var draw_loc_array_x = map_array[draw_loc].x;
 	var draw_loc_array_y = map_array[draw_loc].y;
+	
+	//判断是否为npc操作
+	var state_now = localStorage.turnOn;
+	if(state_now == "4"){
+		setTimeout(function a(){var intervalID = window.setInterval(draw_begin , frame_time);},500);
+	}else{
+		var intervalID = window.setInterval(draw_begin , frame_time);
+	}
+	
+	
 	function draw_begin(){
 		if(count < frame_num){
 			context.beginPath();
@@ -225,11 +194,14 @@ function draw_skill_efficacy(orient_loc,desti_loc,skill_effi_num,map_array,map_i
 			draw_loc_array_y = draw_loc_array_y + frame_distance_y;
 			draw_rad = draw_rad +2;
 			count++;
+		}else if(count == frame_num){
+			context.clearRect(0,0,1400,700);
+			count++;
 		}else{
 			window.clearInterval(intervalID);
 		}
 	}
-	 var intervalID = window.setInterval(draw_begin , frame_time);
+	
 }
 
 //基础函数----流程结束
