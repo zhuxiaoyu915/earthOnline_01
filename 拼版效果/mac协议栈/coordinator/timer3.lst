@@ -1,0 +1,426 @@
+   1               		.file	"timer3.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	Timer3_intDisable
+ 221               	Timer3_intDisable:
+   1:timer3.c      **** #include "timer3.h"
+   2:timer3.c      **** 
+   3:timer3.c      **** extern  uint16_t  timer3queue_getnextinterval(void);
+   4:timer3.c      **** extern  void  timer3queue_interrupt(void);
+   5:timer3.c      **** 
+   6:timer3.c      ****  void Timer3_intDisable(void)
+   7:timer3.c      ****  {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+ 226               	.LBB2:
+   8:timer3.c      ****       { os_atomic_t _nesc_atomic = os_atomic_start();
+ 228               	.LM2:
+ 229 0000 0E94 0000 		call os_atomic_start
+   9:timer3.c      ****        	{
+  10:timer3.c      **** 	 ETIMSK &= 0xef;
+ 231               	.LM3:
+ 232 0004 9091 7D00 		lds r25,125
+ 233 0008 9F7E      		andi r25,lo8(-17)
+ 234 000a 9093 7D00 		sts 125,r25
+  11:timer3.c      **** 	 //TCCR3B = 5;
+  12:timer3.c      **** 	 //OCR3A=0;
+  13:timer3.c      **** 	 //TCNT3 = 0x0000;
+  14:timer3.c      **** 	 //TCCR3B=0x00;
+  15:timer3.c      **** 	ETIFR |=(1<<OCF3A);
+ 236               	.LM4:
+ 237 000e 9091 7C00 		lds r25,124
+ 238 0012 9061      		ori r25,lo8(16)
+ 239 0014 9093 7C00 		sts 124,r25
+  16:timer3.c      **** 	 
+  17:timer3.c      **** 	}
+  18:timer3.c      ****       os_atomic_end(_nesc_atomic); }        	
+ 241               	.LM5:
+ 242 0018 0E94 0000 		call os_atomic_end
+ 243               	.LBE2:
+ 244               	/* epilogue: frame size=0 */
+ 245 001c 0895      		ret
+ 246               	/* epilogue end (size=1) */
+ 247               	/* function Timer3_intDisable size 15 (14) */
+ 249               	.Lscope0:
+ 251               	.global	Timer3_fire
+ 253               	Timer3_fire:
+  19:timer3.c      ****  }
+  20:timer3.c      **** 
+  21:timer3.c      **** uint8_t  Timer3_fire(void)
+  22:timer3.c      **** {
+ 255               	.LM6:
+ 256               	/* prologue: frame size=0 */
+ 257               	/* prologue end (size=0) */
+  23:timer3.c      ****           timer3queue_interrupt();
+ 259               	.LM7:
+ 260 001e 0E94 0000 		call timer3queue_interrupt
+ 261               	/* epilogue: frame size=0 */
+ 262 0022 0895      		ret
+ 263               	/* epilogue end (size=1) */
+ 264               	/* function Timer3_fire size 3 (2) */
+ 266               	.Lscope1:
+ 267               		.data
+ 268               	.LC0:
+ 269 0000 0A73 6361 		.string	"\nscale is out of scope\n"
+ 269      6C65 2069 
+ 269      7320 6F75 
+ 269      7420 6F66 
+ 269      2073 636F 
+ 270               		.text
+ 274               	.global	Timer3_setIntervalAndScale
+ 276               	Timer3_setIntervalAndScale:
+  24:timer3.c      ****          //OS_post(timer3queue_interrupt);
+  25:timer3.c      **** }
+  26:timer3.c      **** 
+  27:timer3.c      **** uint8_t  Timer3_setIntervalAndScale(uint16_t interval, uint8_t scale)
+  28:timer3.c      **** {
+ 278               	.LM8:
+ 279               	/* prologue: frame size=0 */
+ 280 0024 1F93      		push r17
+ 281 0026 CF93      		push r28
+ 282 0028 DF93      		push r29
+ 283               	/* prologue end (size=3) */
+ 284 002a EC01      		movw r28,r24
+ 285 002c 162F      		mov r17,r22
+  29:timer3.c      ****     if (scale > 7) {
+ 287               	.LM9:
+ 288 002e 6830      		cpi r22,lo8(8)
+ 289 0030 28F0      		brlo .L4
+  30:timer3.c      ****           error("\nscale is out of scope\n");
+ 291               	.LM10:
+ 292 0032 80E0      		ldi r24,lo8(.LC0)
+ 293 0034 90E0      		ldi r25,hi8(.LC0)
+ 294 0036 0E94 0000 		call error
+  31:timer3.c      ****           return 0;
+ 296               	.LM11:
+ 297 003a 24C0      		rjmp .L3
+ 298               	.L4:
+ 299               	.LBB3:
+  32:timer3.c      ****     }
+  33:timer3.c      **** //uint16_t  temp_test_tnt3;
+  34:timer3.c      **** //uint32_t  sys_time;
+  35:timer3.c      **** { os_atomic_t _nesc_atomic = os_atomic_start();
+ 301               	.LM12:
+ 302 003c 0E94 0000 		call os_atomic_start
+  36:timer3.c      ****     {
+  37:timer3.c      ****        //temp_test_tnt3=TCNT3 ;
+  38:timer3.c      **** 	ETIFR |=(1<<OCF3A);   
+ 304               	.LM13:
+ 305 0040 9091 7C00 		lds r25,124
+ 306 0044 9061      		ori r25,lo8(16)
+ 307 0046 9093 7C00 		sts 124,r25
+  39:timer3.c      **** 	OCR3A = interval;//this is the scale
+ 309               	.LM14:
+ 310 004a D093 8700 		sts (134)+1,r29
+ 311 004e C093 8600 		sts 134,r28
+  40:timer3.c      **** 	OCR3B = 0x0000;
+ 313               	.LM15:
+ 314 0052 1092 8500 		sts (132)+1,__zero_reg__
+ 315 0056 1092 8400 		sts 132,__zero_reg__
+  41:timer3.c      **** 	OCR3C = 0x0000;
+ 317               	.LM16:
+ 318 005a 1092 8300 		sts (130)+1,__zero_reg__
+ 319 005e 1092 8200 		sts 130,__zero_reg__
+  42:timer3.c      **** 	TCNT3 = 0x0000; //this is the counter
+ 321               	.LM17:
+ 322 0062 1092 8900 		sts (136)+1,__zero_reg__
+ 323 0066 1092 8800 		sts 136,__zero_reg__
+  43:timer3.c      **** 	TCCR3A = 0x00;//Output: A: Disconnected, B: Disconnected, C: Disconnected,WGM[1..0]=00
+ 325               	.LM18:
+ 326 006a 1092 8B00 		sts 139,__zero_reg__
+  44:timer3.c      **** 	//scale |= 0x08;//
+  45:timer3.c      **** 	TCCR3B = scale;//clk/(scale),WGM[3..2]=01
+ 328               	.LM19:
+ 329 006e 1093 8A00 		sts 138,r17
+  46:timer3.c      **** 	TCCR3C = 0x00;//
+ 331               	.LM20:
+ 332 0072 1092 8C00 		sts 140,__zero_reg__
+  47:timer3.c      **** 	ETIMSK |= 0x10;//OCIE1A is enable 
+ 334               	.LM21:
+ 335 0076 9091 7D00 		lds r25,125
+ 336 007a 9061      		ori r25,lo8(16)
+ 337 007c 9093 7D00 		sts 125,r25
+  48:timer3.c      **** 	//sys_time=systime32();
+  49:timer3.c      ****     }
+  50:timer3.c      ****     os_atomic_end(_nesc_atomic); }
+ 339               	.LM22:
+ 340 0080 0E94 0000 		call os_atomic_end
+ 341               	.L3:
+ 342               	.LBE3:
+  51:timer3.c      ****    //printf("\n**TCNT3 is %04x\n",temp_test_tnt3);	 	
+  52:timer3.c      ****    //printf("sys time is %08lx",sys_time);
+  53:timer3.c      ****   return SUCCESS;
+  54:timer3.c      **** }
+ 344               	.LM23:
+ 345 0084 80E0      		ldi r24,lo8(0)
+ 346 0086 90E0      		ldi r25,hi8(0)
+ 347               	/* epilogue: frame size=0 */
+ 348 0088 DF91      		pop r29
+ 349 008a CF91      		pop r28
+ 350 008c 1F91      		pop r17
+ 351 008e 0895      		ret
+ 352               	/* epilogue end (size=4) */
+ 353               	/* function Timer3_setIntervalAndScale size 54 (47) */
+ 355               	.Lscope2:
+ 358               	.global	Timer3_sethalfsymbol
+ 360               	Timer3_sethalfsymbol:
+  55:timer3.c      **** 
+  56:timer3.c      **** //供高层调用的定时开始函数。
+  57:timer3.c      **** void      Timer3_sethalfsymbol(uint16_t symbols)
+  58:timer3.c      **** {
+ 362               	.LM24:
+ 363               	/* prologue: frame size=0 */
+ 364               	/* prologue end (size=0) */
+  59:timer3.c      ****       uint32_t halfsymbols;
+  60:timer3.c      ****       halfsymbols=((uint32_t)symbols)<<1;
+ 366               	.LM25:
+ 367 0090 AA27      		clr r26
+ 368 0092 BB27      		clr r27
+ 369 0094 880F      		lsl r24
+ 370 0096 991F      		rol r25
+ 371 0098 AA1F      		rol r26
+ 372 009a BB1F      		rol r27
+  61:timer3.c      ****       if(halfsymbols<=65535)	  
+ 374               	.LM26:
+ 375 009c 8030      		cpi r24,lo8(65536)
+ 376 009e 20E0      		ldi r18,hi8(65536)
+ 377 00a0 9207      		cpc r25,r18
+ 378 00a2 21E0      		ldi r18,hlo8(65536)
+ 379 00a4 A207      		cpc r26,r18
+ 380 00a6 20E0      		ldi r18,hhi8(65536)
+ 381 00a8 B207      		cpc r27,r18
+ 382 00aa 10F4      		brsh .L6
+  62:timer3.c      ****       Timer3_setIntervalAndScale(halfsymbols, 0x5);
+ 384               	.LM27:
+ 385 00ac 65E0      		ldi r22,lo8(5)
+ 386 00ae 02C0      		rjmp .L8
+ 387               	.L6:
+  63:timer3.c      ****       else
+  64:timer3.c      ****       Timer3_setIntervalAndScale(halfsymbols-65535, 0x5);  	
+ 389               	.LM28:
+ 390 00b0 65E0      		ldi r22,lo8(5)
+ 391 00b2 0196      		adiw r24,1
+ 392               	.L8:
+ 393 00b4 0E94 0000 		call Timer3_setIntervalAndScale
+ 394 00b8 0895      		ret
+ 395               	/* epilogue: frame size=0 */
+ 396 00ba 0895      		ret
+ 397               	/* epilogue end (size=1) */
+ 398               	/* function Timer3_sethalfsymbol size 22 (21) */
+ 403               	.Lscope3:
+ 406               	.global	Timer3_acquireInterval
+ 408               	Timer3_acquireInterval:
+  65:timer3.c      **** }
+  66:timer3.c      **** //供高层调用获得下一次定时的比较寄存器应当设置的值
+  67:timer3.c      **** uint32_t 	Timer3_acquireInterval(uint16_t interval)
+  68:timer3.c      **** {
+ 410               	.LM29:
+ 411               	/* prologue: frame size=0 */
+ 412               	/* prologue end (size=0) */
+  69:timer3.c      ****        uint32_t temp;
+  70:timer3.c      **** 	uint16_t  tcnt_3;
+  71:timer3.c      **** 	tcnt_3=TCNT3;
+ 414               	.LM30:
+ 415 00bc 2091 8800 		lds r18,136
+ 416 00c0 3091 8900 		lds r19,(136)+1
+  72:timer3.c      ****        temp=(uint32_t)tcnt_3+(((uint32_t)interval)<<1);
+ 418               	.LM31:
+ 419 00c4 4427      		clr r20
+ 420 00c6 5527      		clr r21
+ 421 00c8 AA27      		clr r26
+ 422 00ca BB27      		clr r27
+ 423 00cc 880F      		lsl r24
+ 424 00ce 991F      		rol r25
+ 425 00d0 AA1F      		rol r26
+ 426 00d2 BB1F      		rol r27
+ 427 00d4 280F      		add r18,r24
+ 428 00d6 391F      		adc r19,r25
+ 429 00d8 4A1F      		adc r20,r26
+ 430 00da 5B1F      		adc r21,r27
+  73:timer3.c      **** 	// (temp>=65535) temp=temp-65535;
+  74:timer3.c      **** 	return (temp);
+  75:timer3.c      **** }
+ 432               	.LM32:
+ 433 00dc CA01      		movw r24,r20
+ 434 00de B901      		movw r22,r18
+ 435               	/* epilogue: frame size=0 */
+ 436 00e0 0895      		ret
+ 437               	/* epilogue end (size=1) */
+ 438               	/* function Timer3_acquireInterval size 19 (18) */
+ 443               	.Lscope4:
+ 446               	.global	Timer3_adjustInterval
+ 448               	Timer3_adjustInterval:
+  76:timer3.c      **** uint8_t    Timer3_adjustInterval(uint16_t interval)
+  77:timer3.c      **** {
+ 450               	.LM33:
+ 451               	/* prologue: frame size=0 */
+ 452 00e2 0F93      		push r16
+ 453 00e4 1F93      		push r17
+ 454               	/* prologue end (size=2) */
+ 455 00e6 8C01      		movw r16,r24
+ 456               	.LBB4:
+  78:timer3.c      ****    { os_atomic_t _nesc_atomic = os_atomic_start();
+ 458               	.LM34:
+ 459 00e8 0E94 0000 		call os_atomic_start
+  79:timer3.c      ****      {
+  80:timer3.c      **** 	/*if(interval<65536)*/
+  81:timer3.c      **** 	  OCR3A = interval;//this is the scale
+ 461               	.LM35:
+ 462 00ec 1093 8700 		sts (134)+1,r17
+ 463 00f0 0093 8600 		sts 134,r16
+  82:timer3.c      **** 	/* else
+  83:timer3.c      **** 	  OCR3A =interval-65535;*/
+  84:timer3.c      ****      }
+  85:timer3.c      ****     os_atomic_end(_nesc_atomic); }    return 1;
+ 465               	.LM36:
+ 466 00f4 0E94 0000 		call os_atomic_end
+ 467               	.LBE4:
+  86:timer3.c      **** }
+ 469               	.LM37:
+ 470 00f8 81E0      		ldi r24,lo8(1)
+ 471 00fa 90E0      		ldi r25,hi8(1)
+ 472               	/* epilogue: frame size=0 */
+ 473 00fc 1F91      		pop r17
+ 474 00fe 0F91      		pop r16
+ 475 0100 0895      		ret
+ 476               	/* epilogue end (size=3) */
+ 477               	/* function Timer3_adjustInterval size 16 (11) */
+ 479               	.Lscope5:
+ 481               	.global	Timer3_getnextInterval
+ 483               	Timer3_getnextInterval:
+  87:timer3.c      **** //供底层调用获得定时器比较寄存器应当设置的值，下一个定时任务
+  88:timer3.c      **** uint16_t  Timer3_getnextInterval(void)
+  89:timer3.c      **** {
+ 485               	.LM38:
+ 486               	/* prologue: frame size=0 */
+ 487               	/* prologue end (size=0) */
+  90:timer3.c      ****       return timer3queue_getnextinterval();
+ 489               	.LM39:
+ 490 0102 0E94 0000 		call timer3queue_getnextinterval
+ 491               	/* epilogue: frame size=0 */
+ 492 0106 0895      		ret
+ 493               	/* epilogue end (size=1) */
+ 494               	/* function Timer3_getnextInterval size 3 (2) */
+ 496               	.Lscope6:
+ 497               		.comm OS_queue,16,1
+ 498               		.comm OS_sched_full,1,1
+ 499               		.comm OS_sched_free,1,1
+ 500               		.comm currentTime,2,1
+ 501               		.comm head_of_systimer_queue,2,1
+ 502               		.comm timestamp_H,2,1
+ 503               		.comm mState,4,1
+ 504               		.comm setIntervalFlag,1,1
+ 505               		.comm mScale,1,1
+ 506               		.comm mInterval,1,1
+ 507               		.comm queue_head,1,1
+ 508               		.comm queue_tail,1,1
+ 509               		.comm queue_size,1,1
+ 510               		.comm queue,3,1
+ 511               		.comm mTimerList,33,1
+ 512               		.comm cc2420_bramspi,1,1
+ 513               		.comm cc2420_rambuf,2,1
+ 514               		.comm cc2420_ramlen,1,1
+ 515               		.comm cc2420_ramaddr,2,1
+ 516               		.comm cc2420fifo_bspi,1,1
+ 517               		.comm cc2420fifo_txbuf,2,1
+ 518               		.comm cc2420fifo_txlength,1,1
+ 519               		.comm cc2420_rxbuf,4,1
+ 520               		.comm cc2420_rxlength,1,1
+ 521               		.comm cc2420_rxbuf_now,2,1
+ 522               		.comm cc2420_rxlength_now,1,1
+ 523               		.comm cc2420_rxbufuse,1,1
+ 524               		.comm rfpackernum,1,1
+ 525               		.comm cc2420_rxflag,1,1
+ 526               		.comm cc2420_currentparameters,28,1
+ 527               		.comm receive_timestamp,4,1
+ 528               		.comm send_timestamp,4,1
+ 529               		.comm cc2420_stateRadio,1,1
+ 530               		.comm cc2420_LocalAddr,2,1
+ 531               		.comm ieee_address,8,1
+ 532               		.comm backoff_timer_Set,1,1
+ 533               		.comm backoff_call,2,1
+ 534               		.comm GTSDirectionMask,1,1
+ 535               		.comm phy_channel_state,1,1
+ 536               		.comm rxbuf_flag,1,1
+ 537               		.comm ppib,3,1
+ 538               		.comm SENSOR_DATA_VALUE,20,1
+ 539               		.comm ADC_INTERRUPT_FLAG,1,1
+ 583               		.text
+ 585               	Letext:
+ 586               	/* File "timer3.c": code  132 = 0x0084 ( 115), prologues   5, epilogues  12 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 timer3.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:221    .text:00000000 Timer3_intDisable
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:253    .text:0000001e Timer3_fire
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:276    .text:00000024 Timer3_setIntervalAndScale
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:360    .text:00000090 Timer3_sethalfsymbol
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:408    .text:000000bc Timer3_acquireInterval
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:448    .text:000000e2 Timer3_adjustInterval
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:483    .text:00000102 Timer3_getnextInterval
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/ccKCbaaa.s:585    .text:00000108 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+os_atomic_start
+os_atomic_end
+timer3queue_interrupt
+error
+timer3queue_getnextinterval

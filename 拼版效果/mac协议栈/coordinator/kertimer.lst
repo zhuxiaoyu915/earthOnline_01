@@ -1,0 +1,1022 @@
+   1               		.file	"kertimer.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	timer0_setInterval:
+   1:kertimer.c    **** #include "kertimer.h"
+   2:kertimer.c    **** 
+   3:kertimer.c    **** //----------------------------------------------------------------
+   4:kertimer.c    **** //timer0 setup is added by zhouqiang in 2005.12.02
+   5:kertimer.c    **** //----------------------------------------------------------------
+   6:kertimer.c    **** /** 
+   7:kertimer.c    ****    *  set Timer/Counter0 to be asynchronous 
+   8:kertimer.c    ****    *  from the CPU clock with a second external 
+   9:kertimer.c    ****    *  clock(32,768kHz)driving it
+  10:kertimer.c    ****  **/
+  11:kertimer.c    **** static void timer0_hardware_init(uint8_t interval, uint8_t scale){
+  12:kertimer.c    **** 	{ os_atomic_t  _nesc_atomic = os_atomic_start();
+  13:kertimer.c    **** 		{
+  14:kertimer.c    **** 			scale &= 0x7;
+  15:kertimer.c    **** 			scale |= 0x8;
+  16:kertimer.c    **** 			
+  17:kertimer.c    **** 
+  18:kertimer.c    **** 			TIMSK &= ((unsigned char)~(1 << (TOIE0)));
+  19:kertimer.c    **** 			TIMSK &= ((unsigned char)~(1 << (OCIE0)));
+  20:kertimer.c    **** 			//!< Disable TC0 interrupt
+  21:kertimer.c    **** 		   	
+  22:kertimer.c    **** 			ASSR |= (1 << (AS0));         
+  23:kertimer.c    **** 			TCCR0 = scale;    
+  24:kertimer.c    **** 			TCNT0 = 0;
+  25:kertimer.c    **** 			OCR0 = interval;
+  26:kertimer.c    **** 			TIMSK |= (1 << (OCIE0));
+  27:kertimer.c    **** 		}
+  28:kertimer.c    **** 	os_atomic_end(_nesc_atomic); }
+  29:kertimer.c    **** 	
+  30:kertimer.c    **** }   
+  31:kertimer.c    **** 
+  32:kertimer.c    **** static void timer0_setInterval(uint8_t val)
+  33:kertimer.c    **** {
+ 221               	.LM1:
+ 222               	/* prologue: frame size=0 */
+ 223               	/* prologue end (size=0) */
+ 224 0000 282F      		mov r18,r24
+  34:kertimer.c    **** 	uint8_t interval;
+  35:kertimer.c    **** 	if ((ASSR & (_BV(OCR0UB) | _BV(TCN0UB))) != 0) {
+ 226               	.LM2:
+ 227 0002 80B7      		in r24,80-0x20
+ 228 0004 9927      		clr r25
+ 229 0006 8670      		andi r24,lo8(6)
+ 230 0008 9070      		andi r25,hi8(6)
+ 231 000a 892B      		or r24,r25
+ 232 000c 61F4      		brne .L1
+  36:kertimer.c    **** 	  return;
+  37:kertimer.c    **** 	}
+  38:kertimer.c    **** 	if(val > 250) {interval = 250;}
+ 234               	.LM3:
+ 235 000e 2B3F      		cpi r18,lo8(-5)
+ 236 0010 10F0      		brlo .L3
+ 237 0012 8AEF      		ldi r24,lo8(-6)
+ 238 0014 06C0      		rjmp .L4
+ 239               	.L3:
+  39:kertimer.c    **** 	else if(val <= 2) {interval = 2;}
+ 241               	.LM4:
+ 242 0016 2330      		cpi r18,lo8(3)
+ 243 0018 10F4      		brsh .L5
+ 244 001a 82E0      		ldi r24,lo8(2)
+ 245 001c 02C0      		rjmp .L4
+ 246               	.L5:
+  40:kertimer.c    **** 	else {interval = (uint8_t)val - 1;}
+ 248               	.LM5:
+ 249 001e 822F      		mov r24,r18
+ 250 0020 8150      		subi r24,lo8(-(-1))
+ 251               	.L4:
+  41:kertimer.c    **** 	TCNT0 = 0;
+ 253               	.LM6:
+ 254 0022 12BE      		out 82-0x20,__zero_reg__
+  42:kertimer.c    **** 	OCR0 = interval;
+ 256               	.LM7:
+ 257 0024 81BF      		out 81-0x20,r24
+ 258               	.L1:
+ 259 0026 0895      		ret
+ 260               	/* epilogue: frame size=0 */
+ 261 0028 0895      		ret
+ 262               	/* epilogue end (size=1) */
+ 263               	/* function timer0_setInterval size 21 (20) */
+ 268               	.Lscope0:
+ 270               	.global	timer0_getInterval
+ 272               	timer0_getInterval:
+  43:kertimer.c    **** 	
+  44:kertimer.c    **** }
+  45:kertimer.c    **** 
+  46:kertimer.c    **** inline uint8_t timer0_getInterval()   {return OCR0 + 1;}
+ 274               	.LM8:
+ 275               	/* prologue: frame size=0 */
+ 276               	/* prologue end (size=0) */
+ 277 002a 81B7      		in r24,81-0x20
+ 278 002c 8F5F      		subi r24,lo8(-(1))
+ 279 002e 9927      		clr r25
+ 280               	/* epilogue: frame size=0 */
+ 281 0030 0895      		ret
+ 282               	/* epilogue end (size=1) */
+ 283               	/* function timer0_getInterval size 4 (3) */
+ 285               	.Lscope1:
+ 287               	.global	timer0_hardware_get_counter
+ 289               	timer0_hardware_get_counter:
+  47:kertimer.c    **** 
+  48:kertimer.c    **** inline uint8_t timer0_hardware_get_counter()
+  49:kertimer.c    **** {
+ 291               	.LM9:
+ 292               	/* prologue: frame size=0 */
+ 293               	/* prologue end (size=0) */
+  50:kertimer.c    **** 	return TCNT0;
+ 295               	.LM10:
+ 296 0032 82B7      		in r24,82-0x20
+  51:kertimer.c    **** }
+ 298               	.LM11:
+ 299 0034 9927      		clr r25
+ 300               	/* epilogue: frame size=0 */
+ 301 0036 0895      		ret
+ 302               	/* epilogue end (size=1) */
+ 303               	/* function timer0_hardware_get_counter size 3 (2) */
+ 305               	.Lscope2:
+ 307               	.global	kertimer_init
+ 309               	kertimer_init:
+  52:kertimer.c    **** 
+  53:kertimer.c    **** //----------------------------------------------------------------
+  54:kertimer.c    **** //kertimer setup is added by zhouqiang in 2005.12.02,timer0 is used
+  55:kertimer.c    **** //----------------------------------------------------------------
+  56:kertimer.c    **** 
+  57:kertimer.c    **** void kertimer_init(void)
+  58:kertimer.c    **** {
+ 311               	.LM12:
+ 312               	/* prologue: frame size=0 */
+ 313 0038 1F93      		push r17
+ 314               	/* prologue end (size=1) */
+  59:kertimer.c    **** 	 mState=0;
+ 316               	.LM13:
+ 317 003a 1092 0000 		sts mState,__zero_reg__
+ 318 003e 1092 0000 		sts (mState)+1,__zero_reg__
+ 319 0042 1092 0000 		sts (mState)+2,__zero_reg__
+ 320 0046 1092 0000 		sts (mState)+3,__zero_reg__
+  60:kertimer.c    ****         setIntervalFlag = 0;
+ 322               	.LM14:
+ 323 004a 1092 0000 		sts setIntervalFlag,__zero_reg__
+  61:kertimer.c    ****         queue_head = queue_tail = -1;
+ 325               	.LM15:
+ 326 004e 8FEF      		ldi r24,lo8(-1)
+ 327 0050 8093 0000 		sts queue_tail,r24
+ 328 0054 8093 0000 		sts queue_head,r24
+  62:kertimer.c    ****         queue_size = 0;
+ 330               	.LM16:
+ 331 0058 1092 0000 		sts queue_size,__zero_reg__
+  63:kertimer.c    ****         mScale = 0x05;//prescale time0 with 128
+ 333               	.LM17:
+ 334 005c 85E0      		ldi r24,lo8(5)
+ 335 005e 8093 0000 		sts mScale,r24
+  64:kertimer.c    ****         mInterval = maxTimerInterval;
+ 337               	.LM18:
+ 338 0062 16EE      		ldi r17,lo8(-26)
+ 339 0064 1093 0000 		sts mInterval,r17
+ 340               	.LBB2:
+ 341               	.LBB3:
+ 342               	.LBB4:
+ 344               	.LM19:
+ 345 0068 0E94 0000 		call os_atomic_start
+ 347               	.LM20:
+ 348 006c 97B7      		in r25,87-0x20
+ 349 006e 9E7F      		andi r25,lo8(-2)
+ 350 0070 97BF      		out 87-0x20,r25
+ 352               	.LM21:
+ 353 0072 97B7      		in r25,87-0x20
+ 354 0074 9D7F      		andi r25,lo8(-3)
+ 355 0076 97BF      		out 87-0x20,r25
+ 357               	.LM22:
+ 358 0078 90B7      		in r25,80-0x20
+ 359 007a 9860      		ori r25,lo8(8)
+ 360 007c 90BF      		out 80-0x20,r25
+ 362               	.LM23:
+ 363 007e 9DE0      		ldi r25,lo8(13)
+ 364 0080 93BF      		out 83-0x20,r25
+ 366               	.LM24:
+ 367 0082 12BE      		out 82-0x20,__zero_reg__
+ 369               	.LM25:
+ 370 0084 11BF      		out 81-0x20,r17
+ 372               	.LM26:
+ 373 0086 97B7      		in r25,87-0x20
+ 374 0088 9260      		ori r25,lo8(2)
+ 375 008a 97BF      		out 87-0x20,r25
+ 377               	.LM27:
+ 378 008c 0E94 0000 		call os_atomic_end
+ 379               	.LBE4:
+ 380               	.LBE3:
+ 381               	.LBE2:
+ 382               	/* epilogue: frame size=0 */
+ 383 0090 1F91      		pop r17
+ 384 0092 0895      		ret
+ 385               	/* epilogue end (size=2) */
+ 386               	/* function kertimer_init size 46 (43) */
+ 391               	.Lscope3:
+ 397               	.global	kertimer_start
+ 399               	kertimer_start:
+  65:kertimer.c    **** 	 timer0_hardware_init(mInterval,mScale);
+  66:kertimer.c    **** 
+  67:kertimer.c    **** }
+  68:kertimer.c    **** 
+  69:kertimer.c    **** uint8_t  kertimer_start (uint8_t  id,uint8_t type, uint32_t  interval,void (*fun)(void)) 
+  70:kertimer.c    **** {
+ 401               	.LM28:
+ 402               	/* prologue: frame size=0 */
+ 403 0094 AF92      		push r10
+ 404 0096 BF92      		push r11
+ 405 0098 CF92      		push r12
+ 406 009a DF92      		push r13
+ 407 009c EF92      		push r14
+ 408 009e FF92      		push r15
+ 409 00a0 0F93      		push r16
+ 410 00a2 1F93      		push r17
+ 411 00a4 CF93      		push r28
+ 412               	/* prologue end (size=9) */
+ 413 00a6 5901      		movw r10,r18
+ 414 00a8 6A01      		movw r12,r20
+ 415 00aa 9801      		movw r18,r16
+  71:kertimer.c    **** 	 uint8_t diff;
+  72:kertimer.c    ****         if (id >= KER_TIMERS) return FAIL;
+ 417               	.LM29:
+ 418 00ac 8330      		cpi r24,lo8(3)
+ 419 00ae 08F0      		brlo .+2
+ 420 00b0 58C0      		rjmp .L11
+  73:kertimer.c    ****         if (type>1) return FAIL;
+ 422               	.LM30:
+ 423 00b2 6230      		cpi r22,lo8(2)
+ 424 00b4 08F0      		brlo .+2
+ 425 00b6 55C0      		rjmp .L11
+  74:kertimer.c    ****         mTimerList[id].ticks = interval ;
+ 427               	.LM31:
+ 428 00b8 E82E      		mov r14,r24
+ 429 00ba FF24      		clr r15
+ 430 00bc 8BE0      		ldi r24,lo8(11)
+ 431 00be 90E0      		ldi r25,hi8(11)
+ 432 00c0 E89E      		mul r14,r24
+ 433 00c2 8001      		movw r16,r0
+ 434 00c4 E99E      		mul r14,r25
+ 435 00c6 100D      		add r17,r0
+ 436 00c8 F89E      		mul r15,r24
+ 437 00ca 100D      		add r17,r0
+ 438 00cc 1124      		clr r1
+ 439 00ce 0050      		subi r16,lo8(-(mTimerList))
+ 440 00d0 1040      		sbci r17,hi8(-(mTimerList))
+ 441 00d2 F801      		movw r30,r16
+ 442 00d4 A182      		std Z+1,r10
+ 443 00d6 B282      		std Z+2,r11
+ 444 00d8 C382      		std Z+3,r12
+ 445 00da D482      		std Z+4,r13
+  75:kertimer.c    ****         mTimerList[id].type = type;
+ 447               	.LM32:
+ 448 00dc 6083      		st Z,r22
+  76:kertimer.c    **** 	 mTimerList[id].tp=fun;
+ 450               	.LM33:
+ 451 00de 2187      		std Z+9,r18
+ 452 00e0 3287      		std Z+10,r19
+ 453               	.LBB5:
+  77:kertimer.c    **** 	
+  78:kertimer.c    ****         { os_atomic_t _nesc_atomic = os_atomic_start();
+ 455               	.LM34:
+ 456 00e2 0E94 0000 		call os_atomic_start
+ 457 00e6 C82F      		mov r28,r24
+ 458               	.LBB6:
+ 459               	.LBB7:
+ 461               	.LM35:
+ 462 00e8 82B7      		in r24,82-0x20
+ 463               	.LBE7:
+ 464               	.LBE6:
+  79:kertimer.c    **** 	     		{
+  80:kertimer.c    **** 			            diff = timer0_hardware_get_counter();
+  81:kertimer.c    **** 			            interval += diff;
+ 466               	.LM36:
+ 467 00ea A80E      		add r10,r24
+ 468 00ec B11C      		adc r11,__zero_reg__
+ 469 00ee C11C      		adc r12,__zero_reg__
+ 470 00f0 D11C      		adc r13,__zero_reg__
+  82:kertimer.c    **** 			            mTimerList[id].ticksLeft = interval;
+ 472               	.LM37:
+ 473 00f2 F801      		movw r30,r16
+ 474 00f4 A582      		std Z+5,r10
+ 475 00f6 B682      		std Z+6,r11
+ 476 00f8 C782      		std Z+7,r12
+ 477 00fa D086      		std Z+8,r13
+  83:kertimer.c    **** 			            mState|=(0x1L<<id);
+ 479               	.LM38:
+ 480 00fc 21E0      		ldi r18,lo8(1)
+ 481 00fe 30E0      		ldi r19,hi8(1)
+ 482 0100 40E0      		ldi r20,hlo8(1)
+ 483 0102 50E0      		ldi r21,hhi8(1)
+ 484 0104 04C0      		rjmp 2f
+ 485 0106 220F      	1:	lsl r18
+ 486 0108 331F      		rol r19
+ 487 010a 441F      		rol r20
+ 488 010c 551F      		rol r21
+ 489 010e EA94      	2:	dec r14
+ 490 0110 D2F7      		brpl 1b
+ 491 0112 8091 0000 		lds r24,mState
+ 492 0116 9091 0000 		lds r25,(mState)+1
+ 493 011a A091 0000 		lds r26,(mState)+2
+ 494 011e B091 0000 		lds r27,(mState)+3
+ 495 0122 822B      		or r24,r18
+ 496 0124 932B      		or r25,r19
+ 497 0126 A42B      		or r26,r20
+ 498 0128 B52B      		or r27,r21
+ 499 012a 8093 0000 		sts mState,r24
+ 500 012e 9093 0000 		sts (mState)+1,r25
+ 501 0132 A093 0000 		sts (mState)+2,r26
+ 502 0136 B093 0000 		sts (mState)+3,r27
+  84:kertimer.c    **** 			            if (interval < mInterval)
+ 504               	.LM39:
+ 505 013a 8091 0000 		lds r24,mInterval
+ 506 013e 9927      		clr r25
+ 507 0140 AA27      		clr r26
+ 508 0142 BB27      		clr r27
+ 509 0144 A816      		cp r10,r24
+ 510 0146 B906      		cpc r11,r25
+ 511 0148 CA06      		cpc r12,r26
+ 512 014a DB06      		cpc r13,r27
+ 513 014c 38F4      		brsh .L15
+  85:kertimer.c    **** 					{
+  86:kertimer.c    **** 			                mInterval=interval;
+ 515               	.LM40:
+ 516 014e A092 0000 		sts mInterval,r10
+  87:kertimer.c    **** 			                timer0_setInterval(mInterval);
+ 518               	.LM41:
+ 519 0152 8A2D      		mov r24,r10
+ 520 0154 0E94 0000 		call timer0_setInterval
+  88:kertimer.c    **** 			                setIntervalFlag = 0;
+ 522               	.LM42:
+ 523 0158 1092 0000 		sts setIntervalFlag,__zero_reg__
+ 524               	.L15:
+  89:kertimer.c    **** 			                
+  90:kertimer.c    **** 			              }
+  91:kertimer.c    **** 			} 
+  92:kertimer.c    **** 	os_atomic_end(_nesc_atomic); }
+ 526               	.LM43:
+ 527 015c 8C2F      		mov r24,r28
+ 528 015e 0E94 0000 		call os_atomic_end
+ 529               	.L11:
+ 530               	.LBE5:
+  93:kertimer.c    ****        return SUCCESS;
+  94:kertimer.c    **** }
+ 532               	.LM44:
+ 533 0162 80E0      		ldi r24,lo8(0)
+ 534 0164 90E0      		ldi r25,hi8(0)
+ 535               	/* epilogue: frame size=0 */
+ 536 0166 CF91      		pop r28
+ 537 0168 1F91      		pop r17
+ 538 016a 0F91      		pop r16
+ 539 016c FF90      		pop r15
+ 540 016e EF90      		pop r14
+ 541 0170 DF90      		pop r13
+ 542 0172 CF90      		pop r12
+ 543 0174 BF90      		pop r11
+ 544 0176 AF90      		pop r10
+ 545 0178 0895      		ret
+ 546               	/* epilogue end (size=10) */
+ 547               	/* function kertimer_start size 116 (97) */
+ 552               	.Lscope4:
+ 555               	.global	kertimer_stop
+ 557               	kertimer_stop:
+  95:kertimer.c    **** 
+  96:kertimer.c    **** void kertimer_stop(uint8_t id)
+  97:kertimer.c    **** {
+ 559               	.LM45:
+ 560               	/* prologue: frame size=0 */
+ 561 017a EF92      		push r14
+ 562 017c FF92      		push r15
+ 563 017e 0F93      		push r16
+ 564 0180 1F93      		push r17
+ 565               	/* prologue end (size=4) */
+  98:kertimer.c    **** 	if (id>=KER_TIMERS) return FAIL;
+ 567               	.LM46:
+ 568 0182 8330      		cpi r24,lo8(3)
+ 569 0184 E8F5      		brsh .L16
+  99:kertimer.c    ****        if (mState&(0x1L<<id)) 
+ 571               	.LM47:
+ 572 0186 91E0      		ldi r25,lo8(1)
+ 573 0188 E92E      		mov r14,r25
+ 574 018a F12C      		mov r15,__zero_reg__
+ 575 018c 012D      		mov r16,__zero_reg__
+ 576 018e 112D      		mov r17,__zero_reg__
+ 577 0190 04C0      		rjmp 2f
+ 578 0192 EE0C      	1:	lsl r14
+ 579 0194 FF1C      		rol r15
+ 580 0196 001F      		rol r16
+ 581 0198 111F      		rol r17
+ 582 019a 8A95      	2:	dec r24
+ 583 019c D2F7      		brpl 1b
+ 584 019e 8091 0000 		lds r24,mState
+ 585 01a2 9091 0000 		lds r25,(mState)+1
+ 586 01a6 A091 0000 		lds r26,(mState)+2
+ 587 01aa B091 0000 		lds r27,(mState)+3
+ 588 01ae 8E21      		and r24,r14
+ 589 01b0 9F21      		and r25,r15
+ 590 01b2 A023      		and r26,r16
+ 591 01b4 B123      		and r27,r17
+ 592 01b6 0097      		sbiw r24,0
+ 593 01b8 A105      		cpc r26,__zero_reg__
+ 594 01ba B105      		cpc r27,__zero_reg__
+ 595 01bc 09F1      		breq .L16
+ 596               	.LBB8:
+ 100:kertimer.c    **** 	   	{ // if the timer is running 
+ 101:kertimer.c    **** 			    { os_atomic_t _nesc_atomic = os_atomic_start();
+ 598               	.LM48:
+ 599 01be 0E94 0000 		call os_atomic_start
+ 102:kertimer.c    **** 				{mState &= ~(0x1L<<id);
+ 601               	.LM49:
+ 602 01c2 E094      		com r14
+ 603 01c4 F094      		com r15
+ 604 01c6 0095      		com r16
+ 605 01c8 1095      		com r17
+ 606 01ca 8091 0000 		lds r24,mState
+ 607 01ce 9091 0000 		lds r25,(mState)+1
+ 608 01d2 A091 0000 		lds r26,(mState)+2
+ 609 01d6 B091 0000 		lds r27,(mState)+3
+ 610 01da 8E21      		and r24,r14
+ 611 01dc 9F21      		and r25,r15
+ 612 01de A023      		and r26,r16
+ 613 01e0 B123      		and r27,r17
+ 614 01e2 8093 0000 		sts mState,r24
+ 615 01e6 9093 0000 		sts (mState)+1,r25
+ 616 01ea A093 0000 		sts (mState)+2,r26
+ 617 01ee B093 0000 		sts (mState)+3,r27
+ 103:kertimer.c    **** 				if (!mState)
+ 619               	.LM50:
+ 620 01f2 0097      		sbiw r24,0
+ 621 01f4 A105      		cpc r26,__zero_reg__
+ 622 01f6 B105      		cpc r27,__zero_reg__
+ 623 01f8 19F4      		brne .L16
+ 104:kertimer.c    **** 					{
+ 105:kertimer.c    **** 			        		setIntervalFlag = 1;
+ 625               	.LM51:
+ 626 01fa 81E0      		ldi r24,lo8(1)
+ 627 01fc 8093 0000 		sts setIntervalFlag,r24
+ 628               	.L16:
+ 629               	.LBE8:
+ 630               	/* epilogue: frame size=0 */
+ 631 0200 1F91      		pop r17
+ 632 0202 0F91      		pop r16
+ 633 0204 FF90      		pop r15
+ 634 0206 EF90      		pop r14
+ 635 0208 0895      		ret
+ 636               	/* epilogue end (size=5) */
+ 637               	/* function kertimer_stop size 73 (64) */
+ 639               	.Lscope5:
+ 642               	KERTimer_fired:
+ 106:kertimer.c    **** 			    		} 	
+ 107:kertimer.c    **** 		              return SUCCESS;}
+ 108:kertimer.c    **** 			       os_atomic_end(_nesc_atomic); }
+ 109:kertimer.c    ****         	}
+ 110:kertimer.c    ****        
+ 111:kertimer.c    **** 	 return FAIL; //timer not running
+ 112:kertimer.c    **** }
+ 113:kertimer.c    **** 
+ 114:kertimer.c    **** static void adjustInterval(void) {
+ 115:kertimer.c    ****         uint8_t i, val = maxTimerInterval;
+ 116:kertimer.c    ****         if ( mState) 
+ 117:kertimer.c    **** 			{
+ 118:kertimer.c    **** 			            for (i=0;i<KER_TIMERS;i++)
+ 119:kertimer.c    **** 					{
+ 120:kertimer.c    **** 			                if ((mState&(0x1L<<i)) && (mTimerList[i].ticksLeft <val )) 
+ 121:kertimer.c    **** 								{
+ 122:kertimer.c    **** 			                   				 val = mTimerList[i].ticksLeft;
+ 123:kertimer.c    **** 								}
+ 124:kertimer.c    **** 			              }
+ 125:kertimer.c    **** 						
+ 126:kertimer.c    **** 				        { os_atomic_t _nesc_atomic = os_atomic_start();
+ 127:kertimer.c    **** 						{
+ 128:kertimer.c    **** 				                mInterval =  val;
+ 129:kertimer.c    **** 				                timer0_setInterval(mInterval);
+ 130:kertimer.c    **** 				                setIntervalFlag = 0;
+ 131:kertimer.c    **** 				               }
+ 132:kertimer.c    **** 					    os_atomic_end(_nesc_atomic);
+ 133:kertimer.c    **** 					 }
+ 134:kertimer.c    **** 
+ 135:kertimer.c    **** 		        } 
+ 136:kertimer.c    **** 	else 
+ 137:kertimer.c    **** 		        {
+ 138:kertimer.c    **** 					{ os_atomic_t _nesc_atomic = os_atomic_start();
+ 139:kertimer.c    **** 						{
+ 140:kertimer.c    **** 				              mInterval=maxTimerInterval;
+ 141:kertimer.c    **** 				              timer0_setInterval(mInterval);
+ 142:kertimer.c    **** 				              setIntervalFlag = 0;
+ 143:kertimer.c    **** 			             }
+ 144:kertimer.c    **** 				      os_atomic_end(_nesc_atomic); }
+ 145:kertimer.c    **** 
+ 146:kertimer.c    **** 		        }
+ 147:kertimer.c    **** 			
+ 148:kertimer.c    **** 		    }
+ 149:kertimer.c    **** 
+ 150:kertimer.c    **** static void   enqueue(uint8_t value) 
+ 151:kertimer.c    **** {
+ 152:kertimer.c    ****       if (queue_tail == KER_TIMERS - 1)
+ 153:kertimer.c    **** 	  	queue_tail = -1;
+ 154:kertimer.c    ****       queue_tail++;
+ 155:kertimer.c    ****       queue_size++;
+ 156:kertimer.c    ****       queue[(uint8_t)queue_tail] = value;
+ 157:kertimer.c    **** }
+ 158:kertimer.c    **** static uint8_t dequeue() 
+ 159:kertimer.c    **** {
+ 160:kertimer.c    ****       if (queue_size == 0)
+ 161:kertimer.c    ****             return KER_TIMERS;
+ 162:kertimer.c    ****       if (queue_head == KER_TIMERS - 1)
+ 163:kertimer.c    ****             queue_head = -1;
+ 164:kertimer.c    ****       queue_head++;
+ 165:kertimer.c    ****       queue_size--;
+ 166:kertimer.c    ****       return queue[(uint8_t)queue_head];
+ 167:kertimer.c    ****  }
+ 168:kertimer.c    **** static void KERTimer_fired(void)
+ 169:kertimer.c    **** {
+ 644               	.LM52:
+ 645               	/* prologue: frame size=0 */
+ 646               	/* prologue end (size=0) */
+ 647               	.LBB9:
+ 648               	.LBB10:
+ 650               	.LM53:
+ 651 020a 9091 0000 		lds r25,queue_size
+ 652 020e 9923      		tst r25
+ 653 0210 19F4      		brne .L21
+ 655               	.LM54:
+ 656 0212 23E0      		ldi r18,lo8(3)
+ 657 0214 30E0      		ldi r19,hi8(3)
+ 658 0216 16C0      		rjmp .L22
+ 659               	.L21:
+ 661               	.LM55:
+ 662 0218 8091 0000 		lds r24,queue_head
+ 663 021c 8230      		cpi r24,lo8(2)
+ 664 021e 19F4      		brne .L23
+ 666               	.LM56:
+ 667 0220 8FEF      		ldi r24,lo8(-1)
+ 668 0222 8093 0000 		sts queue_head,r24
+ 669               	.L23:
+ 671               	.LM57:
+ 672 0226 8091 0000 		lds r24,queue_head
+ 673 022a 8F5F      		subi r24,lo8(-(1))
+ 674 022c 8093 0000 		sts queue_head,r24
+ 676               	.LM58:
+ 677 0230 9150      		subi r25,lo8(-(-1))
+ 678 0232 9093 0000 		sts queue_size,r25
+ 679 0236 E82F      		mov r30,r24
+ 680 0238 FF27      		clr r31
+ 681 023a E050      		subi r30,lo8(-(queue))
+ 682 023c F040      		sbci r31,hi8(-(queue))
+ 683 023e 8081      		ld r24,Z
+ 684 0240 282F      		mov r18,r24
+ 685 0242 3327      		clr r19
+ 686               	.L22:
+ 687               	.LBE10:
+ 688               	.LBE9:
+ 170:kertimer.c    ****       void (*func)(void );
+ 171:kertimer.c    ****       uint8_t itimer = dequeue();
+ 172:kertimer.c    ****       //printf("\n------1----\n");
+ 173:kertimer.c    ****       if (itimer < KER_TIMERS)
+ 690               	.LM59:
+ 691 0244 2330      		cpi r18,lo8(3)
+ 692 0246 80F4      		brsh .L20
+ 174:kertimer.c    **** 	  	{ 
+ 175:kertimer.c    **** 	  	       //printf("\n------2-----\n");
+ 176:kertimer.c    **** 	  		func=mTimerList[itimer].tp;
+ 694               	.LM60:
+ 695 0248 3327      		clr r19
+ 696 024a 8BE0      		ldi r24,lo8(11)
+ 697 024c 90E0      		ldi r25,hi8(11)
+ 698 024e 289F      		mul r18,r24
+ 699 0250 F001      		movw r30,r0
+ 700 0252 299F      		mul r18,r25
+ 701 0254 F00D      		add r31,r0
+ 702 0256 389F      		mul r19,r24
+ 703 0258 F00D      		add r31,r0
+ 704 025a 1124      		clr r1
+ 705 025c E050      		subi r30,lo8(-(mTimerList))
+ 706 025e F040      		sbci r31,hi8(-(mTimerList))
+ 707 0260 0184      		ldd __tmp_reg__,Z+9
+ 708 0262 F285      		ldd r31,Z+10
+ 709 0264 E02D      		mov r30,__tmp_reg__
+ 177:kertimer.c    ****                  	func();
+ 711               	.LM61:
+ 712 0266 0995      		icall
+ 713               	.L20:
+ 714 0268 0895      		ret
+ 715               	/* epilogue: frame size=0 */
+ 716 026a 0895      		ret
+ 717               	/* epilogue end (size=1) */
+ 718               	/* function KERTimer_fired size 49 (48) */
+ 724               	.Lscope6:
+ 726               	.global	KERTimer_Fire
+ 728               	KERTimer_Fire:
+ 178:kertimer.c    ****       	       }
+ 179:kertimer.c    ****      
+ 180:kertimer.c    **** }
+ 181:kertimer.c    **** 
+ 182:kertimer.c    **** void KERTimer_Fire(void) 
+ 183:kertimer.c    **** {
+ 730               	.LM62:
+ 731               	/* prologue: frame size=0 */
+ 732 026c 4F92      		push r4
+ 733 026e 5F92      		push r5
+ 734 0270 6F92      		push r6
+ 735 0272 7F92      		push r7
+ 736 0274 9F92      		push r9
+ 737 0276 AF92      		push r10
+ 738 0278 BF92      		push r11
+ 739 027a CF92      		push r12
+ 740 027c DF92      		push r13
+ 741 027e EF92      		push r14
+ 742 0280 FF92      		push r15
+ 743 0282 0F93      		push r16
+ 744 0284 1F93      		push r17
+ 745 0286 CF93      		push r28
+ 746 0288 DF93      		push r29
+ 747               	/* prologue end (size=15) */
+ 184:kertimer.c    ****         uint8_t i; 
+ 185:kertimer.c    **** 	 setIntervalFlag = 1;
+ 749               	.LM63:
+ 750 028a 81E0      		ldi r24,lo8(1)
+ 751 028c 8093 0000 		sts setIntervalFlag,r24
+ 186:kertimer.c    ****         if (mState) 
+ 753               	.LM64:
+ 754 0290 8091 0000 		lds r24,mState
+ 755 0294 9091 0000 		lds r25,(mState)+1
+ 756 0298 A091 0000 		lds r26,(mState)+2
+ 757 029c B091 0000 		lds r27,(mState)+3
+ 758 02a0 0097      		sbiw r24,0
+ 759 02a2 A105      		cpc r26,__zero_reg__
+ 760 02a4 B105      		cpc r27,__zero_reg__
+ 761 02a6 09F4      		brne .+2
+ 762 02a8 89C0      		rjmp .L26
+ 187:kertimer.c    **** 	{
+ 188:kertimer.c    ****             for (i=0;i<KER_TIMERS;i++) 
+ 764               	.LM65:
+ 765 02aa 9924      		clr r9
+ 766 02ac 60E0      		ldi r22,lo8(mTimerList)
+ 767 02ae C62E      		mov r12,r22
+ 768 02b0 60E0      		ldi r22,hi8(mTimerList)
+ 769 02b2 D62E      		mov r13,r22
+ 770 02b4 AA24      		clr r10
+ 771 02b6 BB24      		clr r11
+ 772               	.L36:
+ 189:kertimer.c    **** 	     {
+ 190:kertimer.c    ****                 if (mState&(0x1L<<i)) 
+ 774               	.LM66:
+ 775 02b8 51E0      		ldi r21,lo8(1)
+ 776 02ba E52E      		mov r14,r21
+ 777 02bc F12C      		mov r15,__zero_reg__
+ 778 02be 012D      		mov r16,__zero_reg__
+ 779 02c0 112D      		mov r17,__zero_reg__
+ 780 02c2 0A2C      		mov r0,r10
+ 781 02c4 04C0      		rjmp 2f
+ 782 02c6 EE0C      	1:	lsl r14
+ 783 02c8 FF1C      		rol r15
+ 784 02ca 001F      		rol r16
+ 785 02cc 111F      		rol r17
+ 786 02ce 0A94      	2:	dec r0
+ 787 02d0 D2F7      		brpl 1b
+ 788 02d2 4090 0000 		lds r4,mState
+ 789 02d6 5090 0000 		lds r5,(mState)+1
+ 790 02da 6090 0000 		lds r6,(mState)+2
+ 791 02de 7090 0000 		lds r7,(mState)+3
+ 792 02e2 D301      		movw r26,r6
+ 793 02e4 C201      		movw r24,r4
+ 794 02e6 8E21      		and r24,r14
+ 795 02e8 9F21      		and r25,r15
+ 796 02ea A023      		and r26,r16
+ 797 02ec B123      		and r27,r17
+ 798 02ee 0097      		sbiw r24,0
+ 799 02f0 A105      		cpc r26,__zero_reg__
+ 800 02f2 B105      		cpc r27,__zero_reg__
+ 801 02f4 09F4      		brne .+2
+ 802 02f6 56C0      		rjmp .L29
+ 191:kertimer.c    **** 		  {
+ 192:kertimer.c    ****                     mTimerList[i].ticksLeft -= (mInterval+1) ; 
+ 804               	.LM67:
+ 805 02f8 8091 0000 		lds r24,mInterval
+ 806 02fc 9927      		clr r25
+ 807 02fe 0196      		adiw r24,1
+ 808 0300 AA27      		clr r26
+ 809 0302 97FD      		sbrc r25,7
+ 810 0304 A095      		com r26
+ 811 0306 BA2F      		mov r27,r26
+ 812 0308 F601      		movw r30,r12
+ 813 030a 2581      		ldd r18,Z+5
+ 814 030c 3681      		ldd r19,Z+6
+ 815 030e 4781      		ldd r20,Z+7
+ 816 0310 5085      		ldd r21,Z+8
+ 817 0312 281B      		sub r18,r24
+ 818 0314 390B      		sbc r19,r25
+ 819 0316 4A0B      		sbc r20,r26
+ 820 0318 5B0B      		sbc r21,r27
+ 821 031a 2583      		std Z+5,r18
+ 822 031c 3683      		std Z+6,r19
+ 823 031e 4783      		std Z+7,r20
+ 824 0320 5087      		std Z+8,r21
+ 193:kertimer.c    ****                     if (mTimerList[i].ticksLeft<=2) 
+ 826               	.LM68:
+ 827 0322 2330      		cpi r18,lo8(3)
+ 828 0324 3105      		cpc r19,__zero_reg__
+ 829 0326 4105      		cpc r20,__zero_reg__
+ 830 0328 5105      		cpc r21,__zero_reg__
+ 831 032a E4F5      		brge .L29
+ 194:kertimer.c    **** 					{
+ 195:kertimer.c    ****                        			if (mTimerList[i].type==KERTIMER_REPEAT) 
+ 833               	.LM69:
+ 834 032c 8081      		ld r24,Z
+ 835 032e 8823      		tst r24
+ 836 0330 69F4      		brne .L32
+ 196:kertimer.c    **** 									{
+ 197:kertimer.c    ****                             						mTimerList[i].ticksLeft += mTimerList[i].ticks;
+ 838               	.LM70:
+ 839 0332 8181      		ldd r24,Z+1
+ 840 0334 9281      		ldd r25,Z+2
+ 841 0336 A381      		ldd r26,Z+3
+ 842 0338 B481      		ldd r27,Z+4
+ 843 033a 280F      		add r18,r24
+ 844 033c 391F      		adc r19,r25
+ 845 033e 4A1F      		adc r20,r26
+ 846 0340 5B1F      		adc r21,r27
+ 847 0342 2583      		std Z+5,r18
+ 848 0344 3683      		std Z+6,r19
+ 849 0346 4783      		std Z+7,r20
+ 850 0348 5087      		std Z+8,r21
+ 851 034a 12C0      		rjmp .L33
+ 852               	.L32:
+ 198:kertimer.c    ****                        						 } 
+ 199:kertimer.c    **** 						else 
+ 200:kertimer.c    **** 									{// one shot timer 
+ 201:kertimer.c    ****                            					 		mState &=~(0x1L<<i); 
+ 854               	.LM71:
+ 855 034c D801      		movw r26,r16
+ 856 034e C701      		movw r24,r14
+ 857 0350 8095      		com r24
+ 858 0352 9095      		com r25
+ 859 0354 A095      		com r26
+ 860 0356 B095      		com r27
+ 861 0358 4822      		and r4,r24
+ 862 035a 5922      		and r5,r25
+ 863 035c 6A22      		and r6,r26
+ 864 035e 7B22      		and r7,r27
+ 865 0360 4092 0000 		sts mState,r4
+ 866 0364 5092 0000 		sts (mState)+1,r5
+ 867 0368 6092 0000 		sts (mState)+2,r6
+ 868 036c 7092 0000 		sts (mState)+3,r7
+ 869               	.L33:
+ 870               	.LBB11:
+ 871               	.LBB12:
+ 873               	.LM72:
+ 874 0370 8091 0000 		lds r24,queue_tail
+ 875 0374 8230      		cpi r24,lo8(2)
+ 876 0376 19F4      		brne .L34
+ 878               	.LM73:
+ 879 0378 8FEF      		ldi r24,lo8(-1)
+ 880 037a 8093 0000 		sts queue_tail,r24
+ 881               	.L34:
+ 883               	.LM74:
+ 884 037e 9091 0000 		lds r25,queue_tail
+ 885 0382 9F5F      		subi r25,lo8(-(1))
+ 886 0384 9093 0000 		sts queue_tail,r25
+ 888               	.LM75:
+ 889 0388 8091 0000 		lds r24,queue_size
+ 890 038c 8F5F      		subi r24,lo8(-(1))
+ 891 038e 8093 0000 		sts queue_size,r24
+ 893               	.LM76:
+ 894 0392 E92F      		mov r30,r25
+ 895 0394 FF27      		clr r31
+ 896 0396 E050      		subi r30,lo8(-(queue))
+ 897 0398 F040      		sbci r31,hi8(-(queue))
+ 898 039a 9082      		st Z,r9
+ 899               	.LBE12:
+ 900               	.LBE11:
+ 202:kertimer.c    ****                         						}
+ 203:kertimer.c    ****                        			 enqueue(i);
+ 204:kertimer.c    **** 			  			 OS_post (&KERTimer_fired);
+ 902               	.LM77:
+ 903 039c 80E0      		ldi r24,lo8(pm(KERTimer_fired))
+ 904 039e 90E0      		ldi r25,hi8(pm(KERTimer_fired))
+ 905 03a0 0E94 0000 		call OS_post
+ 906               	.L29:
+ 908               	.LM78:
+ 909 03a4 9394      		inc r9
+ 910 03a6 0894      		sec
+ 911 03a8 A11C      		adc r10,__zero_reg__
+ 912 03aa B11C      		adc r11,__zero_reg__
+ 913 03ac 8BE0      		ldi r24,lo8(11)
+ 914 03ae 90E0      		ldi r25,hi8(11)
+ 915 03b0 C80E      		add r12,r24
+ 916 03b2 D91E      		adc r13,r25
+ 917 03b4 92E0      		ldi r25,lo8(2)
+ 918 03b6 9915      		cp r25,r9
+ 919 03b8 08F0      		brlo .+2
+ 920 03ba 7ECF      		rjmp .L36
+ 921               	.L26:
+ 922               	.LBB13:
+ 923               	.LBB14:
+ 925               	.LM79:
+ 926 03bc 46EE      		ldi r20,lo8(-26)
+ 927 03be E42E      		mov r14,r20
+ 929               	.LM80:
+ 930 03c0 4090 0000 		lds r4,mState
+ 931 03c4 5090 0000 		lds r5,(mState)+1
+ 932 03c8 6090 0000 		lds r6,(mState)+2
+ 933 03cc 7090 0000 		lds r7,(mState)+3
+ 934 03d0 4114      		cp r4,__zero_reg__
+ 935 03d2 5104      		cpc r5,__zero_reg__
+ 936 03d4 6104      		cpc r6,__zero_reg__
+ 937 03d6 7104      		cpc r7,__zero_reg__
+ 938 03d8 99F1      		breq .L37
+ 939 03da 31E0      		ldi r19,lo8(1)
+ 940 03dc A32E      		mov r10,r19
+ 941 03de B12C      		mov r11,__zero_reg__
+ 942 03e0 C12C      		mov r12,__zero_reg__
+ 943 03e2 D12C      		mov r13,__zero_reg__
+ 944 03e4 60E0      		ldi r22,lo8(mTimerList)
+ 945 03e6 70E0      		ldi r23,hi8(mTimerList)
+ 946 03e8 00E0      		ldi r16,lo8(0)
+ 947 03ea 10E0      		ldi r17,hi8(0)
+ 948 03ec 22E0      		ldi r18,lo8(2)
+ 949 03ee F22E      		mov r15,r18
+ 950               	.L42:
+ 952               	.LM81:
+ 953 03f0 D601      		movw r26,r12
+ 954 03f2 C501      		movw r24,r10
+ 955 03f4 002E      		mov r0,r16
+ 956 03f6 04C0      		rjmp 2f
+ 957 03f8 880F      	1:	lsl r24
+ 958 03fa 991F      		rol r25
+ 959 03fc AA1F      		rol r26
+ 960 03fe BB1F      		rol r27
+ 961 0400 0A94      	2:	dec r0
+ 962 0402 D2F7      		brpl 1b
+ 963 0404 8421      		and r24,r4
+ 964 0406 9521      		and r25,r5
+ 965 0408 A621      		and r26,r6
+ 966 040a B721      		and r27,r7
+ 967 040c 0097      		sbiw r24,0
+ 968 040e A105      		cpc r26,__zero_reg__
+ 969 0410 B105      		cpc r27,__zero_reg__
+ 970 0412 79F0      		breq .L40
+ 971 0414 2E2D      		mov r18,r14
+ 972 0416 3327      		clr r19
+ 973 0418 4427      		clr r20
+ 974 041a 5527      		clr r21
+ 975 041c FB01      		movw r30,r22
+ 976 041e 8581      		ldd r24,Z+5
+ 977 0420 9681      		ldd r25,Z+6
+ 978 0422 A781      		ldd r26,Z+7
+ 979 0424 B085      		ldd r27,Z+8
+ 980 0426 8217      		cp r24,r18
+ 981 0428 9307      		cpc r25,r19
+ 982 042a A407      		cpc r26,r20
+ 983 042c B507      		cpc r27,r21
+ 984 042e 0CF4      		brge .L40
+ 986               	.LM82:
+ 987 0430 E580      		ldd r14,Z+5
+ 988               	.L40:
+ 990               	.LM83:
+ 991 0432 FA94      		dec r15
+ 992 0434 0F5F      		subi r16,lo8(-(1))
+ 993 0436 1F4F      		sbci r17,hi8(-(1))
+ 994 0438 655F      		subi r22,lo8(-(11))
+ 995 043a 7F4F      		sbci r23,hi8(-(11))
+ 996 043c F7FE      		sbrs r15,7
+ 997 043e D8CF      		rjmp .L42
+ 998               	.L37:
+ 999               	.LBB15:
+ 1001               	.LM84:
+ 1002 0440 0E94 0000 		call os_atomic_start
+ 1003 0444 182F      		mov r17,r24
+ 1005               	.LM85:
+ 1006 0446 E092 0000 		sts mInterval,r14
+ 1008               	.LM86:
+ 1009 044a 8E2D      		mov r24,r14
+ 1010 044c 0E94 0000 		call timer0_setInterval
+ 1012               	.LM87:
+ 1013 0450 1092 0000 		sts setIntervalFlag,__zero_reg__
+ 1015               	.LM88:
+ 1016 0454 812F      		mov r24,r17
+ 1017 0456 0E94 0000 		call os_atomic_end
+ 1018               	.LBE15:
+ 1019               	.LBE14:
+ 1020               	.LBE13:
+ 1021               	/* epilogue: frame size=0 */
+ 1022 045a DF91      		pop r29
+ 1023 045c CF91      		pop r28
+ 1024 045e 1F91      		pop r17
+ 1025 0460 0F91      		pop r16
+ 1026 0462 FF90      		pop r15
+ 1027 0464 EF90      		pop r14
+ 1028 0466 DF90      		pop r13
+ 1029 0468 CF90      		pop r12
+ 1030 046a BF90      		pop r11
+ 1031 046c AF90      		pop r10
+ 1032 046e 9F90      		pop r9
+ 1033 0470 7F90      		pop r7
+ 1034 0472 6F90      		pop r6
+ 1035 0474 5F90      		pop r5
+ 1036 0476 4F90      		pop r4
+ 1037 0478 0895      		ret
+ 1038               	/* epilogue end (size=16) */
+ 1039               	/* function KERTimer_Fire size 263 (232) */
+ 1055               	.Lscope7:
+ 1056               		.comm OS_queue,16,1
+ 1057               		.comm OS_sched_full,1,1
+ 1058               		.comm OS_sched_free,1,1
+ 1059               		.comm currentTime,2,1
+ 1060               		.comm head_of_systimer_queue,2,1
+ 1061               		.comm timestamp_H,2,1
+ 1062               		.comm cc2420_bramspi,1,1
+ 1063               		.comm cc2420_rambuf,2,1
+ 1064               		.comm cc2420_ramlen,1,1
+ 1065               		.comm cc2420_ramaddr,2,1
+ 1066               		.comm cc2420fifo_bspi,1,1
+ 1067               		.comm cc2420fifo_txbuf,2,1
+ 1068               		.comm cc2420fifo_txlength,1,1
+ 1069               		.comm cc2420_rxbuf,4,1
+ 1070               		.comm cc2420_rxlength,1,1
+ 1071               		.comm cc2420_rxbuf_now,2,1
+ 1072               		.comm cc2420_rxlength_now,1,1
+ 1073               		.comm cc2420_rxbufuse,1,1
+ 1074               		.comm rfpackernum,1,1
+ 1075               		.comm cc2420_rxflag,1,1
+ 1076               		.comm cc2420_currentparameters,28,1
+ 1077               		.comm receive_timestamp,4,1
+ 1078               		.comm send_timestamp,4,1
+ 1079               		.comm cc2420_stateRadio,1,1
+ 1080               		.comm cc2420_LocalAddr,2,1
+ 1081               		.comm ieee_address,8,1
+ 1082               		.comm backoff_timer_Set,1,1
+ 1083               		.comm backoff_call,2,1
+ 1084               		.comm GTSDirectionMask,1,1
+ 1085               		.comm phy_channel_state,1,1
+ 1086               		.comm rxbuf_flag,1,1
+ 1087               		.comm ppib,3,1
+ 1088               		.comm SENSOR_DATA_VALUE,20,1
+ 1089               		.comm ADC_INTERRUPT_FLAG,1,1
+ 1090               		.comm mState,4,1
+ 1091               		.comm setIntervalFlag,1,1
+ 1092               		.comm mScale,1,1
+ 1093               		.comm mInterval,1,1
+ 1094               		.comm queue_head,1,1
+ 1095               		.comm queue_tail,1,1
+ 1096               		.comm queue_size,1,1
+ 1097               		.comm queue,3,1
+ 1098               		.comm mTimerList,33,1
+ 1142               		.text
+ 1144               	Letext:
+ 1145               	/* File "kertimer.c": code  575 = 0x023f ( 509), prologues  29, epilogues  37 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 kertimer.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:219    .text:00000000 timer0_setInterval
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:272    .text:0000002a timer0_getInterval
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:289    .text:00000032 timer0_hardware_get_counter
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:309    .text:00000038 kertimer_init
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_size
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:399    .text:00000094 kertimer_start
+                            *COM*:00000021 mTimerList
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:557    .text:0000017a kertimer_stop
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:642    .text:0000020a KERTimer_fired
+                            *COM*:00000003 queue
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:728    .text:0000026c KERTimer_Fire
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/ccIpbaaa.s:1144   .text:0000047a Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+os_atomic_start
+os_atomic_end
+OS_post

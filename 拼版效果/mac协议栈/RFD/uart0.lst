@@ -1,0 +1,156 @@
+   1               		.file	"uart0.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  87               	.global	usart_putchar
+  89               	usart_putchar:
+   1:uart0.c       **** #include "uart0.h"
+   2:uart0.c       **** 
+   3:uart0.c       **** int usart_putchar(char c)
+   4:uart0.c       **** {
+  91               	.LM1:
+  92               	/* prologue: frame size=0 */
+  93 0000 CF93      		push r28
+  94               	/* prologue end (size=1) */
+  95 0002 C82F      		mov r28,r24
+   5:uart0.c       ****        
+   6:uart0.c       **** 	if(c=='\n')
+  97               	.LM2:
+  98 0004 8A30      		cpi r24,lo8(10)
+  99 0006 19F4      		brne .L4
+   7:uart0.c       **** 		usart_putchar('\r');
+ 101               	.LM3:
+ 102 0008 8DE0      		ldi r24,lo8(13)
+ 103 000a 0E94 0000 		call usart_putchar
+ 104               	.L4:
+   8:uart0.c       **** 	loop_until_bit_is_set(UCSR0A,UDRE0);
+ 106               	.LM4:
+ 107 000e 5D9B      		sbis 43-0x20,5
+ 108 0010 FECF      		rjmp .L4
+   9:uart0.c       **** 	UDR0=c;
+ 110               	.LM5:
+ 111 0012 CCB9      		out 44-0x20,r28
+  10:uart0.c       **** 	//OS_uwait(16);*/
+  11:uart0.c       **** 	return 0;
+  12:uart0.c       **** }
+ 113               	.LM6:
+ 114 0014 80E0      		ldi r24,lo8(0)
+ 115 0016 90E0      		ldi r25,hi8(0)
+ 116               	/* epilogue: frame size=0 */
+ 117 0018 CF91      		pop r28
+ 118 001a 0895      		ret
+ 119               	/* epilogue end (size=2) */
+ 120               	/* function usart_putchar size 14 (11) */
+ 122               	.Lscope0:
+ 125               	.global	usart_putbyte
+ 127               	usart_putbyte:
+  13:uart0.c       **** //-----------------------------------------------------------
+  14:uart0.c       **** int usart_putbyte(uint8_t  c)
+  15:uart0.c       **** {
+ 129               	.LM7:
+ 130               	/* prologue: frame size=0 */
+ 131               	/* prologue end (size=0) */
+ 132               	.L8:
+  16:uart0.c       **** 	
+  17:uart0.c       **** 	loop_until_bit_is_set(UCSR0A,UDRE0);
+ 134               	.LM8:
+ 135 001c 5D9B      		sbis 43-0x20,5
+ 136 001e FECF      		rjmp .L8
+  18:uart0.c       **** 	UDR0=c;
+ 138               	.LM9:
+ 139 0020 8CB9      		out 44-0x20,r24
+  19:uart0.c       **** 	return 0;
+  20:uart0.c       **** }
+ 141               	.LM10:
+ 142 0022 80E0      		ldi r24,lo8(0)
+ 143 0024 90E0      		ldi r25,hi8(0)
+ 144               	/* epilogue: frame size=0 */
+ 145 0026 0895      		ret
+ 146               	/* epilogue end (size=1) */
+ 147               	/* function usart_putbyte size 6 (5) */
+ 149               	.Lscope1:
+ 151               	.global	usart_getchar
+ 153               	usart_getchar:
+  21:uart0.c       **** 
+  22:uart0.c       **** //-----------------------------------------------------------
+  23:uart0.c       **** int usart_getchar(void)
+  24:uart0.c       **** {
+ 155               	.LM11:
+ 156               	/* prologue: frame size=0 */
+ 157               	/* prologue end (size=0) */
+ 158               	.L12:
+  25:uart0.c       **** 	loop_until_bit_is_set(UCSR0A,RXC0);
+ 160               	.LM12:
+ 161 0028 5F9B      		sbis 43-0x20,7
+ 162 002a FECF      		rjmp .L12
+  26:uart0.c       **** 	return UDR0;
+ 164               	.LM13:
+ 165 002c 8CB1      		in r24,44-0x20
+  27:uart0.c       **** }
+ 167               	.LM14:
+ 168 002e 9927      		clr r25
+ 169               	/* epilogue: frame size=0 */
+ 170 0030 0895      		ret
+ 171               	/* epilogue end (size=1) */
+ 172               	/* function usart_getchar size 5 (4) */
+ 174               	.Lscope2:
+ 176               	.global	IoInit
+ 178               	IoInit:
+  28:uart0.c       **** 
+  29:uart0.c       **** void IoInit(void)
+  30:uart0.c       **** {
+ 180               	.LM15:
+ 181               	/* prologue: frame size=0 */
+ 182               	/* prologue end (size=0) */
+  31:uart0.c       **** 	//UART初始化
+  32:uart0.c       **** 	UCSR0B=_BV(RXEN0)|_BV(TXEN0);/*(1<<RXCIE)|(1<<TXCIE)|*/
+ 184               	.LM16:
+ 185 0032 88E1      		ldi r24,lo8(24)
+ 186 0034 8AB9      		out 42-0x20,r24
+  33:uart0.c       **** 	UBRR0L=8;	//57600 baud 
+ 188               	.LM17:
+ 189 0036 88E0      		ldi r24,lo8(8)
+ 190 0038 89B9      		out 41-0x20,r24
+  34:uart0.c       **** 	
+  35:uart0.c       **** 	//i/o流UART连接
+  36:uart0.c       **** 	fdevopen(usart_putchar,usart_getchar,0);	
+ 192               	.LM18:
+ 193 003a 40E0      		ldi r20,lo8(0)
+ 194 003c 50E0      		ldi r21,hi8(0)
+ 195 003e 60E0      		ldi r22,lo8(pm(usart_getchar))
+ 196 0040 70E0      		ldi r23,hi8(pm(usart_getchar))
+ 197 0042 80E0      		ldi r24,lo8(pm(usart_putchar))
+ 198 0044 90E0      		ldi r25,hi8(pm(usart_putchar))
+ 199 0046 0E94 0000 		call fdevopen
+ 200               	/* epilogue: frame size=0 */
+ 201 004a 0895      		ret
+ 202               	/* epilogue end (size=1) */
+ 203               	/* function IoInit size 13 (12) */
+ 205               	.Lscope3:
+ 206               		.text
+ 208               	Letext:
+ 209               	/* File "uart0.c": code   38 = 0x0026 (  32), prologues   1, epilogues   5 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 uart0.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccKKbaaa.s:89     .text:00000000 usart_putchar
+C:\Users\sunhejie\AppData\Local\Temp/ccKKbaaa.s:127    .text:0000001c usart_putbyte
+C:\Users\sunhejie\AppData\Local\Temp/ccKKbaaa.s:153    .text:00000028 usart_getchar
+C:\Users\sunhejie\AppData\Local\Temp/ccKKbaaa.s:178    .text:00000032 IoInit
+C:\Users\sunhejie\AppData\Local\Temp/ccKKbaaa.s:208    .text:0000004c Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+fdevopen

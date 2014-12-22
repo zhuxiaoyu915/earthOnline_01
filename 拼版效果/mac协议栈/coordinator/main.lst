@@ -1,0 +1,942 @@
+   1               		.file	"main.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 217               	.global	hardwareInit
+ 219               	hardwareInit:
+   1:main.c        **** #include "top.h"
+   2:main.c        **** 
+   3:main.c        **** //--------------------------------------------------------
+   4:main.c        **** 
+   5:main.c        **** demo_beaconpacket * demopacket;
+   6:main.c        **** //--------------------------------------------------------
+   7:main.c        **** 
+   8:main.c        **** 
+   9:main.c        **** //---------------------------------------------------------------
+  10:main.c        **** inline uint8_t hardwareInit(void)
+  11:main.c        **** 
+  12:main.c        **** {
+ 221               	.LM1:
+ 222               	/* prologue: frame size=0 */
+ 223               	/* prologue end (size=0) */
+  13:main.c        **** OS_SET_PIN_DIRECTIONS();
+ 225               	.LM2:
+ 226 0000 0E94 0000 		call OS_SET_PIN_DIRECTIONS
+  14:main.c        ****   return SUCCESS;
+  15:main.c        **** }
+ 228               	.LM3:
+ 229 0004 80E0      		ldi r24,lo8(0)
+ 230 0006 90E0      		ldi r25,hi8(0)
+ 231               	/* epilogue: frame size=0 */
+ 232 0008 0895      		ret
+ 233               	/* epilogue end (size=1) */
+ 234               	/* function hardwareInit size 5 (4) */
+ 236               	.Lscope0:
+ 238               	.global	memory_init
+ 240               	memory_init:
+  16:main.c        **** 
+  17:main.c        **** 
+  18:main.c        **** 
+  19:main.c        **** uint8_t demo_ieee_address[8];
+  20:main.c        **** uint16_t shortaddress;
+  21:main.c        **** bool       DATA_READY;
+  22:main.c        **** 
+  23:main.c        **** 
+  24:main.c        **** //bool  IS_FIRST_TIME_SYN_REQ;
+  25:main.c        **** //---------------------------------------------------------
+  26:main.c        **** extern  MLME_SCAN_CONFIRM  scan_result_info;
+  27:main.c        **** extern  MAC_PIB  mac_pib_data;
+  28:main.c        **** extern  MAC_STATE_TYPE mac_current_state;
+  29:main.c        **** extern  bool IS_NETWORK_FORMED;
+  30:main.c        **** extern  RX_BUFFER  * head_of_rx_buffer;
+  31:main.c        **** extern  TX_BUFFER  * head_of_tx_buffer;
+  32:main.c        **** extern  Timer_Queue_pointer  head_of_timer_queue;
+  33:main.c        **** extern  INDIRECT_TX_PENDING_QUEUE * head_of_indirect_pending_buffer;
+  34:main.c        **** extern  LONG_ADDR  default_long_addr;
+  35:main.c        **** //extern  void read_data_task(void);
+  36:main.c        **** //extern  uint8_t  adc_init(void);
+  37:main.c        **** //extern  uint8_t sensor_init(void);
+  38:main.c        **** void memory_init(void)
+  39:main.c        **** {
+ 242               	.LM4:
+ 243               	/* prologue: frame size=0 */
+ 244               	/* prologue end (size=0) */
+  40:main.c        ****      uint16_t  index;
+  41:main.c        ****      BYTE      *p;
+  42:main.c        **** 	 p=NULL;
+ 246               	.LM5:
+ 247 000a E0E0      		ldi r30,lo8(0)
+ 248 000c F0E0      		ldi r31,hi8(0)
+ 249               	.L6:
+  43:main.c        ****      for(index=0;index<4096;index++)
+  44:main.c        **** 	 	*(p+index)=0x00;
+ 251               	.LM6:
+ 252 000e 1192      		st Z+,__zero_reg__
+ 254               	.LM7:
+ 255 0010 80E1      		ldi r24,hi8(4096)
+ 256 0012 E030      		cpi r30,lo8(4096)
+ 257 0014 F807      		cpc r31,r24
+ 258 0016 D8F3      		brlo .L6
+ 259               	/* epilogue: frame size=0 */
+ 260 0018 0895      		ret
+ 261               	/* epilogue end (size=1) */
+ 262               	/* function memory_init size 8 (7) */
+ 267               	.Lscope1:
+ 269               	.global	GET_ADC_value
+ 271               	GET_ADC_value:
+  45:main.c        **** }
+  46:main.c        **** 
+  47:main.c        **** void GET_ADC_value(void)
+  48:main.c        **** {
+ 273               	.LM8:
+ 274               	/* prologue: frame size=0 */
+ 275               	/* prologue end (size=0) */
+  49:main.c        ****   //printf("\n--timer0 interrupt----\n");
+  50:main.c        ****     read_data_task();
+ 277               	.LM9:
+ 278 001a 0E94 0000 		call read_data_task
+  51:main.c        ****     DATA_READY=TRUE; 	
+ 280               	.LM10:
+ 281 001e 81E0      		ldi r24,lo8(1)
+ 282 0020 8093 0000 		sts DATA_READY,r24
+  52:main.c        ****     mlmeSyncRequest(ppib.phyCurrentChanel,TRUE);
+ 284               	.LM11:
+ 285 0024 682F      		mov r22,r24
+ 286 0026 8091 0000 		lds r24,ppib
+ 287 002a 0E94 0000 		call mlmeSyncRequest
+ 288               	/* epilogue: frame size=0 */
+ 289 002e 0895      		ret
+ 290               	/* epilogue end (size=1) */
+ 291               	/* function GET_ADC_value size 11 (10) */
+ 293               	.Lscope2:
+ 294               		.data
+ 295               	.LC0:
+ 296 0000 7374 6172 		.string	"start timer is %08lx,head of systime queue is %04x\n"
+ 296      7420 7469 
+ 296      6D65 7220 
+ 296      6973 2025 
+ 296      3038 6C78 
+ 297               	.LC1:
+ 298 0034 0A2D 2D2D 		.string	"\n----SYSTEM SLEEPING----"
+ 298      2D53 5953 
+ 298      5445 4D20 
+ 298      534C 4545 
+ 298      5049 4E47 
+ 299               		.text
+ 301               	.global	main
+ 303               	main:
+  53:main.c        **** 
+  54:main.c        **** }	
+  55:main.c        **** 
+  56:main.c        **** 
+  57:main.c        **** int   main(void)
+  58:main.c        **** {
+ 305               	.LM12:
+ 306               	/* prologue: frame size=34 */
+ 307 0030 C0E0      		ldi r28,lo8(__stack - 34)
+ 308 0032 D0E0      		ldi r29,hi8(__stack - 34)
+ 309 0034 DEBF      		out __SP_H__,r29
+ 310 0036 CDBF      		out __SP_L__,r28
+ 311               	/* prologue end (size=4) */
+ 312               	.LBB2:
+ 313               	.LBB3:
+ 315               	.LM13:
+ 316 0038 0E94 0000 		call OS_SET_PIN_DIRECTIONS
+ 317               	.LBE3:
+ 318               	.LBE2:
+  59:main.c        **** 
+  60:main.c        ****   uint8_t return_state;
+  61:main.c        ****   uint8_t  index;
+  62:main.c        ****   Node_Capability  temp_node;
+  63:main.c        ****   ADDRESS  temp_addr;
+  64:main.c        ****   
+  65:main.c        ****   //memory_init();
+  66:main.c        ****   hardwareInit();
+  67:main.c        ****   Leds_greenOn();
+ 320               	.LM14:
+ 321 003c 0E94 0000 		call Leds_greenOn
+  68:main.c        ****   Leds_redOn();
+ 323               	.LM15:
+ 324 0040 0E94 0000 		call Leds_redOn
+  69:main.c        ****   Leds_yellowOn();
+ 326               	.LM16:
+ 327 0044 0E94 0000 		call Leds_yellowOn
+  70:main.c        ****   IoInit();
+ 329               	.LM17:
+ 330 0048 0E94 0000 		call IoInit
+  71:main.c        ****  
+  72:main.c        ****   OS_sched_init();
+ 332               	.LM18:
+ 333 004c 0E94 0000 		call OS_sched_init
+  73:main.c        **** 
+  74:main.c        ****   phy_init();
+ 335               	.LM19:
+ 336 0050 0E94 0000 		call phy_init
+  75:main.c        ****   //--------------------------------
+  76:main.c        ****   //MAC_init();
+  77:main.c        ****   os_atomic_enable_interrupt();
+ 338               	.LM20:
+ 339 0054 0E94 0000 		call os_atomic_enable_interrupt
+  78:main.c        **** 
+  79:main.c        ****   DATA_READY=FALSE;
+ 341               	.LM21:
+ 342 0058 1092 0000 		sts DATA_READY,__zero_reg__
+  80:main.c        ****   if(IS_RFD)
+  81:main.c        ****   	{
+  82:main.c        ****           kertimer_init();
+  83:main.c        ****           adc_init();
+  84:main.c        ****           sensor_init();
+  85:main.c        **** 		  
+  86:main.c        ****   	}	  
+  87:main.c        ****  // kertimer_start(2, KERTIMER_REPEAT, 0x27f, &Leds_yellowToggle);
+  88:main.c        ****   //kertimer_start(1, KERTIMER_REPEAT, 0x07f, &Leds_greenToggle);
+  89:main.c        ****   //kertimer_start(0, KERTIMER_REPEAT, 0x04f, &Leds_redToggle);
+  90:main.c        ****   
+  91:main.c        ****  // backoff_timer_setOneShot(0x20,&Leds_greenOn);
+  92:main.c        ****  cc2420_enableAddrDecode();
+ 344               	.LM22:
+ 345 005c 0E94 0000 		call cc2420_enableAddrDecode
+  93:main.c        ****  MAC_init();
+ 347               	.LM23:
+ 348 0060 0E94 0000 		call MAC_init
+  94:main.c        ****  router_init();
+ 350               	.LM24:
+ 351 0064 0E94 0000 		call router_init
+  95:main.c        ****  wdt_disable();
+ 353               	.LM25:
+ 354 0068 88E1      		ldi r24,lo8(24)
+ 355               	/* #APP */
+ 356 006a 0FB6      		in __tmp_reg__, __SREG__
+ 357 006c 81BD      		out 33, r24
+ 358 006e 11BC      		out 33, __zero_reg__
+ 359 0070 0FBE      		out __SREG__,__tmp_reg__
+ 360               		
+  96:main.c        ****  printf("start timer is %08lx,head of systime queue is %04x\n",systime32(),head_of_systimer_queue);
+ 362               	.LM26:
+ 363               	/* #NOAPP */
+ 364 0072 8091 0000 		lds r24,head_of_systimer_queue
+ 365 0076 9091 0000 		lds r25,(head_of_systimer_queue)+1
+ 366 007a 9F93      		push r25
+ 367 007c 8F93      		push r24
+ 368 007e 0E94 0000 		call systime32
+ 369 0082 DC01      		movw r26,r24
+ 370 0084 CB01      		movw r24,r22
+ 371 0086 BF93      		push r27
+ 372 0088 AF93      		push r26
+ 373 008a 9F93      		push r25
+ 374 008c 8F93      		push r24
+ 375 008e 80E0      		ldi r24,lo8(.LC0)
+ 376 0090 90E0      		ldi r25,hi8(.LC0)
+ 377 0092 9F93      		push r25
+ 378 0094 8F93      		push r24
+ 379 0096 0E94 0000 		call printf
+  97:main.c        **** 
+  98:main.c        ****  //mlmeResetRequest(TRUE);
+  99:main.c        ****  /*   
+ 100:main.c        ****  //用于测试ED SCAN的代码
+ 101:main.c        ****  return_state=PLME_SET_TRX_STATE_request(RX_ON);
+ 102:main.c        ****   phy_channel_state=INACTIVE_PERIOD;
+ 103:main.c        ****  if(return_state==PHY_SUCCESS)
+ 104:main.c        ****  	{
+ 105:main.c        ****  	       //scan_result_info.resultListSize=16;
+ 106:main.c        ****  	     //printf("\nstart to do ED SCAN\n");  
+ 107:main.c        ****               mlmeScanRequest(ED_SCAN, 0x0000ffff, 6);
+ 108:main.c        **** 		PLME_SET_TRX_STATE_request(TRX_OFF);	  
+ 109:main.c        **** 	       for(index=0;index<scan_result_info.resultListSize;index++)		  
+ 110:main.c        ****             //printf("%8d\n",scan_result_info.pEnergyDetectList[index]);
+ 111:main.c        ****  	}
+ 112:main.c        ****   //*/
+ 113:main.c        ****  //选中一批合适的信道并进行设置，然后进行active_passive_scan
+ 114:main.c        **** //PLME_SET_request(phyCurrentChanel_id, 3);
+ 115:main.c        **** 
+ 116:main.c        **** //用于测试ACTIVE_PASSIVE_SCAN的代码
+ 117:main.c        **** //----------------------------------
+ 118:main.c        **** 	//wdt_enable(WDTO_2S);
+ 119:main.c        ****        
+ 120:main.c        **** //----------------------------------
+ 121:main.c        **** //mlmeScanRequest(ACTIVE_PASSIVE_SCAN, 0x00000008, 6);
+ 122:main.c        **** 
+ 123:main.c        **** 
+ 124:main.c        ****   //while(mac_current_state!=MAC_STATE_ACTIVE_PASSIVE_SCAN_FINISHED);
+ 125:main.c        ****  /*
+ 126:main.c        ****   //选中新的网络地址
+ 127:main.c        ****   cc2420_bcn_accept();
+ 128:main.c        ****   cc2420_setshortaddress((uint16_t)mac_pib_data.macShortAddress.Val);
+ 129:main.c        ****   cc2420_setpanid((uint16_t)mac_pib_data.macPANId.Val);
+ 130:main.c        ****   phy_channel_state=WAITING_FOR_BEACON;
+ 131:main.c        ****   PLME_SET_request(phyCurrentChanel_id, 11);
+ 132:main.c        ****   //-------------------------
+ 133:main.c        ****   //uint16_t tempprint;
+ 134:main.c        ****   //tempprint=cc2420_readreg(cc2420_FSCTRL);
+ 135:main.c        ****   //printf("tempprintf is %04x",tempprint);
+ 136:main.c        ****   //-------------------------
+ 137:main.c        ****    return_state=PLME_SET_TRX_STATE_request(RX_ON);
+ 138:main.c        ****    if(return_state!=PHY_SUCCESS)  
+ 139:main.c        ****    	{
+ 140:main.c        ****    	   error("\nopen the RF failure\n");
+ 141:main.c        **** 	   return;
+ 142:main.c        ****    	}
+ 143:main.c        **** */
+ 144:main.c        ****   //测试信标帧的发送
+ 145:main.c        ****   //mlmeStartRequest(mac_pib_data.macPANId, ppib.phyCurrentChanel, mac_pib_data.macBeaconOrder, mac
+ 146:main.c        ****   
+ 147:main.c        ****   //head_of_systimer_queue=systimer_start_task(head_of_systimer_queue,RECEIVE_BEACON, 1000) ;
+ 148:main.c        ****   //head_of_systimer_queue=systimer_start_task(head_of_systimer_queue,CAP_OVER, 5000) ;
+ 149:main.c        **** 
+ 150:main.c        **** 
+ 151:main.c        **** 
+ 152:main.c        **** 
+ 153:main.c        ****   //cc2420_setrxmode();
+ 154:main.c        ****   
+ 155:main.c        ****   //cc2420_setpanid(0x0001);
+ 156:main.c        ****   //cc2420_setshortaddress(0x0001);
+ 157:main.c        ****   cc2420_enablefifop();
+ 381               	.LM27:
+ 382 009a 0E94 0000 		call cc2420_enablefifop
+ 158:main.c        ****   while(1) {
+ 384               	.LM28:
+ 385 009e 8DB7      		in r24,__SP_L__
+ 386 00a0 9EB7      		in r25,__SP_H__
+ 387 00a2 0896      		adiw r24,8
+ 388 00a4 0FB6      		in __tmp_reg__,__SREG__
+ 389 00a6 F894      		cli
+ 390 00a8 9EBF      		out __SP_H__,r25
+ 391 00aa 0FBE      		out __SREG__,__tmp_reg__
+ 392 00ac 8DBF      		out __SP_L__,r24
+ 393               	.L13:
+ 159:main.c        ****   	//wdt_reset();
+ 160:main.c        ****   	//OS_run_task();
+ 161:main.c        **** 	//network layer management
+ 162:main.c        **** 	switch(mac_current_state)
+ 395               	.LM29:
+ 396 00ae 8091 0000 		lds r24,mac_current_state
+ 397 00b2 9927      		clr r25
+ 398 00b4 8630      		cpi r24,6
+ 399 00b6 9105      		cpc r25,__zero_reg__
+ 400 00b8 29F1      		breq .L17
+ 401 00ba 8730      		cpi r24,7
+ 402 00bc 9105      		cpc r25,__zero_reg__
+ 403 00be 34F4      		brge .L44
+ 404 00c0 0097      		sbiw r24,0
+ 405 00c2 91F0      		breq .L16
+ 406 00c4 0497      		sbiw r24,4
+ 407 00c6 09F4      		brne .+2
+ 408 00c8 B6C0      		rjmp .L25
+ 409 00ca 49C1      		rjmp .L15
+ 410               	.L44:
+ 411 00cc 8F30      		cpi r24,15
+ 412 00ce 9105      		cpc r25,__zero_reg__
+ 413 00d0 09F4      		brne .+2
+ 414 00d2 40C0      		rjmp .L21
+ 415 00d4 8031      		cpi r24,16
+ 416 00d6 9105      		cpc r25,__zero_reg__
+ 417 00d8 1CF4      		brge .L45
+ 418 00da 0A97      		sbiw r24,10
+ 419 00dc E1F0      		breq .L19
+ 420 00de 3FC1      		rjmp .L15
+ 421               	.L45:
+ 422 00e0 4297      		sbiw r24,18
+ 423 00e2 09F4      		brne .+2
+ 424 00e4 C1C0      		rjmp .L27
+ 425 00e6 3BC1      		rjmp .L15
+ 426               	.L16:
+ 163:main.c        **** 		{
+ 164:main.c        **** 		    case MAC_STATE_UNSTARTED:
+ 165:main.c        **** 			    //printf("\n----START TO FORM NETWORK----\n");	
+ 166:main.c        **** 			      MAC_init();	  
+ 428               	.LM30:
+ 429 00e8 0E94 0000 		call MAC_init
+ 167:main.c        **** 			      mlmeResetRequest(TRUE);
+ 431               	.LM31:
+ 432 00ec 81E0      		ldi r24,lo8(1)
+ 433 00ee 0E94 0000 		call mlmeResetRequest
+ 168:main.c        **** 			      IS_NETWORK_FORMED=FALSE; 	  
+ 435               	.LM32:
+ 436 00f2 1092 0000 		sts IS_NETWORK_FORMED,__zero_reg__
+ 169:main.c        **** 			      mlmeScanRequest(ED_SCAN, 0x00000008, 6);  
+ 438               	.LM33:
+ 439 00f6 26E0      		ldi r18,lo8(6)
+ 440 00f8 48E0      		ldi r20,lo8(8)
+ 441 00fa 50E0      		ldi r21,hi8(8)
+ 442 00fc 60E0      		ldi r22,hlo8(8)
+ 443 00fe 70E0      		ldi r23,hhi8(8)
+ 444 0100 80E0      		ldi r24,lo8(0)
+ 445 0102 06C0      		rjmp .L58
+ 446               	.L17:
+ 170:main.c        **** 			      //for(index=0;index<scan_result_info.resultListSize;index++)		  
+ 171:main.c        ****                            //  //printf("%8d\n",scan_result_info.pEnergyDetectList[index]);	  
+ 172:main.c        **** 			      break;
+ 173:main.c        ****                   case MAC_STATE_ENERGY_SCAN_FINISHED:
+ 174:main.c        **** 			      mlmeScanRequest(ACTIVE_PASSIVE_SCAN, 0x00000008, 6);  	
+ 448               	.LM34:
+ 449 0104 26E0      		ldi r18,lo8(6)
+ 450 0106 48E0      		ldi r20,lo8(8)
+ 451 0108 50E0      		ldi r21,hi8(8)
+ 452 010a 60E0      		ldi r22,hlo8(8)
+ 453 010c 70E0      		ldi r23,hhi8(8)
+ 454 010e 81E0      		ldi r24,lo8(1)
+ 455               	.L58:
+ 456 0110 0E94 0000 		call mlmeScanRequest
+ 175:main.c        **** 			      break; 	  
+ 458               	.LM35:
+ 459 0114 24C1      		rjmp .L15
+ 460               	.L19:
+ 176:main.c        **** 		    case MAC_STATE_ACTIVE_PASSIVE_SCAN_FINISHED:
+ 177:main.c        **** 				if(!IS_COORDINATOR)
+ 178:main.c        **** 				mlmeSyncRequest(ppib.phyCurrentChanel,TRUE);
+ 179:main.c        **** 				//mac_current_state=MAC_STATE_SYNING;
+ 180:main.c        **** 				else
+ 181:main.c        **** 				{
+ 182:main.c        **** 				  cc2420_setshortaddress((uint16_t)mac_pib_data.macShortAddress.Val);
+ 462               	.LM36:
+ 463 0116 8091 0000 		lds r24,mac_pib_data+32
+ 464 011a 9091 0000 		lds r25,(mac_pib_data+32)+1
+ 465 011e 0E94 0000 		call cc2420_setshortaddress
+ 183:main.c        ****                               cc2420_setpanid((uint16_t)mac_pib_data.macPANId.Val);	  
+ 467               	.LM37:
+ 468 0122 8091 0000 		lds r24,mac_pib_data+28
+ 469 0126 9091 0000 		lds r25,(mac_pib_data+28)+1
+ 470 012a 0E94 0000 		call cc2420_setpanid
+ 184:main.c        **** 				  mlmeStartRequest(mac_pib_data.macPANId,3, mac_pib_data.macBeaconOrder, mac_pib_data.macSuperf
+ 472               	.LM38:
+ 473 012e 8824      		clr r8
+ 474 0130 9924      		clr r9
+ 475 0132 AA24      		clr r10
+ 476 0134 CA2C      		mov r12,r10
+ 477 0136 E090 0000 		lds r14,mac_pib_data+3
+ 478 013a 01E0      		ldi r16,lo8(1)
+ 479 013c 2091 0000 		lds r18,mac_pib_data+42
+ 480 0140 4091 0000 		lds r20,mac_pib_data+8
+ 481 0144 63E0      		ldi r22,lo8(3)
+ 482 0146 8091 0000 		lds r24,mac_pib_data+28
+ 483 014a 9091 0000 		lds r25,(mac_pib_data+28)+1
+ 484 014e 0E94 0000 		call mlmeStartRequest
+ 185:main.c        **** 				}
+ 186:main.c        **** 			       break;	
+ 486               	.LM39:
+ 487 0152 05C1      		rjmp .L15
+ 488               	.L21:
+ 187:main.c        ****                   case MAC_STATE_SYNING_END:
+ 188:main.c        **** 			       if(!IS_NETWORK_FORMED)
+ 490               	.LM40:
+ 491 0154 8090 0000 		lds r8,IS_NETWORK_FORMED
+ 492 0158 8820      		tst r8
+ 493 015a D1F4      		brne .L22
+ 189:main.c        **** 			       {
+ 190:main.c        **** 			           //if(phy_channel_state==PHY_IDLE)	  	
+ 191:main.c        **** 			         //printf("\nstart to do the associate\n");
+ 192:main.c        **** 				    //mac_current_state=MAC_STATE_IDLE;
+ 193:main.c        **** 				    temp_node.bytes=0x88;
+ 194:main.c        **** 				    temp_addr.Short=mac_pib_data.macCoordShortAddress;
+ 495               	.LM41:
+ 496 015c 8091 0000 		lds r24,mac_pib_data+22
+ 497 0160 9091 0000 		lds r25,(mac_pib_data+22)+1
+ 498 0164 8983      		std Y+1,r24
+ 499 0166 9A83      		std Y+2,r25
+ 195:main.c        **** 				    mlmeAssociateRequest(ppib.phyCurrentChanel, 0x02, mac_pib_data.macPANId,temp_addr , temp_no
+ 501               	.LM42:
+ 502 0168 88E8      		ldi r24,lo8(-120)
+ 503 016a A82E      		mov r10,r24
+ 504 016c C980      		ldd r12,Y+1
+ 505 016e DA80      		ldd r13,Y+2
+ 506 0170 EB80      		ldd r14,Y+3
+ 507 0172 FC80      		ldd r15,Y+4
+ 508 0174 0D81      		ldd r16,Y+5
+ 509 0176 1E81      		ldd r17,Y+6
+ 510 0178 2F81      		ldd r18,Y+7
+ 511 017a 3885      		ldd r19,Y+8
+ 512 017c 4091 0000 		lds r20,mac_pib_data+28
+ 513 0180 5091 0000 		lds r21,(mac_pib_data+28)+1
+ 514 0184 62E0      		ldi r22,lo8(2)
+ 515 0186 8091 0000 		lds r24,ppib
+ 516 018a 0E94 0000 		call mlmeAssociateRequest
+ 517 018e E7C0      		rjmp .L15
+ 518               	.L22:
+ 196:main.c        **** 				    //IS_FIRST	
+ 197:main.c        **** 			       }
+ 198:main.c        **** 				else
+ 199:main.c        **** 				{
+ 200:main.c        **** 				    if(DATA_READY)
+ 520               	.LM43:
+ 521 0190 8091 0000 		lds r24,DATA_READY
+ 522 0194 8823      		tst r24
+ 523 0196 09F4      		brne .+2
+ 524 0198 E2C0      		rjmp .L15
+ 525               	.LBB4:
+ 201:main.c        **** 				    	{
+ 202:main.c        **** 					 //printf("\n---sensor data sent--\n");	
+ 203:main.c        **** 					   //---------------------------------------
+ 204:main.c        **** 					   //---------------------------------------
+ 205:main.c        **** 					   NODE_INFO dst;
+ 206:main.c        **** 					   NODE_INFO src;
+ 207:main.c        **** 					   uint8_t        msdulength;
+ 208:main.c        **** 					   BYTE  *       pMsdu;
+ 209:main.c        **** 					   BYTE           msduhandle;
+ 210:main.c        **** 					   BYTE           txOptions;
+ 211:main.c        **** 					   dst.addrMode=0x02;
+ 527               	.LM44:
+ 528 019a 82E0      		ldi r24,lo8(2)
+ 529 019c 8987      		std Y+9,r24
+ 212:main.c        **** 					   dst.shortAddr=mac_pib_data.macCoordShortAddress;
+ 531               	.LM45:
+ 532 019e 8091 0000 		lds r24,mac_pib_data+22
+ 533 01a2 9091 0000 		lds r25,(mac_pib_data+22)+1
+ 534 01a6 8A8B      		std Y+18,r24
+ 535 01a8 9B8B      		std Y+19,r25
+ 213:main.c        **** 					   dst.panID=mac_pib_data.macPANId;
+ 537               	.LM46:
+ 538 01aa 2091 0000 		lds r18,mac_pib_data+28
+ 539 01ae 3091 0000 		lds r19,(mac_pib_data+28)+1
+ 540 01b2 2C8B      		std Y+20,r18
+ 541 01b4 3D8B      		std Y+21,r19
+ 214:main.c        **** 					   src.addrMode=0x03;
+ 543               	.LM47:
+ 544 01b6 83E0      		ldi r24,lo8(3)
+ 545 01b8 8E8B      		std Y+22,r24
+ 215:main.c        **** 					   src.longAddr=mac_pib_data.macExtAddress;
+ 547               	.LM48:
+ 548 01ba 88E0      		ldi r24,lo8(8)
+ 549 01bc A0E0      		ldi r26,lo8(mac_pib_data+34)
+ 550 01be B0E0      		ldi r27,hi8(mac_pib_data+34)
+ 551 01c0 FE01      		movw r30,r28
+ 552 01c2 7796      		adiw r30,23
+ 553 01c4 0D90      		ld __tmp_reg__,X+
+ 554 01c6 0192      		st Z+,__tmp_reg__
+ 555 01c8 8A95      		dec r24
+ 556 01ca E1F7      		brne .-8
+ 216:main.c        **** 					   src.panID=mac_pib_data.macPANId;
+ 558               	.LM49:
+ 559 01cc 29A3      		std Y+33,r18
+ 560 01ce 3AA3      		std Y+34,r19
+ 217:main.c        **** 					   msdulength=20;
+ 218:main.c        **** 					   pMsdu=(BYTE *)SENSOR_DATA_VALUE;
+ 219:main.c        **** 					   msduhandle=0;
+ 220:main.c        **** 					   txOptions=0x01;
+ 221:main.c        **** 					   mcpsDataRequest(dst, src, msdulength, pMsdu, msduhandle, txOptions);
+ 562               	.LM50:
+ 563 01d0 81E0      		ldi r24,lo8(1)
+ 564 01d2 8F93      		push r24
+ 565 01d4 1F92      		push __zero_reg__
+ 566 01d6 80E0      		ldi r24,lo8(SENSOR_DATA_VALUE)
+ 567 01d8 90E0      		ldi r25,hi8(SENSOR_DATA_VALUE)
+ 568 01da 9F93      		push r25
+ 569 01dc 8F93      		push r24
+ 570 01de 84E1      		ldi r24,lo8(20)
+ 571 01e0 8F93      		push r24
+ 572 01e2 8DB7      		in r24,__SP_L__
+ 573 01e4 9EB7      		in r25,__SP_H__
+ 574 01e6 0D97      		sbiw r24,13
+ 575 01e8 0FB6      		in __tmp_reg__,__SREG__
+ 576 01ea F894      		cli
+ 577 01ec 9EBF      		out __SP_H__,r25
+ 578 01ee 0FBE      		out __SREG__,__tmp_reg__
+ 579 01f0 8DBF      		out __SP_L__,r24
+ 580 01f2 ADB7      		in r26,__SP_L__
+ 581 01f4 BEB7      		in r27,__SP_H__
+ 582 01f6 1196      		adiw r26,1
+ 583 01f8 8DE0      		ldi r24,lo8(13)
+ 584 01fa FE01      		movw r30,r28
+ 585 01fc 7696      		adiw r30,22
+ 586 01fe 0190      		ld __tmp_reg__,Z+
+ 587 0200 0D92      		st X+,__tmp_reg__
+ 588 0202 8A95      		dec r24
+ 589 0204 E1F7      		brne .-8
+ 590 0206 C984      		ldd r12,Y+9
+ 591 0208 DA84      		ldd r13,Y+10
+ 592 020a EB84      		ldd r14,Y+11
+ 593 020c FC84      		ldd r15,Y+12
+ 594 020e 0D85      		ldd r16,Y+13
+ 595 0210 1E85      		ldd r17,Y+14
+ 596 0212 2F85      		ldd r18,Y+15
+ 597 0214 3889      		ldd r19,Y+16
+ 598 0216 4989      		ldd r20,Y+17
+ 599 0218 5A89      		ldd r21,Y+18
+ 600 021a 6B89      		ldd r22,Y+19
+ 601 021c 7C89      		ldd r23,Y+20
+ 602 021e 8D89      		ldd r24,Y+21
+ 603 0220 0E94 0000 		call mcpsDataRequest
+ 604               	.LBE4:
+ 605 0224 8DB7      		in r24,__SP_L__
+ 606 0226 9EB7      		in r25,__SP_H__
+ 607 0228 4296      		adiw r24,18
+ 608 022a 0FB6      		in __tmp_reg__,__SREG__
+ 609 022c F894      		cli
+ 610 022e 9EBF      		out __SP_H__,r25
+ 611 0230 0FBE      		out __SREG__,__tmp_reg__
+ 612 0232 8DBF      		out __SP_L__,r24
+ 222:main.c        **** 					   //mac_current_state=MAC_STATE_START_TO_SLEEP;
+ 223:main.c        **** 				    	}	
+ 224:main.c        **** 				}
+ 225:main.c        **** 				break;
+ 614               	.LM51:
+ 615 0234 94C0      		rjmp .L15
+ 616               	.L25:
+ 226:main.c        ****                   case MAC_STATE_ASSOC_FINISHED:
+ 227:main.c        **** 				//网络已经建立完成,可以启动ADC传感器采样  
+ 228:main.c        **** 				if((!head_of_rx_buffer)&&(!head_of_tx_buffer)&&(!head_of_timer_queue))
+ 618               	.LM52:
+ 619 0236 8091 0000 		lds r24,head_of_rx_buffer
+ 620 023a 9091 0000 		lds r25,(head_of_rx_buffer)+1
+ 621 023e 892B      		or r24,r25
+ 622 0240 79F4      		brne .L26
+ 623 0242 8091 0000 		lds r24,head_of_tx_buffer
+ 624 0246 9091 0000 		lds r25,(head_of_tx_buffer)+1
+ 625 024a 892B      		or r24,r25
+ 626 024c 49F4      		brne .L26
+ 627 024e 8091 0000 		lds r24,head_of_timer_queue
+ 628 0252 9091 0000 		lds r25,(head_of_timer_queue)+1
+ 629 0256 892B      		or r24,r25
+ 630 0258 19F4      		brne .L26
+ 229:main.c        **** 				 //printf("\nnetwork successful formed\n");	
+ 230:main.c        **** 				IS_NETWORK_FORMED=TRUE;
+ 632               	.LM53:
+ 633 025a 81E0      		ldi r24,lo8(1)
+ 634 025c 8093 0000 		sts IS_NETWORK_FORMED,r24
+ 635               	.L26:
+ 231:main.c        **** 				mac_current_state=MAC_STATE_IDLE;
+ 232:main.c        **** 				//break;
+ 233:main.c        **** 				//test orphan scan & unicast coordinator realignment frame
+ 234:main.c        **** 	                     //mlmeScanRequest(ORPHAN_SCAN, 0x00000008, 0);
+ 235:main.c        **** 	                     
+ 236:main.c        **** 	                     //test PANID conflict & broadcast coordinator realignment frame
+ 237:main.c        **** 	                     //panid_confilct_frame_send();
+ 238:main.c        **** 
+ 239:main.c        **** 				//test Disassociation from the RFD
+ 240:main.c        **** 				//mlmeDisassociateRequest(default_long_addr, 0x02, FALSE);
+ 241:main.c        **** 				mac_current_state=MAC_STATE_START_TO_SLEEP;
+ 637               	.LM54:
+ 638 0260 82E1      		ldi r24,lo8(18)
+ 639 0262 8093 0000 		sts mac_current_state,r24
+ 242:main.c        **** 				break;
+ 641               	.LM55:
+ 642 0266 7BC0      		rjmp .L15
+ 643               	.L27:
+ 243:main.c        ****                   case  MAC_STATE_START_TO_SLEEP:
+ 244:main.c        **** 				//ADC 任务启动
+ 245:main.c        **** 				PLME_SET_TRX_STATE_request(FORCE_TRX_OFF);
+ 645               	.LM56:
+ 646 0268 83E0      		ldi r24,lo8(3)
+ 647 026a 0E94 0000 		call PLME_SET_TRX_STATE_request
+ 246:main.c        **** 				 DATA_READY=FALSE;
+ 649               	.LM57:
+ 650 026e 1092 0000 		sts DATA_READY,__zero_reg__
+ 247:main.c        ****                             kertimer_start(0, KERTIMER_ONE_SHOT, 1024, GET_ADC_value);
+ 652               	.LM58:
+ 653 0272 00E0      		ldi r16,lo8(pm(GET_ADC_value))
+ 654 0274 10E0      		ldi r17,hi8(pm(GET_ADC_value))
+ 655 0276 20E0      		ldi r18,lo8(1024)
+ 656 0278 34E0      		ldi r19,hi8(1024)
+ 657 027a 40E0      		ldi r20,hlo8(1024)
+ 658 027c 50E0      		ldi r21,hhi8(1024)
+ 659 027e 61E0      		ldi r22,lo8(1)
+ 660 0280 80E0      		ldi r24,lo8(0)
+ 661 0282 0E94 0000 		call kertimer_start
+ 248:main.c        **** 				//printf("\n----the current state is MAC_STATE_START_TO_SLEEP---\n");
+ 249:main.c        **** 				Leds_greenOff();
+ 663               	.LM59:
+ 664 0286 0E94 0000 		call Leds_greenOff
+ 250:main.c        **** 				Leds_yellowOff();
+ 666               	.LM60:
+ 667 028a 0E94 0000 		call Leds_yellowOff
+ 251:main.c        **** 				Leds_redOff();
+ 669               	.LM61:
+ 670 028e 0E94 0000 		call Leds_redOff
+ 252:main.c        **** 				cc2420_sendcmd(cc2420_SFLUSHRX);
+ 672               	.LM62:
+ 673 0292 88E0      		ldi r24,lo8(8)
+ 674 0294 0E94 0000 		call cc2420_sendcmd
+ 253:main.c        **** 				cc2420_sendcmd(cc2420_SFLUSHRX);
+ 676               	.LM63:
+ 677 0298 88E0      		ldi r24,lo8(8)
+ 678 029a 0E94 0000 		call cc2420_sendcmd
+ 254:main.c        **** 				head_of_systimer_queue=systimer_stop_task(head_of_systimer_queue, CAP_OVER);
+ 680               	.LM64:
+ 681 029e 62E0      		ldi r22,lo8(2)
+ 682 02a0 8091 0000 		lds r24,head_of_systimer_queue
+ 683 02a4 9091 0000 		lds r25,(head_of_systimer_queue)+1
+ 684 02a8 0E94 0000 		call systimer_stop_task
+ 685 02ac 9093 0000 		sts (head_of_systimer_queue)+1,r25
+ 686 02b0 8093 0000 		sts head_of_systimer_queue,r24
+ 255:main.c        **** 				head_of_systimer_queue=systimer_stop_task(head_of_systimer_queue, RECEIVE_BEACON);
+ 688               	.LM65:
+ 689 02b4 61E0      		ldi r22,lo8(1)
+ 690               	.L56:
+ 691 02b6 0E94 0000 		call systimer_stop_task
+ 692 02ba 9093 0000 		sts (head_of_systimer_queue)+1,r25
+ 693 02be 8093 0000 		sts head_of_systimer_queue,r24
+ 256:main.c        **** 				while(head_of_systimer_queue!=NULL)
+ 257:main.c        **** 					{
+ 258:main.c        **** 					    head_of_systimer_queue=systimer_stop_task(head_of_systimer_queue, head_of_systimer_queue->
+ 695               	.LM66:
+ 696 02c2 892B      		or r24,r25
+ 697 02c4 39F0      		breq .L47
+ 698 02c6 E091 0000 		lds r30,head_of_systimer_queue
+ 699 02ca F091 0000 		lds r31,(head_of_systimer_queue)+1
+ 700 02ce 6081      		ld r22,Z
+ 701 02d0 CF01      		movw r24,r30
+ 702 02d2 F1CF      		rjmp .L56
+ 703               	.L47:
+ 259:main.c        **** 					  //printf("\n---error1--\n");
+ 260:main.c        **** 					}	
+ 261:main.c        **** 				while(head_of_timer_queue!=NULL)
+ 262:main.c        **** 					{
+ 263:main.c        **** 					    head_of_timer_queue=timer3quere_cancel(head_of_timer_queue, head_of_timer_queue->framedsn,
+ 705               	.LM67:
+ 706 02d4 8091 0000 		lds r24,head_of_timer_queue
+ 707 02d8 9091 0000 		lds r25,(head_of_timer_queue)+1
+ 708               	.L57:
+ 709 02dc 892B      		or r24,r25
+ 710 02de 71F0      		breq .L49
+ 711 02e0 E091 0000 		lds r30,head_of_timer_queue
+ 712 02e4 F091 0000 		lds r31,(head_of_timer_queue)+1
+ 713 02e8 4281      		ldd r20,Z+2
+ 714 02ea 6181      		ldd r22,Z+1
+ 715 02ec CF01      		movw r24,r30
+ 716 02ee 0E94 0000 		call timer3quere_cancel
+ 717 02f2 9093 0000 		sts (head_of_timer_queue)+1,r25
+ 718 02f6 8093 0000 		sts head_of_timer_queue,r24
+ 719 02fa F0CF      		rjmp .L57
+ 720               	.L49:
+ 264:main.c        **** 					  //printf("\n---error2--\n");	
+ 265:main.c        **** 					}
+ 266:main.c        **** 				while(head_of_rx_buffer!=NULL)
+ 267:main.c        **** 					{
+ 268:main.c        **** 					    remove_from_rx_buffer(head_of_rx_buffer);
+ 722               	.LM68:
+ 723 02fc 8091 0000 		lds r24,head_of_rx_buffer
+ 724 0300 9091 0000 		lds r25,(head_of_rx_buffer)+1
+ 725 0304 892B      		or r24,r25
+ 726 0306 39F0      		breq .L51
+ 727 0308 8091 0000 		lds r24,head_of_rx_buffer
+ 728 030c 9091 0000 		lds r25,(head_of_rx_buffer)+1
+ 729 0310 0E94 0000 		call remove_from_rx_buffer
+ 730 0314 F3CF      		rjmp .L49
+ 731               	.L51:
+ 269:main.c        **** 					  //printf("\n---error3--\n");		
+ 270:main.c        **** 					}
+ 271:main.c        **** 				while(head_of_tx_buffer!=NULL)
+ 272:main.c        **** 					{
+ 273:main.c        **** 					    remove_tx_queue(head_of_tx_buffer->FrameSeq);
+ 733               	.LM69:
+ 734 0316 8091 0000 		lds r24,head_of_tx_buffer
+ 735 031a 9091 0000 		lds r25,(head_of_tx_buffer)+1
+ 736 031e 892B      		or r24,r25
+ 737 0320 41F0      		breq .L53
+ 738 0322 E091 0000 		lds r30,head_of_tx_buffer
+ 739 0326 F091 0000 		lds r31,(head_of_tx_buffer)+1
+ 740 032a 8381      		ldd r24,Z+3
+ 741 032c 0E94 0000 		call remove_tx_queue
+ 742 0330 F2CF      		rjmp .L51
+ 743               	.L53:
+ 274:main.c        **** 				         //printf("\n---error4--\n");				
+ 275:main.c        **** 					}
+ 276:main.c        **** 				while(head_of_indirect_pending_buffer!=NULL)
+ 277:main.c        **** 					{
+ 278:main.c        **** 					    remove_pending_queue(head_of_indirect_pending_buffer);
+ 745               	.LM70:
+ 746 0332 8091 0000 		lds r24,head_of_indirect_pending_buffer
+ 747 0336 9091 0000 		lds r25,(head_of_indirect_pending_buffer)+1
+ 748 033a 892B      		or r24,r25
+ 749 033c 39F0      		breq .L55
+ 750 033e 8091 0000 		lds r24,head_of_indirect_pending_buffer
+ 751 0342 9091 0000 		lds r25,(head_of_indirect_pending_buffer)+1
+ 752 0346 0E94 0000 		call remove_pending_queue
+ 753 034a F3CF      		rjmp .L53
+ 754               	.L55:
+ 279:main.c        **** 					  //printf("\n---error5--\n");			
+ 280:main.c        **** 					}
+ 281:main.c        **** 				printf("\n----SYSTEM SLEEPING----\n");
+ 756               	.LM71:
+ 757 034c 80E0      		ldi r24,lo8(.LC1)
+ 758 034e 90E0      		ldi r25,hi8(.LC1)
+ 759 0350 0E94 0000 		call puts
+ 282:main.c        **** 				mac_current_state=MAC_STATE_INACTIVE;
+ 761               	.LM72:
+ 762 0354 81E1      		ldi r24,lo8(17)
+ 763 0356 8093 0000 		sts mac_current_state,r24
+ 283:main.c        **** 				OS_sleep();
+ 765               	.LM73:
+ 766 035a 0E94 0000 		call OS_sleep
+ 767               	.L15:
+ 284:main.c        **** 				break;
+ 285:main.c        ****        	     default: break;
+ 286:main.c        ****        	    	//开始作associate
+ 287:main.c        ****        	    	
+ 288:main.c        ****        	
+ 289:main.c        **** 		}
+ 290:main.c        **** 	       //printf("\nthe current state is %d---\n",mac_current_state);
+ 291:main.c        **** 	      // wdt_reset();
+ 292:main.c        **** 	OS_run_task();
+ 769               	.LM74:
+ 770 035e 0E94 0000 		call OS_run_task
+ 771 0362 A5CE      		rjmp .L13
+ 772               	/* epilogue: frame size=34 */
+ 773               	/* epilogue: noreturn */
+ 774               	/* epilogue end (size=0) */
+ 775               	/* function main size 419 (415) */
+ 787               	.Lscope3:
+ 788               		.comm OS_queue,16,1
+ 789               		.comm OS_sched_full,1,1
+ 790               		.comm OS_sched_free,1,1
+ 791               		.comm currentTime,2,1
+ 792               		.comm head_of_systimer_queue,2,1
+ 793               		.comm timestamp_H,2,1
+ 794               		.comm mState,4,1
+ 795               		.comm setIntervalFlag,1,1
+ 796               		.comm mScale,1,1
+ 797               		.comm mInterval,1,1
+ 798               		.comm queue_head,1,1
+ 799               		.comm queue_tail,1,1
+ 800               		.comm queue_size,1,1
+ 801               		.comm queue,3,1
+ 802               		.comm mTimerList,33,1
+ 803               		.comm cc2420_bramspi,1,1
+ 804               		.comm cc2420_rambuf,2,1
+ 805               		.comm cc2420_ramlen,1,1
+ 806               		.comm cc2420_ramaddr,2,1
+ 807               		.comm cc2420fifo_bspi,1,1
+ 808               		.comm cc2420fifo_txbuf,2,1
+ 809               		.comm cc2420fifo_txlength,1,1
+ 810               		.comm cc2420_rxbuf,4,1
+ 811               		.comm cc2420_rxlength,1,1
+ 812               		.comm cc2420_rxbuf_now,2,1
+ 813               		.comm cc2420_rxlength_now,1,1
+ 814               		.comm cc2420_rxbufuse,1,1
+ 815               		.comm rfpackernum,1,1
+ 816               		.comm cc2420_rxflag,1,1
+ 817               		.comm cc2420_currentparameters,28,1
+ 818               		.comm receive_timestamp,4,1
+ 819               		.comm send_timestamp,4,1
+ 820               		.comm cc2420_stateRadio,1,1
+ 821               		.comm cc2420_LocalAddr,2,1
+ 822               		.comm ieee_address,8,1
+ 823               		.comm backoff_timer_Set,1,1
+ 824               		.comm backoff_call,2,1
+ 825               		.comm GTSDirectionMask,1,1
+ 826               		.comm phy_channel_state,1,1
+ 827               		.comm rxbuf_flag,1,1
+ 828               		.comm ppib,3,1
+ 829               		.comm SENSOR_DATA_VALUE,20,1
+ 830               		.comm ADC_INTERRUPT_FLAG,1,1
+ 831               		.comm demopacket,2,1
+ 832               		.comm demo_ieee_address,8,1
+ 833               		.comm shortaddress,2,1
+ 834               		.comm DATA_READY,1,1
+ 882               		.text
+ 884               	Letext:
+ 885               	/* File "main.c": code  443 = 0x01bb ( 436), prologues   4, epilogues   3 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:219    .text:00000000 hardwareInit
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:240    .text:0000000a memory_init
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:271    .text:0000001a GET_ADC_value
+                            *COM*:00000001 DATA_READY
+                            *COM*:00000003 ppib
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:303    .text:00000030 main
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+                            *COM*:00000002 demopacket
+                            *COM*:00000008 demo_ieee_address
+                            *COM*:00000002 shortaddress
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:884    .text:00000364 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+OS_SET_PIN_DIRECTIONS
+read_data_task
+mlmeSyncRequest
+__stack
+Leds_greenOn
+Leds_redOn
+Leds_yellowOn
+IoInit
+OS_sched_init
+phy_init
+os_atomic_enable_interrupt
+cc2420_enableAddrDecode
+MAC_init
+router_init
+systime32
+printf
+cc2420_enablefifop
+mac_current_state
+mlmeResetRequest
+IS_NETWORK_FORMED
+mlmeScanRequest
+mac_pib_data
+cc2420_setshortaddress
+cc2420_setpanid
+mlmeStartRequest
+mlmeAssociateRequest
+mcpsDataRequest
+head_of_rx_buffer
+head_of_tx_buffer
+head_of_timer_queue
+PLME_SET_TRX_STATE_request
+kertimer_start
+Leds_greenOff
+Leds_yellowOff
+Leds_redOff
+cc2420_sendcmd
+systimer_stop_task
+timer3quere_cancel
+remove_from_rx_buffer
+remove_tx_queue
+head_of_indirect_pending_buffer
+remove_pending_queue
+puts
+OS_sleep
+OS_run_task

@@ -1,0 +1,1322 @@
+   1               		.file	"phy.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	phy_init
+ 221               	phy_init:
+   1:phy.c         **** #include "phy.h"
+   2:phy.c         **** 
+   3:phy.c         **** 
+   4:phy.c         **** void  phy_init(void)
+   5:phy.c         **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+   6:phy.c         ****      
+   7:phy.c         ****      ppib.phyCurrentChanel=cc2420_DEF_CHANNEL;
+ 227               	.LM2:
+ 228 0000 93E0      		ldi r25,lo8(3)
+ 229 0002 9093 0000 		sts ppib,r25
+   8:phy.c         ****      ppib.phyTransmitPower=0x1f;
+ 231               	.LM3:
+ 232 0006 8FE1      		ldi r24,lo8(31)
+ 233 0008 8093 0000 		sts ppib+1,r24
+   9:phy.c         ****      ppib.phyCCAMode=0x03;
+ 235               	.LM4:
+ 236 000c 9093 0000 		sts ppib+2,r25
+  10:phy.c         ****      systime_init();
+ 238               	.LM5:
+ 239 0010 0E94 0000 		call systime_init
+  11:phy.c         ****      cc2420_init();
+ 241               	.LM6:
+ 242 0014 0E94 0000 		call cc2420_init
+ 243               	/* epilogue: frame size=0 */
+ 244 0018 0895      		ret
+ 245               	/* epilogue end (size=1) */
+ 246               	/* function phy_init size 13 (12) */
+ 248               	.Lscope0:
+ 252               	.global	PD_DATA_request
+ 254               	PD_DATA_request:
+  12:phy.c         ****      	 
+  13:phy.c         **** 
+  14:phy.c         ****      //--------------------------
+  15:phy.c         ****      //other initial process
+  16:phy.c         ****      //--------------------------
+  17:phy.c         ****      
+  18:phy.c         **** }
+  19:phy.c         **** 
+  20:phy.c         **** 
+  21:phy.c         **** uint32_t PD_DATA_request(uint8_t psdulength,uint8_t * psdu)//added by zhouqiang in 2005.11.30//wait
+  22:phy.c         **** {	
+ 256               	.LM7:
+ 257               	/* prologue: frame size=0 */
+ 258               	/* prologue end (size=0) */
+  23:phy.c         **** 
+  24:phy.c         **** 	//may be some bugs,because no radio state detect 
+  25:phy.c         **** 	cc2420_writetxfifo(psdulength,psdu);//因为不包括长度字节本身，需要在其前面先送进长度字节
+ 260               	.LM8:
+ 261 001a 0E94 0000 		call cc2420_writetxfifo
+  26:phy.c         **** 	cc2420_sendcmd(cc2420_STXON);
+ 263               	.LM9:
+ 264 001e 84E0      		ldi r24,lo8(4)
+ 265 0020 0E94 0000 		call cc2420_sendcmd
+ 266               	.L3:
+  27:phy.c         **** 	while(OS_READ_CC_SFD_PIN()==0);//first ,read the radio state from sfd
+ 268               	.LM10:
+ 269 0024 0E94 0000 		call OS_READ_CC_SFD_PIN
+ 270 0028 892B      		or r24,r25
+ 271 002a E1F3      		breq .L3
+ 272               	.L6:
+  28:phy.c         **** 	while(OS_READ_CC_SFD_PIN()==1);
+ 274               	.LM11:
+ 275 002c 0E94 0000 		call OS_READ_CC_SFD_PIN
+ 276 0030 0197      		sbiw r24,1
+ 277 0032 E1F3      		breq .L6
+  29:phy.c         **** 	send_timestamp=get_timestamp32();
+ 279               	.LM12:
+ 280 0034 0E94 0000 		call get_timestamp32
+ 281 0038 DC01      		movw r26,r24
+ 282 003a CB01      		movw r24,r22
+ 283 003c 8093 0000 		sts send_timestamp,r24
+ 284 0040 9093 0000 		sts (send_timestamp)+1,r25
+ 285 0044 A093 0000 		sts (send_timestamp)+2,r26
+ 286 0048 B093 0000 		sts (send_timestamp)+3,r27
+  30:phy.c         **** 	//printf("\nsend time is %08lx",send_timestamp);
+  31:phy.c         **** 	return send_timestamp;
+  32:phy.c         **** 		
+  33:phy.c         **** 	
+  34:phy.c         **** }
+ 288               	.LM13:
+ 289 004c BC01      		movw r22,r24
+ 290 004e CD01      		movw r24,r26
+ 291               	/* epilogue: frame size=0 */
+ 292 0050 0895      		ret
+ 293               	/* epilogue end (size=1) */
+ 294               	/* function PD_DATA_request size 29 (28) */
+ 296               	.Lscope1:
+ 298               	.global	PLME_CCA_request
+ 300               	PLME_CCA_request:
+  35:phy.c         **** 
+  36:phy.c         **** uint8_t PLME_CCA_request(void)//added by zhouqiang in 2005.11.28//wait for test
+  37:phy.c         **** {//
+ 302               	.LM14:
+ 303               	/* prologue: frame size=0 */
+ 304               	/* prologue end (size=0) */
+  38:phy.c         **** 
+  39:phy.c         ****      uint16_t tempstate=0;
+  40:phy.c         ****      tempstate=cc2420_readreg(cc2420_FSMSTATE);//first ,read the radio state from cc2420
+ 306               	.LM15:
+ 307 0052 8CE2      		ldi r24,lo8(44)
+ 308 0054 0E94 0000 		call cc2420_readreg
+ 309 0058 9C01      		movw r18,r24
+  41:phy.c         ****      if (tempstate==1)//if rxoff 
+ 311               	.LM16:
+ 312 005a 8130      		cpi r24,1
+ 313 005c 9105      		cpc r25,__zero_reg__
+ 314 005e 19F4      		brne .L10
+  42:phy.c         **** 	 	return TRX_OFF;
+ 316               	.LM17:
+ 317 0060 88E0      		ldi r24,lo8(8)
+ 318 0062 90E0      		ldi r25,hi8(8)
+ 319 0064 0895      		ret
+ 320               	.L10:
+  43:phy.c         ****      else if ((tempstate==32)||((tempstate>=34)&&(tempstate<=39))||(tempstate==56))//if tx is going
+ 322               	.LM18:
+ 323 0066 8032      		cpi r24,32
+ 324 0068 9105      		cpc r25,__zero_reg__
+ 325 006a 31F0      		breq .L13
+ 326 006c 8297      		sbiw r24,34
+ 327 006e 0697      		sbiw r24,6
+ 328 0070 18F0      		brlo .L13
+ 329 0072 2833      		cpi r18,56
+ 330 0074 3105      		cpc r19,__zero_reg__
+ 331 0076 19F4      		brne .L12
+ 332               	.L13:
+  44:phy.c         ****      	 	return  TX_ON;
+ 334               	.LM19:
+ 335 0078 89E0      		ldi r24,lo8(9)
+ 336 007a 90E0      		ldi r25,hi8(9)
+ 337 007c 0895      		ret
+ 338               	.L12:
+  45:phy.c         ****      	       
+  46:phy.c         ****      else if (OS_READ_CC_CCA_PIN()==1)//when chanel is clear ,cca is 0
+ 340               	.LM20:
+ 341 007e 0E94 0000 		call OS_READ_CC_CCA_PIN
+ 342 0082 0197      		sbiw r24,1
+ 343 0084 19F4      		brne .L15
+  47:phy.c         **** 	       return  IDLE;
+ 345               	.LM21:
+ 346 0086 84E0      		ldi r24,lo8(4)
+ 347 0088 90E0      		ldi r25,hi8(4)
+ 348 008a 0895      		ret
+ 349               	.L15:
+  48:phy.c         ****      else 
+  49:phy.c         **** 	 	return BUSY;
+ 351               	.LM22:
+ 352 008c 80E0      		ldi r24,lo8(0)
+ 353 008e 90E0      		ldi r25,hi8(0)
+  50:phy.c         ****        
+  51:phy.c         **** 	 
+  52:phy.c         **** };
+ 355               	.LM23:
+ 356 0090 0895      		ret
+ 357               	/* epilogue: frame size=0 */
+ 358 0092 0895      		ret
+ 359               	/* epilogue end (size=1) */
+ 360               	/* function PLME_CCA_request size 35 (34) */
+ 365               	.Lscope2:
+ 367               	.global	PLME_ED_request
+ 369               	PLME_ED_request:
+  53:phy.c         **** 
+  54:phy.c         **** ED_STATE PLME_ED_request(void)//added by zhouqiang in 2005.11.28//wait for test
+  55:phy.c         **** {	
+ 371               	.LM24:
+ 372               	/* prologue: frame size=0 */
+ 373 0094 CF93      		push r28
+ 374 0096 DF93      		push r29
+ 375               	/* prologue end (size=2) */
+  56:phy.c         **** 	ED_STATE temp;
+  57:phy.c         **** 	temp.energylevel=0;
+ 377               	.LM25:
+ 378 0098 C0E0      		ldi r28,lo8(0)
+ 379 009a D0E0      		ldi r29,hi8(0)
+  58:phy.c         **** 	uint8_t tempstate;
+  59:phy.c         **** 	if ((tempstate=cc2420_readreg(cc2420_FSMSTATE))==1)//read the radio state,if trx_off
+ 381               	.LM26:
+ 382 009c 8CE2      		ldi r24,lo8(44)
+ 383 009e 0E94 0000 		call cc2420_readreg
+ 384 00a2 282F      		mov r18,r24
+ 385 00a4 8130      		cpi r24,lo8(1)
+ 386 00a6 11F4      		brne .L18
+  60:phy.c         **** 		      temp.state= TRX_OFF;
+ 388               	.LM27:
+ 389 00a8 C8E0      		ldi r28,lo8(8)
+ 390 00aa 0EC0      		rjmp .L19
+ 391               	.L18:
+  61:phy.c         **** 				
+  62:phy.c         ****        else if ((tempstate==32)||((tempstate>=34)&&(tempstate<=39))||(tempstate==56))//if tx is goi
+ 393               	.LM28:
+ 394 00ac 8032      		cpi r24,lo8(32)
+ 395 00ae 29F0      		breq .L21
+ 396 00b0 8252      		subi r24,lo8(-(-34))
+ 397 00b2 8630      		cpi r24,lo8(6)
+ 398 00b4 10F0      		brlo .L21
+ 399 00b6 2833      		cpi r18,lo8(56)
+ 400 00b8 11F4      		brne .L20
+ 401               	.L21:
+  63:phy.c         **** 	             temp.state=TX_ON;
+ 403               	.LM29:
+ 404 00ba C9E0      		ldi r28,lo8(9)
+ 405 00bc 05C0      		rjmp .L19
+ 406               	.L20:
+  64:phy.c         **** 	else
+  65:phy.c         **** 		{    //after rx_on 8 sybmol,can read the rssi, have some bugs ,may read last value
+  66:phy.c         **** 		      temp.state= PHY_SUCCESS;
+ 408               	.LM30:
+ 409 00be C7E0      		ldi r28,lo8(7)
+  67:phy.c         **** 		      //----------------------------------
+  68:phy.c         **** 		      //can read the rssi state bit,then wait  here
+  69:phy.c         **** 		      //while((cc2420_sendcmd(cc2420_SNOP)&0x01)==0);//added by zhouqiang in 2005.12.1 
+  70:phy.c         **** 		      //----------------------------------
+  71:phy.c         **** 	             temp.energylevel=(int8_t) (cc2420_readreg(cc2420_RSSI)&0x00ff);
+ 411               	.LM31:
+ 412 00c0 83E1      		ldi r24,lo8(19)
+ 413 00c2 0E94 0000 		call cc2420_readreg
+ 414 00c6 D82F      		mov r29,r24
+ 415               	.L19:
+  72:phy.c         **** 		};
+  73:phy.c         **** 	return temp;
+  74:phy.c         **** }
+ 417               	.LM32:
+ 418 00c8 CE01      		movw r24,r28
+ 419               	/* epilogue: frame size=0 */
+ 420 00ca DF91      		pop r29
+ 421 00cc CF91      		pop r28
+ 422 00ce 0895      		ret
+ 423               	/* epilogue end (size=3) */
+ 424               	/* function PLME_ED_request size 30 (25) */
+ 430               	.Lscope3:
+ 433               	.global	PLME_SET_TRX_STATE_request
+ 435               	PLME_SET_TRX_STATE_request:
+  75:phy.c         **** 
+  76:phy.c         **** 
+  77:phy.c         **** uint8_t PLME_SET_TRX_STATE_request(uint8_t state)//added by zhouqiang in 2005.11.29//wait for test
+  78:phy.c         **** {      
+ 437               	.LM33:
+ 438               	/* prologue: frame size=0 */
+ 439 00d0 1F93      		push r17
+ 440               	/* prologue end (size=1) */
+ 441 00d2 182F      		mov r17,r24
+  79:phy.c         ****        uint16_t radiostate=0;
+  80:phy.c         **** 	radiostate=cc2420_readreg(cc2420_FSMSTATE); //first ,read the radio state
+ 443               	.LM34:
+ 444 00d4 8CE2      		ldi r24,lo8(44)
+ 445 00d6 0E94 0000 		call cc2420_readreg
+ 446 00da 9C01      		movw r18,r24
+  81:phy.c         **** 	switch (state)
+ 448               	.LM35:
+ 449 00dc 412F      		mov r20,r17
+ 450 00de 5527      		clr r21
+ 451 00e0 4630      		cpi r20,6
+ 452 00e2 5105      		cpc r21,__zero_reg__
+ 453 00e4 09F4      		brne .+2
+ 454 00e6 3DC0      		rjmp .L42
+ 456               	.LM36:
+ 457 00e8 4730      		cpi r20,7
+ 458 00ea 5105      		cpc r21,__zero_reg__
+ 459 00ec 24F4      		brge .L47
+ 460 00ee 4330      		cpi r20,3
+ 461 00f0 5105      		cpc r21,__zero_reg__
+ 462 00f2 E1F0      		breq .L49
+ 463 00f4 47C0      		rjmp .L46
+ 464               	.L47:
+ 465 00f6 4830      		cpi r20,8
+ 466 00f8 5105      		cpc r21,__zero_reg__
+ 467 00fa 21F0      		breq .L26
+ 468 00fc 4930      		cpi r20,9
+ 469 00fe 5105      		cpc r21,__zero_reg__
+ 470 0100 B9F0      		breq .L35
+ 471 0102 40C0      		rjmp .L46
+ 472               	.L26:
+  82:phy.c         **** 		{case FORCE_TRX_OFF://强制关闭
+  83:phy.c         **** 			{
+  84:phy.c         **** 			cc2420_sendcmd(cc2420_SRFOFF);
+  85:phy.c         **** 			return PHY_SUCCESS;
+  86:phy.c         **** 			}
+  87:phy.c         **** 		 case  TRX_OFF://根据状态关闭，同时返回当时值
+  88:phy.c         **** 			{if (radiostate==1)//is idle
+ 474               	.LM37:
+ 475 0104 8130      		cpi r24,1
+ 476 0106 9105      		cpc r25,__zero_reg__
+ 477 0108 41F1      		breq .L40
+  89:phy.c         **** 		             return  TRX_OFF;
+  90:phy.c         **** 	              else if (((radiostate>=34)&&(radiostate<=39))||((radiostate>=48)&&(radiostate<=54)))
+ 479               	.LM38:
+ 480 010a 8297      		sbiw r24,34
+ 481 010c 0697      		sbiw r24,6
+ 482 010e 88F1      		brlo .L44
+ 483 0110 C901      		movw r24,r18
+ 484 0112 C097      		sbiw r24,48
+ 485 0114 0797      		sbiw r24,7
+ 486 0116 68F1      		brlo .L44
+  91:phy.c         ****                            return  BUSY_TX;			
+  92:phy.c         **** 			else if (((radiostate>=3)&&(radiostate<=6))||(radiostate==16)||(radiostate==40))//is rx now 
+ 488               	.LM39:
+ 489 0118 C901      		movw r24,r18
+ 490 011a 0397      		sbiw r24,3
+ 491 011c 0497      		sbiw r24,4
+ 492 011e 88F0      		brlo .L37
+ 493 0120 2031      		cpi r18,16
+ 494 0122 3105      		cpc r19,__zero_reg__
+ 495 0124 71F0      		breq .L37
+ 496 0126 2832      		cpi r18,40
+ 497 0128 3105      		cpc r19,__zero_reg__
+ 498 012a 59F0      		breq .L37
+ 499               	.L49:
+  93:phy.c         **** 			      return  BUSY_RX;
+  94:phy.c         **** 			else 
+  95:phy.c         **** 			      {cc2420_sendcmd(cc2420_SRFOFF);
+ 501               	.LM40:
+ 502 012c 86E0      		ldi r24,lo8(6)
+ 503 012e 25C0      		rjmp .L48
+ 504               	.L35:
+  96:phy.c         **** 			       return  PHY_SUCCESS;
+  97:phy.c         **** 				}
+  98:phy.c         **** 		 	}
+  99:phy.c         **** 		case  TX_ON://实际上cc2420芯片tx后会自动转成rx
+ 100:phy.c         **** 			{
+ 101:phy.c         ****                       if  (((radiostate>=3)&&(radiostate<=6))||(radiostate==16)||(radiostate==40))/
+ 506               	.LM41:
+ 507 0130 0397      		sbiw r24,3
+ 508 0132 0497      		sbiw r24,4
+ 509 0134 30F0      		brlo .L37
+ 510 0136 2031      		cpi r18,16
+ 511 0138 3105      		cpc r19,__zero_reg__
+ 512 013a 19F0      		breq .L37
+ 513 013c 2832      		cpi r18,40
+ 514 013e 3105      		cpc r19,__zero_reg__
+ 515 0140 19F4      		brne .L36
+ 516               	.L37:
+ 102:phy.c         **** 				return BUSY_RX;
+ 518               	.LM42:
+ 519 0142 81E0      		ldi r24,lo8(1)
+ 520 0144 90E0      		ldi r25,hi8(1)
+ 521 0146 20C0      		rjmp .L23
+ 522               	.L36:
+ 103:phy.c         **** 			 else if (((radiostate>=34)&&(radiostate<=39))||((radiostate>=48)&&(radiostate<=54)))//last tx i
+ 524               	.LM43:
+ 525 0148 C901      		movw r24,r18
+ 526 014a 8297      		sbiw r24,34
+ 527 014c 0697      		sbiw r24,6
+ 528 014e 28F0      		brlo .L40
+ 529 0150 2053      		subi r18,lo8(-(-48))
+ 530 0152 3040      		sbci r19,hi8(-(-48))
+ 531 0154 2730      		cpi r18,7
+ 532 0156 3105      		cpc r19,__zero_reg__
+ 533 0158 10F4      		brsh .L39
+ 534               	.L40:
+ 104:phy.c         **** 			 	{
+ 105:phy.c         **** 			 	 return TX_ON;
+ 536               	.LM44:
+ 537 015a CA01      		movw r24,r20
+ 538 015c 15C0      		rjmp .L23
+ 539               	.L39:
+ 106:phy.c         **** 			 	}
+ 107:phy.c         **** 			 else
+ 108:phy.c         **** 			 	{
+ 109:phy.c         **** 			 	cc2420_sendcmd(cc2420_STXON);	//tx
+ 541               	.LM45:
+ 542 015e 84E0      		ldi r24,lo8(4)
+ 543 0160 0CC0      		rjmp .L48
+ 544               	.L42:
+ 110:phy.c         **** 				return PHY_SUCCESS;
+ 111:phy.c         **** 			 	}
+ 112:phy.c         **** 			}
+ 113:phy.c         **** 		case  RX_ON:
+ 114:phy.c         **** 			{
+ 115:phy.c         **** 			 if  (((radiostate>=34)&&(radiostate<=39))||((radiostate>=48)&&(radiostate<=54)))//tx is going
+ 546               	.LM46:
+ 547 0162 8297      		sbiw r24,34
+ 548 0164 0697      		sbiw r24,6
+ 549 0166 28F0      		brlo .L44
+ 550 0168 2053      		subi r18,lo8(-(-48))
+ 551 016a 3040      		sbci r19,hi8(-(-48))
+ 552 016c 2730      		cpi r18,7
+ 553 016e 3105      		cpc r19,__zero_reg__
+ 554 0170 18F4      		brsh .L43
+ 555               	.L44:
+ 116:phy.c         **** 				return BUSY_TX;
+ 557               	.LM47:
+ 558 0172 82E0      		ldi r24,lo8(2)
+ 559 0174 90E0      		ldi r25,hi8(2)
+ 560 0176 08C0      		rjmp .L23
+ 561               	.L43:
+ 117:phy.c         **** 			 else
+ 118:phy.c         **** 			 	{
+ 119:phy.c         **** 			 	cc2420_sendcmd(cc2420_SRXON);	
+ 563               	.LM48:
+ 564 0178 83E0      		ldi r24,lo8(3)
+ 565               	.L48:
+ 566 017a 0E94 0000 		call cc2420_sendcmd
+ 120:phy.c         **** 				return PHY_SUCCESS;
+ 568               	.LM49:
+ 569 017e 87E0      		ldi r24,lo8(7)
+ 570 0180 90E0      		ldi r25,hi8(7)
+ 571 0182 02C0      		rjmp .L23
+ 572               	.L46:
+ 121:phy.c         **** 			 	}
+ 122:phy.c         **** 			}
+ 123:phy.c         **** 		default:
+ 124:phy.c         **** 			//--------------------------
+ 125:phy.c         **** 			//add error reports here
+ 126:phy.c         **** 			//--------------------------
+ 127:phy.c         **** 			return  PHY_UNSUPPORTED_ATTRIBUTE;//这是我自己加的，如果参数不对，返回该值
+ 574               	.LM50:
+ 575 0184 8AE0      		ldi r24,lo8(10)
+ 576 0186 90E0      		ldi r25,hi8(10)
+ 577               	.L23:
+ 578               	/* epilogue: frame size=0 */
+ 579 0188 1F91      		pop r17
+ 580 018a 0895      		ret
+ 581               	/* epilogue end (size=2) */
+ 582               	/* function PLME_SET_TRX_STATE_request size 100 (97) */
+ 587               	.Lscope4:
+ 590               	.global	PLME_GET_request
+ 592               	PLME_GET_request:
+ 128:phy.c         **** 		}
+ 129:phy.c         **** 			
+ 130:phy.c         **** }
+ 131:phy.c         **** 
+ 132:phy.c         **** GET_STATE PLME_GET_request(uint8_t pibattribute)//added by zhouqiang in 2005.11.29//wait for test
+ 133:phy.c         **** {
+ 594               	.LM51:
+ 595               	/* prologue: frame size=3 */
+ 596 018c 6F92      		push r6
+ 597 018e 7F92      		push r7
+ 598 0190 8F92      		push r8
+ 599 0192 9F92      		push r9
+ 600 0194 AF92      		push r10
+ 601 0196 BF92      		push r11
+ 602 0198 CF92      		push r12
+ 603 019a DF92      		push r13
+ 604 019c EF92      		push r14
+ 605 019e FF92      		push r15
+ 606 01a0 0F93      		push r16
+ 607 01a2 1F93      		push r17
+ 608 01a4 CF93      		push r28
+ 609 01a6 DF93      		push r29
+ 610 01a8 CDB7      		in r28,__SP_L__
+ 611 01aa DEB7      		in r29,__SP_H__
+ 612 01ac 2397      		sbiw r28,3
+ 613 01ae 0FB6      		in __tmp_reg__,__SREG__
+ 614 01b0 F894      		cli
+ 615 01b2 DEBF      		out __SP_H__,r29
+ 616 01b4 0FBE      		out __SREG__,__tmp_reg__
+ 617 01b6 CDBF      		out __SP_L__,r28
+ 618               	/* prologue end (size=22) */
+ 619 01b8 AA24      		clr r10
+ 620 01ba BB24      		clr r11
+ 621 01bc 6501      		movw r12,r10
+ 622 01be B601      		movw r22,r12
+ 623 01c0 A501      		movw r20,r10
+ 624 01c2 8601      		movw r16,r12
+ 625 01c4 7501      		movw r14,r10
+ 626 01c6 3501      		movw r6,r10
+ 627 01c8 4601      		movw r8,r12
+ 628 01ca 982F      		mov r25,r24
+ 134:phy.c         **** 	GET_STATE temp;
+ 135:phy.c         **** 	temp.state=PHY_SUCCESS;
+ 630               	.LM52:
+ 631 01cc E7E0      		ldi r30,lo8(7)
+ 632 01ce E983      		std Y+1,r30
+ 136:phy.c         **** 	temp.pibattributevalue=0;
+ 634               	.LM53:
+ 635 01d0 1B82      		std Y+3,__zero_reg__
+ 137:phy.c         **** 	temp.pibattribute=pibattribute;
+ 637               	.LM54:
+ 638 01d2 8A83      		std Y+2,r24
+ 138:phy.c         **** 	switch (pibattribute)  //may be some bugs.
+ 640               	.LM55:
+ 641 01d4 282F      		mov r18,r24
+ 642 01d6 3327      		clr r19
+ 643 01d8 2130      		cpi r18,1
+ 644 01da 3105      		cpc r19,__zero_reg__
+ 645 01dc 99F0      		breq .L53
+ 647               	.LM56:
+ 648 01de 2230      		cpi r18,2
+ 649 01e0 3105      		cpc r19,__zero_reg__
+ 650 01e2 1CF4      		brge .L56
+ 651 01e4 232B      		or r18,r19
+ 652 01e6 29F0      		breq .L52
+ 653 01e8 1FC0      		rjmp .L55
+ 654               	.L56:
+ 655 01ea 2230      		cpi r18,2
+ 656 01ec 3105      		cpc r19,__zero_reg__
+ 657 01ee 99F0      		breq .L54
+ 658 01f0 1BC0      		rjmp .L55
+ 659               	.L52:
+ 139:phy.c         **** 		{
+ 140:phy.c         **** 			case phyCurrentChanel_id:
+ 141:phy.c         **** 					{
+ 142:phy.c         **** 						temp.pibattributevalue=ppib.phyCurrentChanel;
+ 661               	.LM57:
+ 662 01f2 8091 0000 		lds r24,ppib
+ 663 01f6 8B83      		std Y+3,r24
+ 143:phy.c         **** 						return temp;
+ 665               	.LM58:
+ 666 01f8 AE2E      		mov r10,r30
+ 667 01fa B92E      		mov r11,r25
+ 668 01fc C82E      		mov r12,r24
+ 669 01fe C601      		movw r24,r12
+ 670 0200 B501      		movw r22,r10
+ 671 0202 19C0      		rjmp .L50
+ 672               	.L53:
+ 144:phy.c         **** 						}
+ 145:phy.c         **** 			case phyTransmitPower_id:
+ 146:phy.c         **** 				       {
+ 147:phy.c         **** 					   	temp.pibattributevalue=ppib.phyTransmitPower;
+ 674               	.LM59:
+ 675 0204 8091 0000 		lds r24,ppib+1
+ 676 0208 8B83      		std Y+3,r24
+ 148:phy.c         **** 						return temp;
+ 678               	.LM60:
+ 679 020a 4E2F      		mov r20,r30
+ 680 020c 592F      		mov r21,r25
+ 681 020e 682F      		mov r22,r24
+ 682 0210 CB01      		movw r24,r22
+ 683 0212 BA01      		movw r22,r20
+ 684 0214 10C0      		rjmp .L50
+ 685               	.L54:
+ 149:phy.c         **** 					}
+ 150:phy.c         **** 			case phyCCAMode_id:
+ 151:phy.c         **** 					{
+ 152:phy.c         **** 						temp.pibattributevalue=ppib.phyCCAMode;
+ 687               	.LM61:
+ 688 0216 8091 0000 		lds r24,ppib+2
+ 689 021a 8B83      		std Y+3,r24
+ 153:phy.c         **** 						return temp;
+ 691               	.LM62:
+ 692 021c EE2E      		mov r14,r30
+ 693 021e F92E      		mov r15,r25
+ 694 0220 082F      		mov r16,r24
+ 695 0222 C801      		movw r24,r16
+ 696 0224 B701      		movw r22,r14
+ 697 0226 07C0      		rjmp .L50
+ 698               	.L55:
+ 154:phy.c         **** 				       }
+ 155:phy.c         **** 			default:
+ 156:phy.c         **** 					{
+ 157:phy.c         **** 						temp.state=PHY_UNSUPPORTED_ATTRIBUTE;
+ 700               	.LM63:
+ 701 0228 8AE0      		ldi r24,lo8(10)
+ 702 022a 8983      		std Y+1,r24
+ 158:phy.c         **** 						return temp;
+ 704               	.LM64:
+ 705 022c 682E      		mov r6,r24
+ 706 022e 7A80      		ldd r7,Y+2
+ 707 0230 8B80      		ldd r8,Y+3
+ 708 0232 C401      		movw r24,r8
+ 709 0234 B301      		movw r22,r6
+ 710               	.L50:
+ 711               	/* epilogue: frame size=3 */
+ 712 0236 2396      		adiw r28,3
+ 713 0238 0FB6      		in __tmp_reg__,__SREG__
+ 714 023a F894      		cli
+ 715 023c DEBF      		out __SP_H__,r29
+ 716 023e 0FBE      		out __SREG__,__tmp_reg__
+ 717 0240 CDBF      		out __SP_L__,r28
+ 718 0242 DF91      		pop r29
+ 719 0244 CF91      		pop r28
+ 720 0246 1F91      		pop r17
+ 721 0248 0F91      		pop r16
+ 722 024a FF90      		pop r15
+ 723 024c EF90      		pop r14
+ 724 024e DF90      		pop r13
+ 725 0250 CF90      		pop r12
+ 726 0252 BF90      		pop r11
+ 727 0254 AF90      		pop r10
+ 728 0256 9F90      		pop r9
+ 729 0258 8F90      		pop r8
+ 730 025a 7F90      		pop r7
+ 731 025c 6F90      		pop r6
+ 732 025e 0895      		ret
+ 733               	/* epilogue end (size=21) */
+ 734               	/* function PLME_GET_request size 106 (63) */
+ 739               	.Lscope5:
+ 743               	.global	PLME_SET_request
+ 745               	PLME_SET_request:
+ 159:phy.c         **** 					}
+ 160:phy.c         **** 		}
+ 161:phy.c         **** }
+ 162:phy.c         **** 
+ 163:phy.c         **** SET_STATE PLME_SET_request(uint8_t pibattribute,uint8_t pibattributevalue)//added by zhouqiang in 2
+ 164:phy.c         **** {
+ 747               	.LM65:
+ 748               	/* prologue: frame size=0 */
+ 749 0260 CF93      		push r28
+ 750 0262 DF93      		push r29
+ 751               	/* prologue end (size=2) */
+ 165:phy.c         **** 	SET_STATE temp;
+ 166:phy.c         **** 	temp.state=PHY_SUCCESS;
+ 753               	.LM66:
+ 754 0264 C7E0      		ldi r28,lo8(7)
+ 755 0266 D0E0      		ldi r29,hi8(7)
+ 167:phy.c         **** 	temp.pibattribute=pibattribute;
+ 757               	.LM67:
+ 758 0268 D82F      		mov r29,r24
+ 168:phy.c         **** 	switch (pibattribute)//保证芯片中的实际情况与pib表中同步
+ 760               	.LM68:
+ 761 026a 9927      		clr r25
+ 762 026c 8130      		cpi r24,1
+ 763 026e 9105      		cpc r25,__zero_reg__
+ 764 0270 79F0      		breq .L60
+ 766               	.LM69:
+ 767 0272 8230      		cpi r24,2
+ 768 0274 9105      		cpc r25,__zero_reg__
+ 769 0276 1CF4      		brge .L63
+ 770 0278 892B      		or r24,r25
+ 771 027a 21F0      		breq .L59
+ 772 027c 34C0      		rjmp .L62
+ 773               	.L63:
+ 774 027e 0297      		sbiw r24,2
+ 775 0280 C9F0      		breq .L61
+ 776 0282 31C0      		rjmp .L62
+ 777               	.L59:
+ 169:phy.c         **** 		{
+ 170:phy.c         **** 			case phyCurrentChanel_id:
+ 171:phy.c         **** 					{
+ 172:phy.c         **** 						ppib.phyCurrentChanel=pibattributevalue;
+ 779               	.LM70:
+ 780 0284 6093 0000 		sts ppib,r22
+ 173:phy.c         **** 						cc2420_setchnl((int8_t)pibattributevalue);
+ 782               	.LM71:
+ 783 0288 862F      		mov r24,r22
+ 784 028a 0E94 0000 		call cc2420_setchnl
+ 174:phy.c         **** 						return temp;
+ 786               	.LM72:
+ 787 028e 2CC0      		rjmp .L57
+ 788               	.L60:
+ 175:phy.c         **** 						}
+ 176:phy.c         **** 			case phyTransmitPower_id:
+ 177:phy.c         **** 				       {
+ 178:phy.c         **** 					   	ppib.phyTransmitPower=pibattributevalue;
+ 790               	.LM73:
+ 791 0290 6093 0000 		sts ppib+1,r22
+ 179:phy.c         **** 						cc2420_currentparameters[CP_TXCTRL]=(cc2420_currentparameters[CP_TXCTRL] &0xfff0)\
+ 793               	.LM74:
+ 794 0294 8091 0000 		lds r24,cc2420_currentparameters+10
+ 795 0298 9091 0000 		lds r25,(cc2420_currentparameters+10)+1
+ 796 029c 807F      		andi r24,lo8(-16)
+ 797 029e 262F      		mov r18,r22
+ 798 02a0 3327      		clr r19
+ 799 02a2 822B      		or r24,r18
+ 800 02a4 932B      		or r25,r19
+ 801 02a6 9093 0000 		sts (cc2420_currentparameters+10)+1,r25
+ 802 02aa 8093 0000 		sts cc2420_currentparameters+10,r24
+ 180:phy.c         **** 							|(pibattributevalue<<cc2420_TXCTRL_PAPWR);
+ 181:phy.c         **** 						cc2420_writereg(cc2420_TXCTRL,cc2420_currentparameters[CP_TXCTRL]);
+ 804               	.LM75:
+ 805 02ae BC01      		movw r22,r24
+ 806 02b0 85E1      		ldi r24,lo8(21)
+ 807 02b2 16C0      		rjmp .L64
+ 808               	.L61:
+ 182:phy.c         **** 						return temp;
+ 183:phy.c         **** 					}
+ 184:phy.c         **** 			case phyCCAMode_id:
+ 185:phy.c         **** 					{
+ 186:phy.c         **** 						ppib.phyCCAMode=pibattributevalue;
+ 810               	.LM76:
+ 811 02b4 6093 0000 		sts ppib+2,r22
+ 187:phy.c         **** 						cc2420_currentparameters[CP_MDMCTRL0]=(cc2420_currentparameters[CP_TXCTRL] &0xff3f) \
+ 813               	.LM77:
+ 814 02b8 2091 0000 		lds r18,cc2420_currentparameters+10
+ 815 02bc 3091 0000 		lds r19,(cc2420_currentparameters+10)+1
+ 816 02c0 2F73      		andi r18,lo8(-193)
+ 817 02c2 862F      		mov r24,r22
+ 818 02c4 9927      		clr r25
+ 819 02c6 46E0      		ldi r20,6
+ 820 02c8 880F      	1:	lsl r24
+ 821 02ca 991F      		rol r25
+ 822 02cc 4A95      		dec r20
+ 823 02ce E1F7      		brne 1b
+ 824 02d0 282B      		or r18,r24
+ 825 02d2 392B      		or r19,r25
+ 826 02d4 3093 0000 		sts (cc2420_currentparameters+2)+1,r19
+ 827 02d8 2093 0000 		sts cc2420_currentparameters+2,r18
+ 188:phy.c         **** 							|(pibattributevalue<<cc2420_MDMCTRL0_CCAMODE);
+ 189:phy.c         **** 						cc2420_writereg(cc2420_MDMCTRL0,cc2420_currentparameters[CP_MDMCTRL0]);
+ 829               	.LM78:
+ 830 02dc B901      		movw r22,r18
+ 831 02de 81E1      		ldi r24,lo8(17)
+ 832               	.L64:
+ 833 02e0 0E94 0000 		call cc2420_writereg
+ 190:phy.c         **** 						return temp;
+ 835               	.LM79:
+ 836 02e4 01C0      		rjmp .L57
+ 837               	.L62:
+ 191:phy.c         **** 				       }
+ 192:phy.c         **** 			default:
+ 193:phy.c         **** 					{
+ 194:phy.c         **** 						temp.state=PHY_UNSUPPORTED_ATTRIBUTE;
+ 839               	.LM80:
+ 840 02e6 CAE0      		ldi r28,lo8(10)
+ 841               	.L57:
+ 195:phy.c         **** 						return temp;
+ 196:phy.c         **** 					}
+ 197:phy.c         **** 		}
+ 198:phy.c         **** 			
+ 199:phy.c         **** 		
+ 200:phy.c         **** }
+ 843               	.LM81:
+ 844 02e8 CE01      		movw r24,r28
+ 845               	/* epilogue: frame size=0 */
+ 846 02ea DF91      		pop r29
+ 847 02ec CF91      		pop r28
+ 848 02ee 0895      		ret
+ 849               	/* epilogue end (size=3) */
+ 850               	/* function PLME_SET_request size 75 (70) */
+ 855               	.Lscope6:
+ 857               	.global	ack_send_handle_no_pending
+ 859               	ack_send_handle_no_pending:
+ 201:phy.c         **** 
+ 202:phy.c         **** //uint8_t   ack_dsn;
+ 203:phy.c         **** void phy_handlepacket(void)  //added bu zhouqiang in 2005.11.30 //wait for test
+ 204:phy.c         **** //attention:upper layer must free the rx_buf
+ 205:phy.c         **** {
+ 206:phy.c         ****        uint8_t packetlength=0,packettype=0,linkquality=0;
+ 207:phy.c         **** 	rxbuf_flag=(cc2420_rxflag+cc2420_rxbufuse)&0x01;
+ 208:phy.c         **** 	cc2420_rxbuf_now=cc2420_rxbuf[rxbuf_flag];
+ 209:phy.c         **** 	packettype=cc2420_rxbuf_now[1]&0x03;
+ 210:phy.c         **** 	packetlength=cc2420_rxbuf_now[0];
+ 211:phy.c         **** 	linkquality=cc2420_rxbuf_now[packetlength-1];
+ 212:phy.c         **** 	//printf("\nsucess received a  frame  phystate=%d\n",phy_channel_state);                          
+ 213:phy.c         **** 	switch (phy_channel_state)//开始预滤包过程added by zhouqiang in 2005.11.30
+ 214:phy.c         **** 		{
+ 215:phy.c         **** 			
+ 216:phy.c         **** 			case WAITING_FOR_BEACON://在waitbeacon期间收到其他包就扔掉
+ 217:phy.c         **** 					{
+ 218:phy.c         **** 						if (packettype!=0x00)
+ 219:phy.c         **** 							{
+ 220:phy.c         **** 							       //printf("\n--------wrong beacon frame\n");
+ 221:phy.c         **** 						 		free(cc2420_rxbuf[rxbuf_flag]);
+ 222:phy.c         **** 	                       		              cc2420_rxbufuse--;
+ 223:phy.c         **** 							}
+ 224:phy.c         **** 						else 
+ 225:phy.c         ****                                                  {
+ 226:phy.c         ****                                                         //printf("\nreceived a physical frame,the t
+ 227:phy.c         **** 						 		//free(cc2420_rxbuf[rxbuf_flag]);
+ 228:phy.c         **** 								cc2420_rxbufuse--;
+ 229:phy.c         **** 	                       		              //Leds_redToggle();
+ 230:phy.c         **** 								PD_DATA_indication(packetlength, (cc2420_rxbuf_now), linkquality,receive_timestamp);
+ 231:phy.c         **** 								phy_channel_state=PHY_IDLE;			  
+ 232:phy.c         **** 							}
+ 233:phy.c         **** 							
+ 234:phy.c         **** 						break;
+ 235:phy.c         **** 					}
+ 236:phy.c         **** 			case WAITING_FOR_ACK://在waitack期间收到其他包就扔掉
+ 237:phy.c         **** 					{
+ 238:phy.c         **** 						if (packettype!=0x02)
+ 239:phy.c         **** 							{
+ 240:phy.c         **** 							     //printf("\nsucess received a non ack frame\n");
+ 241:phy.c         **** 						 		free(cc2420_rxbuf[rxbuf_flag]);
+ 242:phy.c         **** 	                       		              cc2420_rxbufuse--;
+ 243:phy.c         **** 							}
+ 244:phy.c         **** 						else
+ 245:phy.c         **** 							{
+ 246:phy.c         ****                                                         //printf("\nsucess received a ACK frame\n")
+ 247:phy.c         **** 						 		//free(cc2420_rxbuf[rxbuf_flag]);
+ 248:phy.c         **** 	                       		              cc2420_rxbufuse--;
+ 249:phy.c         **** 								head_of_timer_queue=timer3quere_cancel(head_of_timer_queue, cc2420_rxbuf_now[3],WAIT_FOR_AC
+ 250:phy.c         **** 								PD_DATA_indication(packetlength, (cc2420_rxbuf_now), linkquality,receive_timestamp);
+ 251:phy.c         **** 								phy_channel_state=PHY_IDLE;
+ 252:phy.c         **** 							}				   
+ 253:phy.c         **** 						     //PD_DATA_indication(packetlength, (cc2420_rxbuf_now+1), linkquality);
+ 254:phy.c         **** 						break;
+ 255:phy.c         **** 					}
+ 256:phy.c         **** 				
+ 257:phy.c         **** 		      	case PHY_IDLE:	
+ 258:phy.c         **** 					{
+ 259:phy.c         **** 						Leds_redToggle();
+ 260:phy.c         **** 						cc2420_rxbufuse--;
+ 261:phy.c         **** 						if(cc2420_rxbuf_now[1]&0x20)
+ 262:phy.c         **** 						{
+ 263:phy.c         **** 						   //if((cc2420_rxbuf_now[1]&0x03)&&())//是数据请求帧
+ 264:phy.c         **** 						   //OS_post(ack_send_handle_pending);
+ 265:phy.c         **** 						   //else
+ 266:phy.c         **** 						   //ack_dsn=cc2420_rxbuf_now[3];
+ 267:phy.c         **** 
+ 268:phy.c         **** 						   
+ 269:phy.c         **** 						   (ack_send_handle_no_pending());
+ 270:phy.c         **** 						}
+ 271:phy.c         **** 						PD_DATA_indication(packetlength, (cc2420_rxbuf_now), linkquality,receive_timestamp);
+ 272:phy.c         **** 						break;
+ 273:phy.c         **** 					}	   	
+ 274:phy.c         **** 			default:
+ 275:phy.c         **** 					{
+ 276:phy.c         **** 						//printf("\nwrong beacon frame\n"); 
+ 277:phy.c         **** 						free(cc2420_rxbuf[rxbuf_flag]);
+ 278:phy.c         **** 	                       		cc2420_rxbufuse--;
+ 279:phy.c         **** 						break;
+ 280:phy.c         **** 					}
+ 281:phy.c         **** 			
+ 282:phy.c         **** 									
+ 283:phy.c         **** 		}
+ 284:phy.c         **** 	//may have some bug----------------------------------------------------
+ 285:phy.c         **** 	{ os_atomic_t _nesc_atomic = os_atomic_start();//added by zhouqiang in 2005.12.01 晚
+ 286:phy.c         **** 		{
+ 287:phy.c         **** 			if  ((cc2420_rxbufuse==0) && (rfpackernum!=0))//if rxfifo still have packets ,read rxfifo again
+ 288:phy.c         **** 				{
+ 289:phy.c         **** 		   			cc2420_rxbufuse++;
+ 290:phy.c         **** 		   			OS_post(&cc2420_readrxfifo);
+ 291:phy.c         **** 			       }
+ 292:phy.c         **** 		}
+ 293:phy.c         **** 	   os_atomic_end(_nesc_atomic); }
+ 294:phy.c         **** 	
+ 295:phy.c         **** 
+ 296:phy.c         **** 	//---------------------------------------------------------------------
+ 297:phy.c         **** 	//-----------------------------------------------------
+ 298:phy.c         **** 	//for (i=0;i<num;i++)
+ 299:phy.c         **** 		//printf("%02x",cc2420_rxbuf_now[i]);
+ 300:phy.c         **** 	
+ 301:phy.c         **** 	//if ((cc2420_rxbuf_now[1]&0x02)!=0)//printf("\nis a ack frame!\n");
+ 302:phy.c         **** 	
+ 303:phy.c         **** 	//free(cc2420_rxbuf[flag]);
+ 304:phy.c         **** 	//cc2420_rxbufuse--;
+ 305:phy.c         **** 	//if  ((cc2420_rxbufuse==0) && (rfpackernum!=0))
+ 306:phy.c         **** 	//	{
+ 307:phy.c         **** 	//	   cc2420_rxbufuse++;
+ 308:phy.c         **** 	//	   OS_post(&cc2420_readrxfifo);
+ 309:phy.c         **** 	//	}
+ 310:phy.c         **** 	//cc2420_rxbuf[flag]=NULL;
+ 311:phy.c         **** 	//printf("释放rxbuf,now point is %04x\n",cc2420_rxbuf[flag]);
+ 312:phy.c         **** 	//------------------------------------------------------
+ 313:phy.c         **** }
+ 314:phy.c         **** 	
+ 315:phy.c         **** void ack_send_handle_no_pending(void)
+ 316:phy.c         **** {
+ 861               	.LM82:
+ 862               	/* prologue: frame size=0 */
+ 863 02f0 AF92      		push r10
+ 864 02f2 BF92      		push r11
+ 865 02f4 CF92      		push r12
+ 866 02f6 DF92      		push r13
+ 867 02f8 EF92      		push r14
+ 868 02fa FF92      		push r15
+ 869 02fc 0F93      		push r16
+ 870 02fe 1F93      		push r17
+ 871               	/* prologue end (size=8) */
+ 317:phy.c         ****        //wait_for_boundary();
+ 318:phy.c         ****        //printf("\nack frame send\n");
+ 319:phy.c         **** 	uint32_t   phy_current_ticks;
+ 320:phy.c         **** 	uint32_t  object_boundary_ticks;
+ 321:phy.c         **** 	uint32_t   delta_time;
+ 322:phy.c         **** 	phy_current_ticks=systime32();
+ 873               	.LM83:
+ 874 0300 0E94 0000 		call systime32
+ 875 0304 5B01      		movw r10,r22
+ 876 0306 6C01      		movw r12,r24
+ 323:phy.c         **** 
+ 324:phy.c         **** 
+ 325:phy.c         **** 	
+ 326:phy.c         **** 	//uint8_t  buffer_ack[3];
+ 327:phy.c         **** 	
+ 328:phy.c         ****        //buffer_ack[0]=0x02;
+ 329:phy.c         **** 	//buffer_ack[1]=0x00;
+ 330:phy.c         **** 	//buffer_ack[2]=ack_dsn;
+ 331:phy.c         **** 
+ 332:phy.c         **** 	
+ 333:phy.c         **** 	delta_time=((phy_current_ticks-MAC_OBJECT_CAP_START_TICKS)>>1);
+ 878               	.LM84:
+ 879 0308 8091 0000 		lds r24,MAC_OBJECT_CAP_START_TICKS
+ 880 030c 9091 0000 		lds r25,(MAC_OBJECT_CAP_START_TICKS)+1
+ 881 0310 A091 0000 		lds r26,(MAC_OBJECT_CAP_START_TICKS)+2
+ 882 0314 B091 0000 		lds r27,(MAC_OBJECT_CAP_START_TICKS)+3
+ 883 0318 A601      		movw r20,r12
+ 884 031a 9501      		movw r18,r10
+ 885 031c 281B      		sub r18,r24
+ 886 031e 390B      		sbc r19,r25
+ 887 0320 4A0B      		sbc r20,r26
+ 888 0322 5B0B      		sbc r21,r27
+ 889 0324 DA01      		movw r26,r20
+ 890 0326 C901      		movw r24,r18
+ 891 0328 B695      		lsr r27
+ 892 032a A795      		ror r26
+ 893 032c 9795      		ror r25
+ 894 032e 8795      		ror r24
+ 334:phy.c         **** 	
+ 335:phy.c         **** 	object_boundary_ticks=((((uint32_t)aUnitBackoffPeriod-(delta_time%aUnitBackoffPeriod))<<1)+phy_cur
+ 896               	.LM85:
+ 897 0330 65E0      		ldi r22,lo8(5)
+ 898 0332 E62E      		mov r14,r22
+ 899 0334 F12C      		mov r15,__zero_reg__
+ 900 0336 012D      		mov r16,__zero_reg__
+ 901 0338 112D      		mov r17,__zero_reg__
+ 902 033a BC01      		movw r22,r24
+ 903 033c CD01      		movw r24,r26
+ 904 033e A801      		movw r20,r16
+ 905 0340 9701      		movw r18,r14
+ 906 0342 0E94 0000 		call __udivmodsi4
+ 907 0346 DC01      		movw r26,r24
+ 908 0348 CB01      		movw r24,r22
+ 909 034a E81A      		sub r14,r24
+ 910 034c F90A      		sbc r15,r25
+ 911 034e 0A0B      		sbc r16,r26
+ 912 0350 1B0B      		sbc r17,r27
+ 913 0352 EE0C      		lsl r14
+ 914 0354 FF1C      		rol r15
+ 915 0356 001F      		rol r16
+ 916 0358 111F      		rol r17
+ 917 035a EA0C      		add r14,r10
+ 918 035c FB1C      		adc r15,r11
+ 919 035e 0C1D      		adc r16,r12
+ 920 0360 1D1D      		adc r17,r13
+ 921               	.L66:
+ 336:phy.c         **** 	while(systime32()<(object_boundary_ticks));
+ 923               	.LM86:
+ 924 0362 0E94 0000 		call systime32
+ 925 0366 DC01      		movw r26,r24
+ 926 0368 CB01      		movw r24,r22
+ 927 036a 8E15      		cp r24,r14
+ 928 036c 9F05      		cpc r25,r15
+ 929 036e A007      		cpc r26,r16
+ 930 0370 B107      		cpc r27,r17
+ 931 0372 B8F3      		brlo .L66
+ 337:phy.c         ****        cc2420_sendcmd(cc2420_SACK);
+ 933               	.LM87:
+ 934 0374 8AE0      		ldi r24,lo8(10)
+ 935 0376 0E94 0000 		call cc2420_sendcmd
+ 936               	.L69:
+ 338:phy.c         ****        //PD_DATA_request(3, buffer_ack);
+ 339:phy.c         **** 	while(OS_READ_CC_SFD_PIN()==0);//first ,read the radio state from sfd
+ 938               	.LM88:
+ 939 037a 0E94 0000 		call OS_READ_CC_SFD_PIN
+ 940 037e 892B      		or r24,r25
+ 941 0380 E1F3      		breq .L69
+ 942               	.L72:
+ 340:phy.c         **** 	while(OS_READ_CC_SFD_PIN()==1);   
+ 944               	.LM89:
+ 945 0382 0E94 0000 		call OS_READ_CC_SFD_PIN
+ 946 0386 0197      		sbiw r24,1
+ 947 0388 E1F3      		breq .L72
+ 341:phy.c         **** 	send_timestamp=get_timestamp32();
+ 949               	.LM90:
+ 950 038a 0E94 0000 		call get_timestamp32
+ 951 038e DC01      		movw r26,r24
+ 952 0390 CB01      		movw r24,r22
+ 953 0392 8093 0000 		sts send_timestamp,r24
+ 954 0396 9093 0000 		sts (send_timestamp)+1,r25
+ 955 039a A093 0000 		sts (send_timestamp)+2,r26
+ 956 039e B093 0000 		sts (send_timestamp)+3,r27
+ 957               	/* epilogue: frame size=0 */
+ 958 03a2 1F91      		pop r17
+ 959 03a4 0F91      		pop r16
+ 960 03a6 FF90      		pop r15
+ 961 03a8 EF90      		pop r14
+ 962 03aa DF90      		pop r13
+ 963 03ac CF90      		pop r12
+ 964 03ae BF90      		pop r11
+ 965 03b0 AF90      		pop r10
+ 966 03b2 0895      		ret
+ 967               	/* epilogue end (size=9) */
+ 968               	/* function ack_send_handle_no_pending size 99 (82) */
+ 974               	.Lscope7:
+ 976               	.global	phy_handlepacket
+ 978               	phy_handlepacket:
+ 980               	.LM91:
+ 981               	/* prologue: frame size=0 */
+ 982 03b4 DF92      		push r13
+ 983 03b6 EF92      		push r14
+ 984 03b8 FF92      		push r15
+ 985 03ba 0F93      		push r16
+ 986 03bc 1F93      		push r17
+ 987 03be CF93      		push r28
+ 988 03c0 DF93      		push r29
+ 989               	/* prologue end (size=7) */
+ 991               	.LM92:
+ 992 03c2 8091 0000 		lds r24,cc2420_rxflag
+ 993 03c6 2091 0000 		lds r18,cc2420_rxbufuse
+ 994 03ca 820F      		add r24,r18
+ 995 03cc 8170      		andi r24,lo8(1)
+ 996 03ce 8093 0000 		sts rxbuf_flag,r24
+ 998               	.LM93:
+ 999 03d2 E82F      		mov r30,r24
+ 1000 03d4 FF27      		clr r31
+ 1001 03d6 EE0F      		add r30,r30
+ 1002 03d8 FF1F      		adc r31,r31
+ 1003 03da E050      		subi r30,lo8(-(cc2420_rxbuf))
+ 1004 03dc F040      		sbci r31,hi8(-(cc2420_rxbuf))
+ 1005 03de C081      		ld r28,Z
+ 1006 03e0 D181      		ldd r29,Z+1
+ 1007 03e2 D093 0000 		sts (cc2420_rxbuf_now)+1,r29
+ 1008 03e6 C093 0000 		sts cc2420_rxbuf_now,r28
+ 1010               	.LM94:
+ 1011 03ea F980      		ldd r15,Y+1
+ 1012 03ec 83E0      		ldi r24,lo8(3)
+ 1013 03ee F822      		and r15,r24
+ 1015               	.LM95:
+ 1016 03f0 E880      		ld r14,Y
+ 1018               	.LM96:
+ 1019 03f2 FE01      		movw r30,r28
+ 1020 03f4 EE0D      		add r30,r14
+ 1021 03f6 F11D      		adc r31,__zero_reg__
+ 1022 03f8 3197      		sbiw r30,1
+ 1023 03fa D080      		ld r13,Z
+ 1025               	.LM97:
+ 1026 03fc 8091 0000 		lds r24,phy_channel_state
+ 1027 0400 9927      		clr r25
+ 1028 0402 8330      		cpi r24,3
+ 1029 0404 9105      		cpc r25,__zero_reg__
+ 1030 0406 09F1      		breq .L80
+ 1032               	.LM98:
+ 1033 0408 8430      		cpi r24,4
+ 1034 040a 9105      		cpc r25,__zero_reg__
+ 1035 040c 24F4      		brge .L86
+ 1036 040e 892B      		or r24,r25
+ 1037 0410 09F4      		brne .+2
+ 1038 0412 44C0      		rjmp .L83
+ 1039 0414 66C0      		rjmp .L85
+ 1040               	.L86:
+ 1041 0416 0497      		sbiw r24,4
+ 1042 0418 09F0      		breq .+2
+ 1043 041a 63C0      		rjmp .L85
+ 1045               	.LM99:
+ 1046 041c FF20      		tst r15
+ 1047 041e C1F4      		brne .L89
+ 1049               	.LM100:
+ 1050 0420 2150      		subi r18,lo8(-(-1))
+ 1051 0422 2093 0000 		sts cc2420_rxbufuse,r18
+ 1053               	.LM101:
+ 1054 0426 8091 0000 		lds r24,receive_timestamp
+ 1055 042a 9091 0000 		lds r25,(receive_timestamp)+1
+ 1056 042e A091 0000 		lds r26,(receive_timestamp)+2
+ 1057 0432 B091 0000 		lds r27,(receive_timestamp)+3
+ 1058 0436 8C01      		movw r16,r24
+ 1059 0438 9D01      		movw r18,r26
+ 1060 043a 4D2D      		mov r20,r13
+ 1061 043c BE01      		movw r22,r28
+ 1062 043e 8E2D      		mov r24,r14
+ 1063 0440 0E94 0000 		call PD_DATA_indication
+ 1065               	.LM102:
+ 1066 0444 F092 0000 		sts phy_channel_state,r15
+ 1068               	.LM103:
+ 1069 0448 5DC0      		rjmp .L76
+ 1070               	.L80:
+ 1072               	.LM104:
+ 1073 044a 82E0      		ldi r24,lo8(2)
+ 1074 044c F816      		cp r15,r24
+ 1075 044e 11F0      		breq .L81
+ 1076               	.L89:
+ 1078               	.LM105:
+ 1079 0450 CE01      		movw r24,r28
+ 1080 0452 51C0      		rjmp .L88
+ 1081               	.L81:
+ 1083               	.LM106:
+ 1084 0454 2150      		subi r18,lo8(-(-1))
+ 1085 0456 2093 0000 		sts cc2420_rxbufuse,r18
+ 1087               	.LM107:
+ 1088 045a 40E0      		ldi r20,lo8(0)
+ 1089 045c 6B81      		ldd r22,Y+3
+ 1090 045e 8091 0000 		lds r24,head_of_timer_queue
+ 1091 0462 9091 0000 		lds r25,(head_of_timer_queue)+1
+ 1092 0466 0E94 0000 		call timer3quere_cancel
+ 1093 046a 9093 0000 		sts (head_of_timer_queue)+1,r25
+ 1094 046e 8093 0000 		sts head_of_timer_queue,r24
+ 1096               	.LM108:
+ 1097 0472 8091 0000 		lds r24,receive_timestamp
+ 1098 0476 9091 0000 		lds r25,(receive_timestamp)+1
+ 1099 047a A091 0000 		lds r26,(receive_timestamp)+2
+ 1100 047e B091 0000 		lds r27,(receive_timestamp)+3
+ 1101 0482 8C01      		movw r16,r24
+ 1102 0484 9D01      		movw r18,r26
+ 1103 0486 4D2D      		mov r20,r13
+ 1104 0488 6091 0000 		lds r22,cc2420_rxbuf_now
+ 1105 048c 7091 0000 		lds r23,(cc2420_rxbuf_now)+1
+ 1106 0490 8E2D      		mov r24,r14
+ 1107 0492 0E94 0000 		call PD_DATA_indication
+ 1109               	.LM109:
+ 1110 0496 1092 0000 		sts phy_channel_state,__zero_reg__
+ 1112               	.LM110:
+ 1113 049a 34C0      		rjmp .L76
+ 1114               	.L83:
+ 1116               	.LM111:
+ 1117 049c 0E94 0000 		call Leds_redToggle
+ 1119               	.LM112:
+ 1120 04a0 8091 0000 		lds r24,cc2420_rxbufuse
+ 1121 04a4 8150      		subi r24,lo8(-(-1))
+ 1122 04a6 8093 0000 		sts cc2420_rxbufuse,r24
+ 1124               	.LM113:
+ 1125 04aa E091 0000 		lds r30,cc2420_rxbuf_now
+ 1126 04ae F091 0000 		lds r31,(cc2420_rxbuf_now)+1
+ 1127 04b2 8181      		ldd r24,Z+1
+ 1128 04b4 85FF      		sbrs r24,5
+ 1129 04b6 02C0      		rjmp .L84
+ 1131               	.LM114:
+ 1132 04b8 0E94 0000 		call ack_send_handle_no_pending
+ 1133               	.L84:
+ 1135               	.LM115:
+ 1136 04bc 8091 0000 		lds r24,receive_timestamp
+ 1137 04c0 9091 0000 		lds r25,(receive_timestamp)+1
+ 1138 04c4 A091 0000 		lds r26,(receive_timestamp)+2
+ 1139 04c8 B091 0000 		lds r27,(receive_timestamp)+3
+ 1140 04cc 8C01      		movw r16,r24
+ 1141 04ce 9D01      		movw r18,r26
+ 1142 04d0 4D2D      		mov r20,r13
+ 1143 04d2 6091 0000 		lds r22,cc2420_rxbuf_now
+ 1144 04d6 7091 0000 		lds r23,(cc2420_rxbuf_now)+1
+ 1145 04da 8E2D      		mov r24,r14
+ 1146 04dc 0E94 0000 		call PD_DATA_indication
+ 1148               	.LM116:
+ 1149 04e0 11C0      		rjmp .L76
+ 1150               	.L85:
+ 1152               	.LM117:
+ 1153 04e2 8091 0000 		lds r24,rxbuf_flag
+ 1154 04e6 E82F      		mov r30,r24
+ 1155 04e8 FF27      		clr r31
+ 1156 04ea EE0F      		add r30,r30
+ 1157 04ec FF1F      		adc r31,r31
+ 1158 04ee E050      		subi r30,lo8(-(cc2420_rxbuf))
+ 1159 04f0 F040      		sbci r31,hi8(-(cc2420_rxbuf))
+ 1160 04f2 8081      		ld r24,Z
+ 1161 04f4 9181      		ldd r25,Z+1
+ 1162               	.L88:
+ 1163 04f6 0E94 0000 		call free
+ 1165               	.LM118:
+ 1166 04fa 8091 0000 		lds r24,cc2420_rxbufuse
+ 1167 04fe 8150      		subi r24,lo8(-(-1))
+ 1168 0500 8093 0000 		sts cc2420_rxbufuse,r24
+ 1169               	.L76:
+ 1170               	.LBB2:
+ 1172               	.LM119:
+ 1173 0504 0E94 0000 		call os_atomic_start
+ 1174 0508 C82F      		mov r28,r24
+ 1176               	.LM120:
+ 1177 050a 8091 0000 		lds r24,cc2420_rxbufuse
+ 1178 050e 8823      		tst r24
+ 1179 0510 59F4      		brne .L87
+ 1180 0512 8091 0000 		lds r24,rfpackernum
+ 1181 0516 8823      		tst r24
+ 1182 0518 39F0      		breq .L87
+ 1184               	.LM121:
+ 1185 051a 81E0      		ldi r24,lo8(1)
+ 1186 051c 8093 0000 		sts cc2420_rxbufuse,r24
+ 1188               	.LM122:
+ 1189 0520 80E0      		ldi r24,lo8(pm(cc2420_readrxfifo))
+ 1190 0522 90E0      		ldi r25,hi8(pm(cc2420_readrxfifo))
+ 1191 0524 0E94 0000 		call OS_post
+ 1192               	.L87:
+ 1194               	.LM123:
+ 1195 0528 8C2F      		mov r24,r28
+ 1196 052a 0E94 0000 		call os_atomic_end
+ 1197               	.LBE2:
+ 1198               	/* epilogue: frame size=0 */
+ 1199 052e DF91      		pop r29
+ 1200 0530 CF91      		pop r28
+ 1201 0532 1F91      		pop r17
+ 1202 0534 0F91      		pop r16
+ 1203 0536 FF90      		pop r15
+ 1204 0538 EF90      		pop r14
+ 1205 053a DF90      		pop r13
+ 1206 053c 0895      		ret
+ 1207               	/* epilogue end (size=8) */
+ 1208               	/* function phy_handlepacket size 198 (183) */
+ 1218               	.Lscope8:
+ 1220               	.global	ack_send_handle_pending
+ 1222               	ack_send_handle_pending:
+ 342:phy.c         **** 	
+ 343:phy.c         **** 	//printf("\nsendtimstamp is  %08lx\n",send_timestamp);
+ 344:phy.c         **** 	//printf("\nphy_current_ticks is %08lx\n",phy_current_ticks);
+ 345:phy.c         **** 	//printf("\nMAC cap start is %0l8x\n",MAC_OBJECT_CAP_START_TICKS);
+ 346:phy.c         **** 	//printf("\ndelta_time is %0l8x\n",delta_time);
+ 347:phy.c         **** 	//printf("\nMAC cap end is %0l8x\n",MAC_OBJECT_CAP_END_TICKS);
+ 348:phy.c         **** 	//printf("\nobject boundary  is %08lx\n",object_boundary_ticks);
+ 349:phy.c         **** }
+ 350:phy.c         **** void ack_send_handle_pending(void)
+ 351:phy.c         **** {
+ 1224               	.LM124:
+ 1225               	/* prologue: frame size=0 */
+ 1226               	/* prologue end (size=0) */
+ 1227               	/* epilogue: frame size=0 */
+ 1228 053e 0895      		ret
+ 1229               	/* epilogue end (size=1) */
+ 1230               	/* function ack_send_handle_pending size 1 (0) */
+ 1232               	.Lscope9:
+ 1233               		.comm OS_queue,16,1
+ 1234               		.comm OS_sched_full,1,1
+ 1235               		.comm OS_sched_free,1,1
+ 1236               		.comm currentTime,2,1
+ 1237               		.comm head_of_systimer_queue,2,1
+ 1238               		.comm timestamp_H,2,1
+ 1239               		.comm mState,4,1
+ 1240               		.comm setIntervalFlag,1,1
+ 1241               		.comm mScale,1,1
+ 1242               		.comm mInterval,1,1
+ 1243               		.comm queue_head,1,1
+ 1244               		.comm queue_tail,1,1
+ 1245               		.comm queue_size,1,1
+ 1246               		.comm queue,3,1
+ 1247               		.comm mTimerList,33,1
+ 1248               		.comm backoff_timer_Set,1,1
+ 1249               		.comm backoff_call,2,1
+ 1250               		.comm GTSDirectionMask,1,1
+ 1251               		.comm phy_channel_state,1,1
+ 1252               		.comm SENSOR_DATA_VALUE,20,1
+ 1253               		.comm ADC_INTERRUPT_FLAG,1,1
+ 1254               		.comm cc2420_bramspi,1,1
+ 1255               		.comm cc2420_rambuf,2,1
+ 1256               		.comm cc2420_ramlen,1,1
+ 1257               		.comm cc2420_ramaddr,2,1
+ 1258               		.comm cc2420fifo_bspi,1,1
+ 1259               		.comm cc2420fifo_txbuf,2,1
+ 1260               		.comm cc2420fifo_txlength,1,1
+ 1261               		.comm cc2420_rxbuf,4,1
+ 1262               		.comm cc2420_rxlength,1,1
+ 1263               		.comm cc2420_rxbuf_now,2,1
+ 1264               		.comm cc2420_rxlength_now,1,1
+ 1265               		.comm cc2420_rxbufuse,1,1
+ 1266               		.comm rfpackernum,1,1
+ 1267               		.comm cc2420_rxflag,1,1
+ 1268               		.comm cc2420_currentparameters,28,1
+ 1269               		.comm receive_timestamp,4,1
+ 1270               		.comm send_timestamp,4,1
+ 1271               		.comm cc2420_stateRadio,1,1
+ 1272               		.comm cc2420_LocalAddr,2,1
+ 1273               		.comm ieee_address,8,1
+ 1274               		.comm rxbuf_flag,1,1
+ 1275               		.comm ppib,3,1
+ 1319               		.text
+ 1321               	Letext:
+ 1322               	/* File "phy.c": code  686 = 0x02ae ( 594), prologues  42, epilogues  50 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 phy.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:221    .text:00000000 phy_init
+                            *COM*:00000003 ppib
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:254    .text:0000001a PD_DATA_request
+                            *COM*:00000004 send_timestamp
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:300    .text:00000052 PLME_CCA_request
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:369    .text:00000094 PLME_ED_request
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:435    .text:000000d0 PLME_SET_TRX_STATE_request
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:592    .text:0000018c PLME_GET_request
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:745    .text:00000260 PLME_SET_request
+                            *COM*:0000001c cc2420_currentparameters
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:859    .text:000002f0 ack_send_handle_no_pending
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:978    .text:000003b4 phy_handlepacket
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000001 rfpackernum
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:1222   .text:0000053e ack_send_handle_pending
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+C:\Users\sunhejie\AppData\Local\Temp/cc46aaaa.s:1321   .text:00000540 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+systime_init
+cc2420_init
+cc2420_writetxfifo
+cc2420_sendcmd
+OS_READ_CC_SFD_PIN
+get_timestamp32
+cc2420_readreg
+OS_READ_CC_CCA_PIN
+cc2420_setchnl
+cc2420_writereg
+systime32
+MAC_OBJECT_CAP_START_TICKS
+__udivmodsi4
+PD_DATA_indication
+head_of_timer_queue
+timer3quere_cancel
+Leds_redToggle
+free
+os_atomic_start
+cc2420_readrxfifo
+OS_post
+os_atomic_end

@@ -1,0 +1,598 @@
+   1               		.file	"led.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	Leds_init
+ 221               	Leds_init:
+   1:led.c         **** #include "led.h"
+   2:led.c         **** 
+   3:led.c         **** uint8_t LedsC_ledsOn;
+   4:led.c         **** 
+   5:led.c         **** 
+   6:led.c         **** 
+   7:led.c         **** //-----------------------------------------------------œ‘ æled«˝?
+   8:led.c         **** uint8_t Leds_init(void)
+   9:led.c         **** 
+  10:led.c         **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225 0000 1F93      		push r17
+ 226               	/* prologue end (size=1) */
+ 227               	.LBB2:
+  11:led.c         ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 229               	.LM2:
+ 230 0002 0E94 0000 		call os_atomic_start
+ 231 0006 182F      		mov r17,r24
+  12:led.c         **** 
+  13:led.c         ****     {
+  14:led.c         ****       LedsC_ledsOn = 0;
+ 233               	.LM3:
+ 234 0008 1092 0000 		sts LedsC_ledsOn,__zero_reg__
+  15:led.c         ****       OS_MAKE_RED_LED_OUTPUT();
+ 236               	.LM4:
+ 237 000c 0E94 0000 		call OS_MAKE_RED_LED_OUTPUT
+  16:led.c         ****       OS_MAKE_YELLOW_LED_OUTPUT();
+ 239               	.LM5:
+ 240 0010 0E94 0000 		call OS_MAKE_YELLOW_LED_OUTPUT
+  17:led.c         ****       OS_MAKE_GREEN_LED_OUTPUT();
+ 242               	.LM6:
+ 243 0014 0E94 0000 		call OS_MAKE_GREEN_LED_OUTPUT
+  18:led.c         ****       OS_SET_RED_LED_PIN();
+ 245               	.LM7:
+ 246 0018 0E94 0000 		call OS_SET_RED_LED_PIN
+  19:led.c         ****       OS_SET_YELLOW_LED_PIN();
+ 248               	.LM8:
+ 249 001c 0E94 0000 		call OS_SET_YELLOW_LED_PIN
+  20:led.c         ****       OS_SET_GREEN_LED_PIN();
+ 251               	.LM9:
+ 252 0020 0E94 0000 		call OS_SET_GREEN_LED_PIN
+  21:led.c         ****     }
+  22:led.c         **** 
+  23:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 254               	.LM10:
+ 255 0024 812F      		mov r24,r17
+ 256 0026 0E94 0000 		call os_atomic_end
+ 257               	.LBE2:
+  24:led.c         ****   return SUCCESS;
+  25:led.c         **** }
+ 259               	.LM11:
+ 260 002a 80E0      		ldi r24,lo8(0)
+ 261 002c 90E0      		ldi r25,hi8(0)
+ 262               	/* epilogue: frame size=0 */
+ 263 002e 1F91      		pop r17
+ 264 0030 0895      		ret
+ 265               	/* epilogue end (size=2) */
+ 266               	/* function Leds_init size 25 (22) */
+ 271               	.Lscope0:
+ 273               	.global	Leds_yellowOn
+ 275               	Leds_yellowOn:
+  26:led.c         **** uint8_t Leds_yellowOn(void)
+  27:led.c         **** {
+ 277               	.LM12:
+ 278               	/* prologue: frame size=0 */
+ 279 0032 1F93      		push r17
+ 280               	/* prologue end (size=1) */
+ 281               	.LBB3:
+  28:led.c         ****   
+  29:led.c         ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 283               	.LM13:
+ 284 0034 0E94 0000 		call os_atomic_start
+ 285 0038 182F      		mov r17,r24
+  30:led.c         **** 
+  31:led.c         ****     {
+  32:led.c         ****       OS_CLR_YELLOW_LED_PIN();
+ 287               	.LM14:
+ 288 003a 0E94 0000 		call OS_CLR_YELLOW_LED_PIN
+  33:led.c         ****       LedsC_ledsOn |= LedsC_YELLOW_BIT;
+ 290               	.LM15:
+ 291 003e 8091 0000 		lds r24,LedsC_ledsOn
+ 292 0042 8460      		ori r24,lo8(4)
+ 293 0044 8093 0000 		sts LedsC_ledsOn,r24
+  34:led.c         ****     }
+  35:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 295               	.LM16:
+ 296 0048 812F      		mov r24,r17
+ 297 004a 0E94 0000 		call os_atomic_end
+ 298               	.LBE3:
+  36:led.c         ****   return SUCCESS;
+  37:led.c         **** }
+ 300               	.LM17:
+ 301 004e 80E0      		ldi r24,lo8(0)
+ 302 0050 90E0      		ldi r25,hi8(0)
+ 303               	/* epilogue: frame size=0 */
+ 304 0052 1F91      		pop r17
+ 305 0054 0895      		ret
+ 306               	/* epilogue end (size=2) */
+ 307               	/* function Leds_yellowOn size 18 (15) */
+ 312               	.Lscope1:
+ 314               	.global	Leds_yellowOff
+ 316               	Leds_yellowOff:
+  38:led.c         **** uint8_t Leds_yellowOff(void)
+  39:led.c         **** 
+  40:led.c         **** {
+ 318               	.LM18:
+ 319               	/* prologue: frame size=0 */
+ 320 0056 1F93      		push r17
+ 321               	/* prologue end (size=1) */
+ 322               	.LBB4:
+  41:led.c         ****     { os_atomic_t _nesc_atomic = os_atomic_start();
+ 324               	.LM19:
+ 325 0058 0E94 0000 		call os_atomic_start
+ 326 005c 182F      		mov r17,r24
+  42:led.c         ****     {
+  43:led.c         ****       OS_SET_YELLOW_LED_PIN();
+ 328               	.LM20:
+ 329 005e 0E94 0000 		call OS_SET_YELLOW_LED_PIN
+  44:led.c         ****       LedsC_ledsOn &= ~LedsC_YELLOW_BIT;
+ 331               	.LM21:
+ 332 0062 8091 0000 		lds r24,LedsC_ledsOn
+ 333 0066 8B7F      		andi r24,lo8(-5)
+ 334 0068 8093 0000 		sts LedsC_ledsOn,r24
+  45:led.c         ****     }
+  46:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 336               	.LM22:
+ 337 006c 812F      		mov r24,r17
+ 338 006e 0E94 0000 		call os_atomic_end
+ 339               	.LBE4:
+  47:led.c         ****   return SUCCESS;
+  48:led.c         **** }
+ 341               	.LM23:
+ 342 0072 80E0      		ldi r24,lo8(0)
+ 343 0074 90E0      		ldi r25,hi8(0)
+ 344               	/* epilogue: frame size=0 */
+ 345 0076 1F91      		pop r17
+ 346 0078 0895      		ret
+ 347               	/* epilogue end (size=2) */
+ 348               	/* function Leds_yellowOff size 18 (15) */
+ 353               	.Lscope2:
+ 355               	.global	Leds_yellowToggle
+ 357               	Leds_yellowToggle:
+  49:led.c         **** 
+  50:led.c         **** uint8_t Leds_yellowToggle(void)
+  51:led.c         **** {
+ 359               	.LM24:
+ 360               	/* prologue: frame size=0 */
+ 361 007a 1F93      		push r17
+ 362 007c CF93      		push r28
+ 363               	/* prologue end (size=2) */
+ 364               	.LBB5:
+  52:led.c         ****   uint8_t rval;
+  53:led.c         ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 366               	.LM25:
+ 367 007e 0E94 0000 		call os_atomic_start
+ 368 0082 182F      		mov r17,r24
+  54:led.c         ****     {
+  55:led.c         ****       if (LedsC_ledsOn & LedsC_YELLOW_BIT) {
+ 370               	.LM26:
+ 371 0084 8091 0000 		lds r24,LedsC_ledsOn
+ 372 0088 82FF      		sbrs r24,2
+ 373 008a 03C0      		rjmp .L5
+  56:led.c         ****         rval = Leds_yellowOff();
+ 375               	.LM27:
+ 376 008c 0E94 0000 		call Leds_yellowOff
+ 377 0090 02C0      		rjmp .L7
+ 378               	.L5:
+  57:led.c         ****         }
+  58:led.c         ****       else {
+  59:led.c         ****         rval = Leds_yellowOn();
+ 380               	.LM28:
+ 381 0092 0E94 0000 		call Leds_yellowOn
+ 382               	.L7:
+ 383 0096 C82F      		mov r28,r24
+  60:led.c         ****         }
+  61:led.c         ****     }
+  62:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 385               	.LM29:
+ 386 0098 812F      		mov r24,r17
+ 387 009a 0E94 0000 		call os_atomic_end
+ 388               	.LBE5:
+  63:led.c         ****   return rval;
+  64:led.c         **** }
+ 390               	.LM30:
+ 391 009e 8C2F      		mov r24,r28
+ 392 00a0 9927      		clr r25
+ 393               	/* epilogue: frame size=0 */
+ 394 00a2 CF91      		pop r28
+ 395 00a4 1F91      		pop r17
+ 396 00a6 0895      		ret
+ 397               	/* epilogue end (size=3) */
+ 398               	/* function Leds_yellowToggle size 23 (18) */
+ 406               	.Lscope3:
+ 408               	.global	Leds_greenOn
+ 410               	Leds_greenOn:
+  65:led.c         **** 
+  66:led.c         **** uint8_t Leds_greenOn(void)
+  67:led.c         **** 
+  68:led.c         **** {
+ 412               	.LM31:
+ 413               	/* prologue: frame size=0 */
+ 414 00a8 1F93      		push r17
+ 415               	/* prologue end (size=1) */
+ 416               	.LBB6:
+  69:led.c         ****     { os_atomic_t _nesc_atomic = os_atomic_start();
+ 418               	.LM32:
+ 419 00aa 0E94 0000 		call os_atomic_start
+ 420 00ae 182F      		mov r17,r24
+  70:led.c         ****     {
+  71:led.c         ****       OS_CLR_GREEN_LED_PIN();
+ 422               	.LM33:
+ 423 00b0 0E94 0000 		call OS_CLR_GREEN_LED_PIN
+  72:led.c         ****       LedsC_ledsOn |= LedsC_GREEN_BIT;
+ 425               	.LM34:
+ 426 00b4 8091 0000 		lds r24,LedsC_ledsOn
+ 427 00b8 8260      		ori r24,lo8(2)
+ 428 00ba 8093 0000 		sts LedsC_ledsOn,r24
+  73:led.c         ****     }
+  74:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 430               	.LM35:
+ 431 00be 812F      		mov r24,r17
+ 432 00c0 0E94 0000 		call os_atomic_end
+ 433               	.LBE6:
+  75:led.c         ****   return SUCCESS;
+  76:led.c         **** }
+ 435               	.LM36:
+ 436 00c4 80E0      		ldi r24,lo8(0)
+ 437 00c6 90E0      		ldi r25,hi8(0)
+ 438               	/* epilogue: frame size=0 */
+ 439 00c8 1F91      		pop r17
+ 440 00ca 0895      		ret
+ 441               	/* epilogue end (size=2) */
+ 442               	/* function Leds_greenOn size 18 (15) */
+ 447               	.Lscope4:
+ 449               	.global	Leds_greenOff
+ 451               	Leds_greenOff:
+  77:led.c         **** 
+  78:led.c         **** uint8_t Leds_greenOff(void)
+  79:led.c         **** {
+ 453               	.LM37:
+ 454               	/* prologue: frame size=0 */
+ 455 00cc 1F93      		push r17
+ 456               	/* prologue end (size=1) */
+ 457               	.LBB7:
+  80:led.c         ****     { os_atomic_t _nesc_atomic = os_atomic_start();
+ 459               	.LM38:
+ 460 00ce 0E94 0000 		call os_atomic_start
+ 461 00d2 182F      		mov r17,r24
+  81:led.c         ****     {
+  82:led.c         ****       OS_SET_GREEN_LED_PIN();
+ 463               	.LM39:
+ 464 00d4 0E94 0000 		call OS_SET_GREEN_LED_PIN
+  83:led.c         ****       LedsC_ledsOn &= ~LedsC_GREEN_BIT;
+ 466               	.LM40:
+ 467 00d8 8091 0000 		lds r24,LedsC_ledsOn
+ 468 00dc 8D7F      		andi r24,lo8(-3)
+ 469 00de 8093 0000 		sts LedsC_ledsOn,r24
+  84:led.c         ****     }
+  85:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 471               	.LM41:
+ 472 00e2 812F      		mov r24,r17
+ 473 00e4 0E94 0000 		call os_atomic_end
+ 474               	.LBE7:
+  86:led.c         ****   return SUCCESS;
+  87:led.c         **** }
+ 476               	.LM42:
+ 477 00e8 80E0      		ldi r24,lo8(0)
+ 478 00ea 90E0      		ldi r25,hi8(0)
+ 479               	/* epilogue: frame size=0 */
+ 480 00ec 1F91      		pop r17
+ 481 00ee 0895      		ret
+ 482               	/* epilogue end (size=2) */
+ 483               	/* function Leds_greenOff size 18 (15) */
+ 488               	.Lscope5:
+ 490               	.global	Leds_greenToggle
+ 492               	Leds_greenToggle:
+  88:led.c         **** uint8_t Leds_greenToggle(void)
+  89:led.c         **** 
+  90:led.c         **** {
+ 494               	.LM43:
+ 495               	/* prologue: frame size=0 */
+ 496 00f0 1F93      		push r17
+ 497 00f2 CF93      		push r28
+ 498               	/* prologue end (size=2) */
+ 499               	.LBB8:
+  91:led.c         ****   uint8_t rval;
+  92:led.c         ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 501               	.LM44:
+ 502 00f4 0E94 0000 		call os_atomic_start
+ 503 00f8 182F      		mov r17,r24
+  93:led.c         ****     {
+  94:led.c         ****       if (LedsC_ledsOn & LedsC_GREEN_BIT) {
+ 505               	.LM45:
+ 506 00fa 8091 0000 		lds r24,LedsC_ledsOn
+ 507 00fe 81FF      		sbrs r24,1
+ 508 0100 03C0      		rjmp .L11
+  95:led.c         ****         rval = Leds_greenOff();
+ 510               	.LM46:
+ 511 0102 0E94 0000 		call Leds_greenOff
+ 512 0106 02C0      		rjmp .L13
+ 513               	.L11:
+  96:led.c         ****         }
+  97:led.c         ****       else {
+  98:led.c         ****         rval = Leds_greenOn();
+ 515               	.LM47:
+ 516 0108 0E94 0000 		call Leds_greenOn
+ 517               	.L13:
+ 518 010c C82F      		mov r28,r24
+  99:led.c         ****         }
+ 100:led.c         ****     }
+ 101:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 520               	.LM48:
+ 521 010e 812F      		mov r24,r17
+ 522 0110 0E94 0000 		call os_atomic_end
+ 523               	.LBE8:
+ 102:led.c         ****   return rval;
+ 103:led.c         **** }
+ 525               	.LM49:
+ 526 0114 8C2F      		mov r24,r28
+ 527 0116 9927      		clr r25
+ 528               	/* epilogue: frame size=0 */
+ 529 0118 CF91      		pop r28
+ 530 011a 1F91      		pop r17
+ 531 011c 0895      		ret
+ 532               	/* epilogue end (size=3) */
+ 533               	/* function Leds_greenToggle size 23 (18) */
+ 541               	.Lscope6:
+ 543               	.global	Leds_redOn
+ 545               	Leds_redOn:
+ 104:led.c         **** 
+ 105:led.c         **** uint8_t Leds_redOn(void)
+ 106:led.c         **** {
+ 547               	.LM50:
+ 548               	/* prologue: frame size=0 */
+ 549 011e 1F93      		push r17
+ 550               	/* prologue end (size=1) */
+ 551               	.LBB9:
+ 107:led.c         ****    { os_atomic_t _nesc_atomic = os_atomic_start();
+ 553               	.LM51:
+ 554 0120 0E94 0000 		call os_atomic_start
+ 555 0124 182F      		mov r17,r24
+ 108:led.c         ****     {
+ 109:led.c         ****       OS_CLR_RED_LED_PIN();
+ 557               	.LM52:
+ 558 0126 0E94 0000 		call OS_CLR_RED_LED_PIN
+ 110:led.c         ****       LedsC_ledsOn |= LedsC_RED_BIT;
+ 560               	.LM53:
+ 561 012a 8091 0000 		lds r24,LedsC_ledsOn
+ 562 012e 8160      		ori r24,lo8(1)
+ 563 0130 8093 0000 		sts LedsC_ledsOn,r24
+ 111:led.c         ****     }
+ 112:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 565               	.LM54:
+ 566 0134 812F      		mov r24,r17
+ 567 0136 0E94 0000 		call os_atomic_end
+ 568               	.LBE9:
+ 113:led.c         ****   return SUCCESS;
+ 114:led.c         **** }
+ 570               	.LM55:
+ 571 013a 80E0      		ldi r24,lo8(0)
+ 572 013c 90E0      		ldi r25,hi8(0)
+ 573               	/* epilogue: frame size=0 */
+ 574 013e 1F91      		pop r17
+ 575 0140 0895      		ret
+ 576               	/* epilogue end (size=2) */
+ 577               	/* function Leds_redOn size 18 (15) */
+ 582               	.Lscope7:
+ 584               	.global	Leds_redOff
+ 586               	Leds_redOff:
+ 115:led.c         **** 
+ 116:led.c         **** uint8_t Leds_redOff(void)
+ 117:led.c         **** {
+ 588               	.LM56:
+ 589               	/* prologue: frame size=0 */
+ 590 0142 1F93      		push r17
+ 591               	/* prologue end (size=1) */
+ 592               	.LBB10:
+ 118:led.c         ****    { os_atomic_t _nesc_atomic = os_atomic_start();
+ 594               	.LM57:
+ 595 0144 0E94 0000 		call os_atomic_start
+ 596 0148 182F      		mov r17,r24
+ 119:led.c         ****     {
+ 120:led.c         ****       OS_SET_RED_LED_PIN();
+ 598               	.LM58:
+ 599 014a 0E94 0000 		call OS_SET_RED_LED_PIN
+ 121:led.c         ****       LedsC_ledsOn &= ~LedsC_RED_BIT;
+ 601               	.LM59:
+ 602 014e 8091 0000 		lds r24,LedsC_ledsOn
+ 603 0152 8E7F      		andi r24,lo8(-2)
+ 604 0154 8093 0000 		sts LedsC_ledsOn,r24
+ 122:led.c         ****     }
+ 123:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 606               	.LM60:
+ 607 0158 812F      		mov r24,r17
+ 608 015a 0E94 0000 		call os_atomic_end
+ 609               	.LBE10:
+ 124:led.c         ****   return SUCCESS;
+ 125:led.c         **** }
+ 611               	.LM61:
+ 612 015e 80E0      		ldi r24,lo8(0)
+ 613 0160 90E0      		ldi r25,hi8(0)
+ 614               	/* epilogue: frame size=0 */
+ 615 0162 1F91      		pop r17
+ 616 0164 0895      		ret
+ 617               	/* epilogue end (size=2) */
+ 618               	/* function Leds_redOff size 18 (15) */
+ 623               	.Lscope8:
+ 625               	.global	Leds_redToggle
+ 627               	Leds_redToggle:
+ 126:led.c         **** 
+ 127:led.c         **** uint8_t Leds_redToggle(void)
+ 128:led.c         **** {
+ 629               	.LM62:
+ 630               	/* prologue: frame size=0 */
+ 631 0166 1F93      		push r17
+ 632 0168 CF93      		push r28
+ 633               	/* prologue end (size=2) */
+ 634               	.LBB11:
+ 129:led.c         ****   uint8_t rval;
+ 130:led.c         ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 636               	.LM63:
+ 637 016a 0E94 0000 		call os_atomic_start
+ 638 016e 182F      		mov r17,r24
+ 131:led.c         ****     {
+ 132:led.c         ****       if (LedsC_ledsOn & LedsC_RED_BIT) {
+ 640               	.LM64:
+ 641 0170 8091 0000 		lds r24,LedsC_ledsOn
+ 642 0174 80FF      		sbrs r24,0
+ 643 0176 03C0      		rjmp .L17
+ 133:led.c         ****         rval = Leds_redOff();
+ 645               	.LM65:
+ 646 0178 0E94 0000 		call Leds_redOff
+ 647 017c 02C0      		rjmp .L19
+ 648               	.L17:
+ 134:led.c         ****         }
+ 135:led.c         ****       else {
+ 136:led.c         ****         rval = Leds_redOn();
+ 650               	.LM66:
+ 651 017e 0E94 0000 		call Leds_redOn
+ 652               	.L19:
+ 653 0182 C82F      		mov r28,r24
+ 137:led.c         ****         }
+ 138:led.c         ****     }
+ 139:led.c         ****     os_atomic_end(_nesc_atomic); }
+ 655               	.LM67:
+ 656 0184 812F      		mov r24,r17
+ 657 0186 0E94 0000 		call os_atomic_end
+ 658               	.LBE11:
+ 140:led.c         ****   return rval;
+ 141:led.c         **** }
+ 660               	.LM68:
+ 661 018a 8C2F      		mov r24,r28
+ 662 018c 9927      		clr r25
+ 663               	/* epilogue: frame size=0 */
+ 664 018e CF91      		pop r28
+ 665 0190 1F91      		pop r17
+ 666 0192 0895      		ret
+ 667               	/* epilogue end (size=3) */
+ 668               	/* function Leds_redToggle size 23 (18) */
+ 676               	.Lscope9:
+ 677               		.comm OS_queue,16,1
+ 678               		.comm OS_sched_full,1,1
+ 679               		.comm OS_sched_free,1,1
+ 680               		.comm currentTime,2,1
+ 681               		.comm head_of_systimer_queue,2,1
+ 682               		.comm timestamp_H,2,1
+ 683               		.comm mState,4,1
+ 684               		.comm setIntervalFlag,1,1
+ 685               		.comm mScale,1,1
+ 686               		.comm mInterval,1,1
+ 687               		.comm queue_head,1,1
+ 688               		.comm queue_tail,1,1
+ 689               		.comm queue_size,1,1
+ 690               		.comm queue,3,1
+ 691               		.comm mTimerList,33,1
+ 692               		.comm cc2420_bramspi,1,1
+ 693               		.comm cc2420_rambuf,2,1
+ 694               		.comm cc2420_ramlen,1,1
+ 695               		.comm cc2420_ramaddr,2,1
+ 696               		.comm cc2420fifo_bspi,1,1
+ 697               		.comm cc2420fifo_txbuf,2,1
+ 698               		.comm cc2420fifo_txlength,1,1
+ 699               		.comm cc2420_rxbuf,4,1
+ 700               		.comm cc2420_rxlength,1,1
+ 701               		.comm cc2420_rxbuf_now,2,1
+ 702               		.comm cc2420_rxlength_now,1,1
+ 703               		.comm cc2420_rxbufuse,1,1
+ 704               		.comm rfpackernum,1,1
+ 705               		.comm cc2420_rxflag,1,1
+ 706               		.comm cc2420_currentparameters,28,1
+ 707               		.comm receive_timestamp,4,1
+ 708               		.comm send_timestamp,4,1
+ 709               		.comm cc2420_stateRadio,1,1
+ 710               		.comm cc2420_LocalAddr,2,1
+ 711               		.comm ieee_address,8,1
+ 712               		.comm backoff_timer_Set,1,1
+ 713               		.comm backoff_call,2,1
+ 714               		.comm GTSDirectionMask,1,1
+ 715               		.comm phy_channel_state,1,1
+ 716               		.comm rxbuf_flag,1,1
+ 717               		.comm ppib,3,1
+ 718               		.comm SENSOR_DATA_VALUE,20,1
+ 719               		.comm ADC_INTERRUPT_FLAG,1,1
+ 720               		.comm LedsC_ledsOn,1,1
+ 765               		.text
+ 767               	Letext:
+ 768               	/* File "led.c": code  202 = 0x00ca ( 166), prologues  13, epilogues  23 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 led.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:221    .text:00000000 Leds_init
+                            *COM*:00000001 LedsC_ledsOn
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:275    .text:00000032 Leds_yellowOn
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:316    .text:00000056 Leds_yellowOff
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:357    .text:0000007a Leds_yellowToggle
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:410    .text:000000a8 Leds_greenOn
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:451    .text:000000cc Leds_greenOff
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:492    .text:000000f0 Leds_greenToggle
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:545    .text:0000011e Leds_redOn
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:586    .text:00000142 Leds_redOff
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:627    .text:00000166 Leds_redToggle
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/ccQ5aaaa.s:767    .text:00000194 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+os_atomic_start
+OS_MAKE_RED_LED_OUTPUT
+OS_MAKE_YELLOW_LED_OUTPUT
+OS_MAKE_GREEN_LED_OUTPUT
+OS_SET_RED_LED_PIN
+OS_SET_YELLOW_LED_PIN
+OS_SET_GREEN_LED_PIN
+os_atomic_end
+OS_CLR_YELLOW_LED_PIN
+OS_CLR_GREEN_LED_PIN
+OS_CLR_RED_LED_PIN

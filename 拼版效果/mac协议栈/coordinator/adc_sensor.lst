@@ -1,0 +1,328 @@
+   1               		.file	"adc_sensor.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	adc_init
+ 221               	adc_init:
+   1:adc_sensor.c  **** #include "adc_sensor.h"
+   2:adc_sensor.c  **** //added by liulingyi 
+   3:adc_sensor.c  **** 
+   4:adc_sensor.c  **** uint8_t  adc_init(void)
+   5:adc_sensor.c  **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+ 226               	.LBB2:
+   6:adc_sensor.c  ****      { 
+   7:adc_sensor.c  ****            os_atomic_t _nesc_atomic = os_atomic_start();
+ 228               	.LM2:
+ 229 0000 0E94 0000 		call os_atomic_start
+   8:adc_sensor.c  **** 		  {
+   9:adc_sensor.c  ****            //ADC控制寄存器中ADIE位和ADSC位清零 
+  10:adc_sensor.c  ****                   ADCSRA &=0x86;
+ 231               	.LM3:
+ 232 0004 96B1      		in r25,38-0x20
+ 233 0006 9678      		andi r25,lo8(-122)
+ 234 0008 96B9      		out 38-0x20,r25
+  11:adc_sensor.c  ****            //设置参考电压，配置为默认情形
+  12:adc_sensor.c  ****                   ADMUX=0;
+ 236               	.LM4:
+ 237 000a 17B8      		out 39-0x20,__zero_reg__
+  13:adc_sensor.c  ****            	}
+  14:adc_sensor.c  ****           os_atomic_end(_nesc_atomic);
+ 239               	.LM5:
+ 240 000c 0E94 0000 		call os_atomic_end
+ 241               	.LBE2:
+  15:adc_sensor.c  ****      }
+  16:adc_sensor.c  ****     ADC_INTERRUPT_FLAG=0;
+ 243               	.LM6:
+ 244 0010 1092 0000 		sts ADC_INTERRUPT_FLAG,__zero_reg__
+ 245               	/* epilogue: frame size=0 */
+ 246 0014 0895      		ret
+ 247               	/* epilogue end (size=1) */
+ 248               	/* function adc_init size 11 (10) */
+ 250               	.Lscope0:
+ 252               	.global	sensor_init
+ 254               	sensor_init:
+  17:adc_sensor.c  **** 	 
+  18:adc_sensor.c  **** }
+  19:adc_sensor.c  **** 
+  20:adc_sensor.c  **** uint8_t  sensor_init(void)
+  21:adc_sensor.c  **** {
+ 256               	.LM7:
+ 257               	/* prologue: frame size=0 */
+ 258 0016 1F93      		push r17
+ 259               	/* prologue end (size=1) */
+ 260               	.LBB3:
+  22:adc_sensor.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 262               	.LM8:
+ 263 0018 0E94 0000 		call os_atomic_start
+ 264 001c 182F      		mov r17,r24
+  23:adc_sensor.c  **** 
+  24:adc_sensor.c  ****     {
+  25:adc_sensor.c  ****      
+  26:adc_sensor.c  ****       
+  27:adc_sensor.c  ****       OS_MAKE_INT1_OUTPUT();
+ 266               	.LM9:
+ 267 001e 0E94 0000 		call OS_MAKE_INT1_OUTPUT
+  28:adc_sensor.c  ****       OS_SET_INT1_PIN();
+ 269               	.LM10:
+ 270 0022 0E94 0000 		call OS_SET_INT1_PIN
+  29:adc_sensor.c  ****       //whether to configure  the INT2 pin???
+  30:adc_sensor.c  ****     }
+  31:adc_sensor.c  **** 
+  32:adc_sensor.c  ****     os_atomic_end(_nesc_atomic); }           
+ 272               	.LM11:
+ 273 0026 812F      		mov r24,r17
+ 274 0028 0E94 0000 		call os_atomic_end
+ 275               	.LBE3:
+ 276               	/* epilogue: frame size=0 */
+ 277 002c 1F91      		pop r17
+ 278 002e 0895      		ret
+ 279               	/* epilogue end (size=2) */
+ 280               	/* function sensor_init size 13 (10) */
+ 285               	.Lscope1:
+ 287               	.global	read_data_task
+ 289               	read_data_task:
+  33:adc_sensor.c  ****           
+  34:adc_sensor.c  **** }
+  35:adc_sensor.c  **** 
+  36:adc_sensor.c  **** void read_data_task(void)
+  37:adc_sensor.c  **** {
+ 291               	.LM12:
+ 292               	/* prologue: frame size=0 */
+ 293 0030 1F93      		push r17
+ 294 0032 CF93      		push r28
+ 295 0034 DF93      		push r29
+ 296               	/* prologue end (size=3) */
+ 297 0036 19E0      		ldi r17,lo8(9)
+ 298 0038 C0E0      		ldi r28,lo8(SENSOR_DATA_VALUE)
+ 299 003a D0E0      		ldi r29,hi8(SENSOR_DATA_VALUE)
+ 300               	.L9:
+  38:adc_sensor.c  ****   uint8_t loopnum=0;
+  39:adc_sensor.c  ****   while (loopnum<10)
+  40:adc_sensor.c  ****   {
+  41:adc_sensor.c  ****   
+  42:adc_sensor.c  ****   SENSOR_DATA_VALUE[loopnum]=0;
+ 302               	.LM13:
+ 303 003c 1882      		st Y,__zero_reg__
+ 304 003e 1982      		std Y+1,__zero_reg__
+ 305               	.LBB4:
+  43:adc_sensor.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 307               	.LM14:
+ 308 0040 0E94 0000 		call os_atomic_start
+  44:adc_sensor.c  **** 
+  45:adc_sensor.c  ****     {
+  46:adc_sensor.c  ****      //设置ADMUX寄存器
+  47:adc_sensor.c  ****          ADMUX |=0x01;  
+ 310               	.LM15:
+ 311 0044 389A      		sbi 39-0x20,0
+  48:adc_sensor.c  ****      //AD使能开始AD转换
+  49:adc_sensor.c  ****          ADCSRA |=0xe7; 
+ 313               	.LM16:
+ 314 0046 96B1      		in r25,38-0x20
+ 315 0048 976E      		ori r25,lo8(-25)
+ 316 004a 96B9      		out 38-0x20,r25
+  50:adc_sensor.c  ****      }
+  51:adc_sensor.c  **** 
+  52:adc_sensor.c  ****     os_atomic_end(_nesc_atomic); }       
+ 318               	.LM17:
+ 319 004c 0E94 0000 		call os_atomic_end
+ 320               	.LBE4:
+  53:adc_sensor.c  **** 
+  54:adc_sensor.c  ****      //查询ADCSRA中断，
+  55:adc_sensor.c  ****   
+  56:adc_sensor.c  ****    while(ADC_INTERRUPT_FLAG==0)
+  57:adc_sensor.c  ****    	{    
+  58:adc_sensor.c  ****    	      ADC_INTERRUPT_FLAG=(ADCSRA&0x10);
+ 322               	.LM18:
+ 323 0050 8091 0000 		lds r24,ADC_INTERRUPT_FLAG
+ 324 0054 8823      		tst r24
+ 325 0056 39F4      		brne .L13
+ 326               	.L8:
+ 327 0058 86B1      		in r24,38-0x20
+ 328 005a 982F      		mov r25,r24
+ 329 005c 9071      		andi r25,lo8(16)
+ 330 005e 84FF      		sbrs r24,4
+ 331 0060 FBCF      		rjmp .L8
+ 332 0062 9093 0000 		sts ADC_INTERRUPT_FLAG,r25
+ 333               	.L13:
+  59:adc_sensor.c  ****    	}
+  60:adc_sensor.c  ****   
+  61:adc_sensor.c  ****     //读取ADCH和ADCL
+  62:adc_sensor.c  ****     
+  63:adc_sensor.c  ****     SENSOR_DATA_VALUE[loopnum]=ADCL;
+ 335               	.LM19:
+ 336 0066 84B1      		in r24,36-0x20
+ 337 0068 282F      		mov r18,r24
+ 338 006a 3327      		clr r19
+ 339 006c 2883      		st Y,r18
+ 340 006e 3983      		std Y+1,r19
+  64:adc_sensor.c  ****     SENSOR_DATA_VALUE[loopnum]+=(ADCH<<8);
+ 342               	.LM20:
+ 343 0070 85B1      		in r24,37-0x20
+ 344 0072 9927      		clr r25
+ 345 0074 982F      		mov r25,r24
+ 346 0076 8827      		clr r24
+ 347 0078 280F      		add r18,r24
+ 348 007a 391F      		adc r19,r25
+ 349 007c 2993      		st Y+,r18
+ 350 007e 3993      		st Y+,r19
+ 351               	.LBB5:
+  65:adc_sensor.c  ****   //printf("sensor is %04x\n",SENSOR_DATA_VALUE[loopnum]);
+  66:adc_sensor.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 353               	.LM21:
+ 354 0080 0E94 0000 		call os_atomic_start
+  67:adc_sensor.c  **** 
+  68:adc_sensor.c  ****     {
+  69:adc_sensor.c  ****      //清除ADC中断标志
+  70:adc_sensor.c  ****           ADCSRA |=0x10;
+ 356               	.LM22:
+ 357 0084 349A      		sbi 38-0x20,4
+  71:adc_sensor.c  ****      //关闭ADC转换使能
+  72:adc_sensor.c  ****           //ADCSRA &=0x7f;
+  73:adc_sensor.c  ****     	}
+  74:adc_sensor.c  ****       os_atomic_end(_nesc_atomic); }  
+ 359               	.LM23:
+ 360 0086 0E94 0000 		call os_atomic_end
+ 361               	.LBE5:
+  75:adc_sensor.c  **** 	  
+  76:adc_sensor.c  ****    //printf("sensor is %04x\n",SENSOR_DATA_VALUE);
+  77:adc_sensor.c  ****   // SENSOR_DATA_VALUE=0;
+  78:adc_sensor.c  ****    adc_init();
+ 363               	.LM24:
+ 364 008a 0E94 0000 		call adc_init
+  79:adc_sensor.c  ****    //
+  80:adc_sensor.c  ****    //OS_CLR_INT1_PIN();
+  81:adc_sensor.c  ****    ADC_INTERRUPT_FLAG=0;
+ 366               	.LM25:
+ 367 008e 1092 0000 		sts ADC_INTERRUPT_FLAG,__zero_reg__
+  82:adc_sensor.c  ****    //sensor_init();
+  83:adc_sensor.c  **** loopnum++;
+ 369               	.LM26:
+ 370 0092 1150      		subi r17,lo8(-(-1))
+ 371 0094 17FF      		sbrs r17,7
+ 372 0096 D2CF      		rjmp .L9
+ 373               	/* epilogue: frame size=0 */
+ 374 0098 DF91      		pop r29
+ 375 009a CF91      		pop r28
+ 376 009c 1F91      		pop r17
+ 377 009e 0895      		ret
+ 378               	/* epilogue end (size=4) */
+ 379               	/* function read_data_task size 56 (49) */
+ 384               	.Lscope2:
+ 385               		.comm OS_queue,16,1
+ 386               		.comm OS_sched_full,1,1
+ 387               		.comm OS_sched_free,1,1
+ 388               		.comm currentTime,2,1
+ 389               		.comm head_of_systimer_queue,2,1
+ 390               		.comm timestamp_H,2,1
+ 391               		.comm mState,4,1
+ 392               		.comm setIntervalFlag,1,1
+ 393               		.comm mScale,1,1
+ 394               		.comm mInterval,1,1
+ 395               		.comm queue_head,1,1
+ 396               		.comm queue_tail,1,1
+ 397               		.comm queue_size,1,1
+ 398               		.comm queue,3,1
+ 399               		.comm mTimerList,33,1
+ 400               		.comm cc2420_bramspi,1,1
+ 401               		.comm cc2420_rambuf,2,1
+ 402               		.comm cc2420_ramlen,1,1
+ 403               		.comm cc2420_ramaddr,2,1
+ 404               		.comm cc2420fifo_bspi,1,1
+ 405               		.comm cc2420fifo_txbuf,2,1
+ 406               		.comm cc2420fifo_txlength,1,1
+ 407               		.comm cc2420_rxbuf,4,1
+ 408               		.comm cc2420_rxlength,1,1
+ 409               		.comm cc2420_rxbuf_now,2,1
+ 410               		.comm cc2420_rxlength_now,1,1
+ 411               		.comm cc2420_rxbufuse,1,1
+ 412               		.comm rfpackernum,1,1
+ 413               		.comm cc2420_rxflag,1,1
+ 414               		.comm cc2420_currentparameters,28,1
+ 415               		.comm receive_timestamp,4,1
+ 416               		.comm send_timestamp,4,1
+ 417               		.comm cc2420_stateRadio,1,1
+ 418               		.comm cc2420_LocalAddr,2,1
+ 419               		.comm ieee_address,8,1
+ 420               		.comm backoff_timer_Set,1,1
+ 421               		.comm backoff_call,2,1
+ 422               		.comm GTSDirectionMask,1,1
+ 423               		.comm phy_channel_state,1,1
+ 424               		.comm rxbuf_flag,1,1
+ 425               		.comm ppib,3,1
+ 426               		.comm SENSOR_DATA_VALUE,20,1
+ 427               		.comm ADC_INTERRUPT_FLAG,1,1
+ 471               		.text
+ 473               	Letext:
+ 474               	/* File "adc_sensor.c": code   80 = 0x0050 (  69), prologues   4, epilogues   7 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 adc_sensor.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:221    .text:00000000 adc_init
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:254    .text:00000016 sensor_init
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:289    .text:00000030 read_data_task
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+C:\Users\sunhejie\AppData\Local\Temp/cc8Qaaaa.s:473    .text:000000a0 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+os_atomic_start
+os_atomic_end
+OS_MAKE_INT1_OUTPUT
+OS_SET_INT1_PIN

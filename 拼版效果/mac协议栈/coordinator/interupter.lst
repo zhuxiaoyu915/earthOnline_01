@@ -1,0 +1,737 @@
+   1               		.file	"interupter.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	__vector_7
+ 221               	__vector_7:
+   1:interupter.c  **** #include "interupter.h"
+   2:interupter.c  **** 
+   3:interupter.c  **** //---------------------------------------------------------fifop中断(pe6)
+   4:interupter.c  **** void __attribute((signal))   __vector_7(void)
+   5:interupter.c  **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225 0000 1F92      		push __zero_reg__
+ 226 0002 0F92      		push __tmp_reg__
+ 227 0004 0FB6      		in __tmp_reg__,__SREG__
+ 228 0006 0F92      		push __tmp_reg__
+ 229 0008 1124      		clr __zero_reg__
+ 230 000a 2F93      		push r18
+ 231 000c 3F93      		push r19
+ 232 000e 4F93      		push r20
+ 233 0010 5F93      		push r21
+ 234 0012 6F93      		push r22
+ 235 0014 7F93      		push r23
+ 236 0016 8F93      		push r24
+ 237 0018 9F93      		push r25
+ 238 001a AF93      		push r26
+ 239 001c BF93      		push r27
+ 240 001e EF93      		push r30
+ 241 0020 FF93      		push r31
+ 242               	/* prologue end (size=17) */
+   6:interupter.c  **** 	
+   7:interupter.c  ****                cc2420_fifopintr();
+ 244               	.LM2:
+ 245 0022 0E94 0000 		call cc2420_fifopintr
+ 246               	/* epilogue: frame size=0 */
+ 247 0026 FF91      		pop r31
+ 248 0028 EF91      		pop r30
+ 249 002a BF91      		pop r27
+ 250 002c AF91      		pop r26
+ 251 002e 9F91      		pop r25
+ 252 0030 8F91      		pop r24
+ 253 0032 7F91      		pop r23
+ 254 0034 6F91      		pop r22
+ 255 0036 5F91      		pop r21
+ 256 0038 4F91      		pop r20
+ 257 003a 3F91      		pop r19
+ 258 003c 2F91      		pop r18
+ 259 003e 0F90      		pop __tmp_reg__
+ 260 0040 0FBE      		out __SREG__,__tmp_reg__
+ 261 0042 0F90      		pop __tmp_reg__
+ 262 0044 1F90      		pop __zero_reg__
+ 263 0046 1895      		reti
+ 264               	/* epilogue end (size=17) */
+ 265               	/* function __vector_7 size 36 (2) */
+ 267               	.Lscope0:
+ 269               	.global	__vector_12
+ 271               	__vector_12:
+   8:interupter.c  **** 	
+   9:interupter.c  **** }
+  10:interupter.c  **** 
+  11:interupter.c  **** //----------------------------------------------------------定时器1 比较a 中断
+  12:interupter.c  **** void __attribute((interrupt))   __vector_12(void)
+  13:interupter.c  **** {
+ 273               	.LM3:
+ 274               	/* prologue: frame size=0 */
+ 275 0048 7894      		sei
+ 276 004a 1F92      		push __zero_reg__
+ 277 004c 0F92      		push __tmp_reg__
+ 278 004e 0FB6      		in __tmp_reg__,__SREG__
+ 279 0050 0F92      		push __tmp_reg__
+ 280 0052 1124      		clr __zero_reg__
+ 281 0054 EF92      		push r14
+ 282 0056 FF92      		push r15
+ 283 0058 0F93      		push r16
+ 284 005a 1F93      		push r17
+ 285 005c 2F93      		push r18
+ 286 005e 3F93      		push r19
+ 287 0060 4F93      		push r20
+ 288 0062 5F93      		push r21
+ 289 0064 6F93      		push r22
+ 290 0066 7F93      		push r23
+ 291 0068 8F93      		push r24
+ 292 006a 9F93      		push r25
+ 293 006c AF93      		push r26
+ 294 006e BF93      		push r27
+ 295 0070 CF93      		push r28
+ 296 0072 DF93      		push r29
+ 297 0074 EF93      		push r30
+ 298 0076 FF93      		push r31
+ 299               	/* prologue end (size=24) */
+  14:interupter.c  ****    uint16_t  temp_interval;
+  15:interupter.c  ****    uint8_t fire_reason;
+  16:interupter.c  ****    systimer_queue_pointer temp;
+  17:interupter.c  ****    uint32_t test;
+  18:interupter.c  ****    test=systime32();
+ 301               	.LM4:
+ 302 0078 0E94 0000 		call systime32
+ 303 007c DC01      		movw r26,r24
+ 304 007e CB01      		movw r24,r22
+  19:interupter.c  ****    if(((head_of_systimer_queue->ticksLeft)&(0xffff0000))==(test&(0xffff0000)))
+ 306               	.LM5:
+ 307 0080 E091 0000 		lds r30,head_of_systimer_queue
+ 308 0084 F091 0000 		lds r31,(head_of_systimer_queue)+1
+ 309 0088 2381      		ldd r18,Z+3
+ 310 008a 3481      		ldd r19,Z+4
+ 311 008c 4581      		ldd r20,Z+5
+ 312 008e 5681      		ldd r21,Z+6
+ 313 0090 2070      		andi r18,lo8(-65536)
+ 314 0092 3070      		andi r19,hi8(-65536)
+ 315 0094 8070      		andi r24,lo8(-65536)
+ 316 0096 9070      		andi r25,hi8(-65536)
+ 317 0098 2817      		cp r18,r24
+ 318 009a 3907      		cpc r19,r25
+ 319 009c 4A07      		cpc r20,r26
+ 320 009e 5B07      		cpc r21,r27
+ 321 00a0 31F5      		brne .L2
+ 322               	.LBB2:
+  20:interupter.c  ****    	{
+  21:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 324               	.LM6:
+ 325 00a2 0E94 0000 		call os_atomic_start
+ 326 00a6 E82E      		mov r14,r24
+ 327               	.LBB3:
+  22:interupter.c  ****     {
+  23:interupter.c  **** 	   //if(((head_of_systimer_queue->ticksLeft)&&(0xffff0000))==((systime32())&&(0xffff0000)))	
+  24:interupter.c  ****   	   fire_reason=head_of_systimer_queue->timer_reason;
+ 329               	.LM7:
+ 330 00a8 0091 0000 		lds r16,head_of_systimer_queue
+ 331 00ac 1091 0000 		lds r17,(head_of_systimer_queue)+1
+ 332 00b0 F801      		movw r30,r16
+ 333 00b2 F080      		ld r15,Z
+  25:interupter.c  **** 	   temp=head_of_systimer_queue;
+  26:interupter.c  **** 	   //test=systime32();
+  27:interupter.c  **** 	   //printf("\nthe current timer is %08x",test);
+  28:interupter.c  ****           temp_interval=Timer1_getnextInterval();
+ 335               	.LM8:
+ 336 00b4 0E94 0000 		call Timer1_getnextInterval
+ 337 00b8 EC01      		movw r28,r24
+  29:interupter.c  **** 	   head_of_systimer_queue=head_of_systimer_queue->next;
+ 339               	.LM9:
+ 340 00ba E091 0000 		lds r30,head_of_systimer_queue
+ 341 00be F091 0000 		lds r31,(head_of_systimer_queue)+1
+ 342 00c2 8785      		ldd r24,Z+15
+ 343 00c4 9089      		ldd r25,Z+16
+ 344 00c6 9093 0000 		sts (head_of_systimer_queue)+1,r25
+ 345 00ca 8093 0000 		sts head_of_systimer_queue,r24
+  30:interupter.c  **** 	   //temp_interval=TCNT1+100;
+  31:interupter.c  **** 	   free(temp);
+ 347               	.LM10:
+ 348 00ce C801      		movw r24,r16
+ 349 00d0 0E94 0000 		call free
+  32:interupter.c  ****           if(temp_interval!=0)
+ 351               	.LM11:
+ 352 00d4 2097      		sbiw r28,0
+ 353 00d6 19F0      		breq .L4
+  33:interupter.c  **** 	      OCR1A=temp_interval;
+ 355               	.LM12:
+ 356 00d8 DBBD      		out (74)+1-0x20,r29
+ 357 00da CABD      		out 74-0x20,r28
+ 358 00dc 02C0      		rjmp .L5
+ 359               	.L4:
+ 360               	.LBB4:
+  34:interupter.c  **** 	   else
+  35:interupter.c  **** 	   	{    
+  36:interupter.c  **** 	   	     //printf("\ntimer1 disable");
+  37:interupter.c  **** 	            Timer1_OCR_intDisable();
+ 362               	.LM13:
+ 363 00de 0E94 0000 		call Timer1_OCR_intDisable
+ 364               	.L5:
+ 365               	.LBE4:
+ 366               	.LBE3:
+  38:interupter.c  **** 	   	}
+  39:interupter.c  **** 	    
+  40:interupter.c  ****       }
+  41:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 368               	.LM14:
+ 369 00e2 8E2D      		mov r24,r14
+ 370 00e4 0E94 0000 		call os_atomic_end
+ 371               	.LBE2:
+  42:interupter.c  ****     	
+  43:interupter.c  ****     systimer_task_fire(fire_reason);
+ 373               	.LM15:
+ 374 00e8 8F2D      		mov r24,r15
+ 375 00ea 0E94 0000 		call systimer_task_fire
+ 376               	.L2:
+ 377               	/* epilogue: frame size=0 */
+ 378 00ee FF91      		pop r31
+ 379 00f0 EF91      		pop r30
+ 380 00f2 DF91      		pop r29
+ 381 00f4 CF91      		pop r28
+ 382 00f6 BF91      		pop r27
+ 383 00f8 AF91      		pop r26
+ 384 00fa 9F91      		pop r25
+ 385 00fc 8F91      		pop r24
+ 386 00fe 7F91      		pop r23
+ 387 0100 6F91      		pop r22
+ 388 0102 5F91      		pop r21
+ 389 0104 4F91      		pop r20
+ 390 0106 3F91      		pop r19
+ 391 0108 2F91      		pop r18
+ 392 010a 1F91      		pop r17
+ 393 010c 0F91      		pop r16
+ 394 010e FF90      		pop r15
+ 395 0110 EF90      		pop r14
+ 396 0112 0F90      		pop __tmp_reg__
+ 397 0114 0FBE      		out __SREG__,__tmp_reg__
+ 398 0116 0F90      		pop __tmp_reg__
+ 399 0118 1F90      		pop __zero_reg__
+ 400 011a 1895      		reti
+ 401               	/* epilogue end (size=23) */
+ 402               	/* function __vector_12 size 106 (59) */
+ 412               	.Lscope1:
+ 414               	.global	__vector_11
+ 416               	__vector_11:
+  44:interupter.c  ****    	}
+  45:interupter.c  ****    /*
+  46:interupter.c  ****    else
+  47:interupter.c  ****    	{ 
+  48:interupter.c  ****    	if(((head_of_systimer_queue->ticksLeft)&(0x3fff0000))==(test&(0x3fff0000)))
+  49:interupter.c  ****    	      head_of_systimer_queue->high_left=head_of_systimer_queue->high_left-0x40000000;
+  50:interupter.c  ****    	OCR1A=head_of_systimer_queue->ticks;
+  51:interupter.c  ****    	}
+  52:interupter.c  ****    	*/
+  53:interupter.c  **** }
+  54:interupter.c  **** void __attribute((interrupt))   __vector_11(void)//定时器1-- input capture interrupt
+  55:interupter.c  **** {
+ 418               	.LM16:
+ 419               	/* prologue: frame size=0 */
+ 420 011c 7894      		sei
+ 421 011e 1F92      		push __zero_reg__
+ 422 0120 0F92      		push __tmp_reg__
+ 423 0122 0FB6      		in __tmp_reg__,__SREG__
+ 424 0124 0F92      		push __tmp_reg__
+ 425 0126 1124      		clr __zero_reg__
+ 426 0128 1F93      		push r17
+ 427 012a 2F93      		push r18
+ 428 012c 3F93      		push r19
+ 429 012e 4F93      		push r20
+ 430 0130 5F93      		push r21
+ 431 0132 6F93      		push r22
+ 432 0134 7F93      		push r23
+ 433 0136 8F93      		push r24
+ 434 0138 9F93      		push r25
+ 435 013a AF93      		push r26
+ 436 013c BF93      		push r27
+ 437 013e EF93      		push r30
+ 438 0140 FF93      		push r31
+ 439               	/* prologue end (size=19) */
+ 440               	.LBB5:
+  56:interupter.c  ****    
+  57:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 442               	.LM17:
+ 443 0142 0E94 0000 		call os_atomic_start
+ 444 0146 182F      		mov r17,r24
+  58:interupter.c  ****       {      
+  59:interupter.c  ****           timestamp_H=systime16H();
+ 446               	.LM18:
+ 447 0148 0E94 0000 		call systime16H
+ 448 014c 9093 0000 		sts (timestamp_H)+1,r25
+ 449 0150 8093 0000 		sts timestamp_H,r24
+  60:interupter.c  ****       }
+  61:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 451               	.LM19:
+ 452 0154 812F      		mov r24,r17
+ 453 0156 0E94 0000 		call os_atomic_end
+ 454               	.LBE5:
+ 455               	/* epilogue: frame size=0 */
+ 456 015a FF91      		pop r31
+ 457 015c EF91      		pop r30
+ 458 015e BF91      		pop r27
+ 459 0160 AF91      		pop r26
+ 460 0162 9F91      		pop r25
+ 461 0164 8F91      		pop r24
+ 462 0166 7F91      		pop r23
+ 463 0168 6F91      		pop r22
+ 464 016a 5F91      		pop r21
+ 465 016c 4F91      		pop r20
+ 466 016e 3F91      		pop r19
+ 467 0170 2F91      		pop r18
+ 468 0172 1F91      		pop r17
+ 469 0174 0F90      		pop __tmp_reg__
+ 470 0176 0FBE      		out __SREG__,__tmp_reg__
+ 471 0178 0F90      		pop __tmp_reg__
+ 472 017a 1F90      		pop __zero_reg__
+ 473 017c 1895      		reti
+ 474               	/* epilogue end (size=18) */
+ 475               	/* function __vector_11 size 49 (12) */
+ 480               	.Lscope2:
+ 482               	.global	__vector_14
+ 484               	__vector_14:
+  62:interupter.c  ****     
+  63:interupter.c  **** }
+  64:interupter.c  **** 
+  65:interupter.c  **** void __attribute((interrupt))   __vector_14(void)//定时器1-- overflow interrupt
+  66:interupter.c  **** {
+ 486               	.LM20:
+ 487               	/* prologue: frame size=0 */
+ 488 017e 7894      		sei
+ 489 0180 1F92      		push __zero_reg__
+ 490 0182 0F92      		push __tmp_reg__
+ 491 0184 0FB6      		in __tmp_reg__,__SREG__
+ 492 0186 0F92      		push __tmp_reg__
+ 493 0188 1124      		clr __zero_reg__
+ 494 018a 2F93      		push r18
+ 495 018c 3F93      		push r19
+ 496 018e 4F93      		push r20
+ 497 0190 5F93      		push r21
+ 498 0192 6F93      		push r22
+ 499 0194 7F93      		push r23
+ 500 0196 8F93      		push r24
+ 501 0198 9F93      		push r25
+ 502 019a AF93      		push r26
+ 503 019c BF93      		push r27
+ 504 019e EF93      		push r30
+ 505 01a0 FF93      		push r31
+ 506               	/* prologue end (size=18) */
+ 507               	.LBB6:
+  67:interupter.c  ****    
+  68:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 509               	.LM21:
+ 510 01a2 0E94 0000 		call os_atomic_start
+  69:interupter.c  ****       {      
+  70:interupter.c  ****          //++currentTime;
+  71:interupter.c  **** 	  /*if(currentTime==0x3fffffff)
+  72:interupter.c  **** 	  	currentTime=0;
+  73:interupter.c  **** 	  else*/
+  74:interupter.c  **** 	  	++currentTime;
+ 512               	.LM22:
+ 513 01a6 2091 0000 		lds r18,currentTime
+ 514 01aa 3091 0000 		lds r19,(currentTime)+1
+ 515 01ae 2F5F      		subi r18,lo8(-(1))
+ 516 01b0 3F4F      		sbci r19,hi8(-(1))
+ 517 01b2 3093 0000 		sts (currentTime)+1,r19
+ 518 01b6 2093 0000 		sts currentTime,r18
+  75:interupter.c  ****       }
+  76:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 520               	.LM23:
+ 521 01ba 0E94 0000 		call os_atomic_end
+ 522               	.LBE6:
+ 523               	/* epilogue: frame size=0 */
+ 524 01be FF91      		pop r31
+ 525 01c0 EF91      		pop r30
+ 526 01c2 BF91      		pop r27
+ 527 01c4 AF91      		pop r26
+ 528 01c6 9F91      		pop r25
+ 529 01c8 8F91      		pop r24
+ 530 01ca 7F91      		pop r23
+ 531 01cc 6F91      		pop r22
+ 532 01ce 5F91      		pop r21
+ 533 01d0 4F91      		pop r20
+ 534 01d2 3F91      		pop r19
+ 535 01d4 2F91      		pop r18
+ 536 01d6 0F90      		pop __tmp_reg__
+ 537 01d8 0FBE      		out __SREG__,__tmp_reg__
+ 538 01da 0F90      		pop __tmp_reg__
+ 539 01dc 1F90      		pop __zero_reg__
+ 540 01de 1895      		reti
+ 541               	/* epilogue end (size=17) */
+ 542               	/* function __vector_14 size 49 (14) */
+ 544               	.Lscope3:
+ 546               	.global	__vector_9
+ 548               	__vector_9:
+  77:interupter.c  ****     
+  78:interupter.c  **** }
+  79:interupter.c  **** 
+  80:interupter.c  **** //----------------------------------------------------------定时器2中断
+  81:interupter.c  **** void __attribute((interrupt))   __vector_9(void)
+  82:interupter.c  **** {
+ 550               	.LM24:
+ 551               	/* prologue: frame size=0 */
+ 552 01e0 7894      		sei
+ 553 01e2 1F92      		push __zero_reg__
+ 554 01e4 0F92      		push __tmp_reg__
+ 555 01e6 0FB6      		in __tmp_reg__,__SREG__
+ 556 01e8 0F92      		push __tmp_reg__
+ 557 01ea 1124      		clr __zero_reg__
+ 558 01ec 1F93      		push r17
+ 559 01ee 2F93      		push r18
+ 560 01f0 3F93      		push r19
+ 561 01f2 4F93      		push r20
+ 562 01f4 5F93      		push r21
+ 563 01f6 6F93      		push r22
+ 564 01f8 7F93      		push r23
+ 565 01fa 8F93      		push r24
+ 566 01fc 9F93      		push r25
+ 567 01fe AF93      		push r26
+ 568 0200 BF93      		push r27
+ 569 0202 EF93      		push r30
+ 570 0204 FF93      		push r31
+ 571               	/* prologue end (size=19) */
+ 572               	.LBB7:
+  83:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 574               	.LM25:
+ 575 0206 0E94 0000 		call os_atomic_start
+ 576 020a 182F      		mov r17,r24
+ 577               	.LBB8:
+  84:interupter.c  ****     {
+  85:interupter.c  ****      		timer2_intDisable();
+ 579               	.LM26:
+ 580 020c 0E94 0000 		call timer2_intDisable
+  86:interupter.c  ****       		backoff_timer_Set = FALSE;
+ 582               	.LM27:
+ 583 0210 1092 0000 		sts backoff_timer_Set,__zero_reg__
+ 584               	.LBE8:
+  87:interupter.c  ****     }
+  88:interupter.c  ****     
+  89:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 586               	.LM28:
+ 587 0214 812F      		mov r24,r17
+ 588 0216 0E94 0000 		call os_atomic_end
+ 589               	.LBE7:
+  90:interupter.c  ****     backoff_timer_fire();
+ 591               	.LM29:
+ 592 021a 0E94 0000 		call backoff_timer_fire
+ 593               	/* epilogue: frame size=0 */
+ 594 021e FF91      		pop r31
+ 595 0220 EF91      		pop r30
+ 596 0222 BF91      		pop r27
+ 597 0224 AF91      		pop r26
+ 598 0226 9F91      		pop r25
+ 599 0228 8F91      		pop r24
+ 600 022a 7F91      		pop r23
+ 601 022c 6F91      		pop r22
+ 602 022e 5F91      		pop r21
+ 603 0230 4F91      		pop r20
+ 604 0232 3F91      		pop r19
+ 605 0234 2F91      		pop r18
+ 606 0236 1F91      		pop r17
+ 607 0238 0F90      		pop __tmp_reg__
+ 608 023a 0FBE      		out __SREG__,__tmp_reg__
+ 609 023c 0F90      		pop __tmp_reg__
+ 610 023e 1F90      		pop __zero_reg__
+ 611 0240 1895      		reti
+ 612               	/* epilogue end (size=18) */
+ 613               	/* function __vector_9 size 49 (12) */
+ 618               	.Lscope4:
+ 620               	.global	__vector_26
+ 622               	__vector_26:
+  91:interupter.c  **** }
+  92:interupter.c  **** 
+  93:interupter.c  **** //----------------------------------------------------------定时器3  溢出 中断
+  94:interupter.c  **** /*void __attribute((interrupt))   __vector_29(void)
+  95:interupter.c  **** {
+  96:interupter.c  **** 
+  97:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+  98:interupter.c  ****     {
+  99:interupter.c  ****       
+ 100:interupter.c  ****          
+ 101:interupter.c  ****       }
+ 102:interupter.c  ****        
+ 103:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 104:interupter.c  ****    
+ 105:interupter.c  **** }*/
+ 106:interupter.c  **** //------------------------------------------------------定时器3  比较a 中断
+ 107:interupter.c  **** //uint32_t  sys_time_1;
+ 108:interupter.c  **** void __attribute((interrupt))   __vector_26(void)
+ 109:interupter.c  **** {
+ 624               	.LM30:
+ 625               	/* prologue: frame size=0 */
+ 626 0242 7894      		sei
+ 627 0244 1F92      		push __zero_reg__
+ 628 0246 0F92      		push __tmp_reg__
+ 629 0248 0FB6      		in __tmp_reg__,__SREG__
+ 630 024a 0F92      		push __tmp_reg__
+ 631 024c 1124      		clr __zero_reg__
+ 632 024e 2F93      		push r18
+ 633 0250 3F93      		push r19
+ 634 0252 4F93      		push r20
+ 635 0254 5F93      		push r21
+ 636 0256 6F93      		push r22
+ 637 0258 7F93      		push r23
+ 638 025a 8F93      		push r24
+ 639 025c 9F93      		push r25
+ 640 025e AF93      		push r26
+ 641 0260 BF93      		push r27
+ 642 0262 CF93      		push r28
+ 643 0264 EF93      		push r30
+ 644 0266 FF93      		push r31
+ 645               	/* prologue end (size=19) */
+ 646               	.LBB9:
+ 110:interupter.c  ****    uint16_t  temp_interval;
+ 111:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 648               	.LM31:
+ 649 0268 0E94 0000 		call os_atomic_start
+ 650 026c C82F      		mov r28,r24
+ 112:interupter.c  ****     { 
+ 113:interupter.c  **** 	   //sys_time_1=systime32();
+ 114:interupter.c  ****           temp_interval=Timer3_getnextInterval();
+ 652               	.LM32:
+ 653 026e 0E94 0000 		call Timer3_getnextInterval
+ 115:interupter.c  ****           if(temp_interval!=0)
+ 655               	.LM33:
+ 656 0272 0097      		sbiw r24,0
+ 657 0274 29F0      		breq .L10
+ 116:interupter.c  **** 	      OCR3A=temp_interval;
+ 659               	.LM34:
+ 660 0276 9093 8700 		sts (134)+1,r25
+ 661 027a 8093 8600 		sts 134,r24
+ 662 027e 02C0      		rjmp .L11
+ 663               	.L10:
+ 117:interupter.c  **** 	   else
+ 118:interupter.c  **** 	      Timer3_intDisable();
+ 665               	.LM35:
+ 666 0280 0E94 0000 		call Timer3_intDisable
+ 667               	.L11:
+ 119:interupter.c  ****       }
+ 120:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 669               	.LM36:
+ 670 0284 8C2F      		mov r24,r28
+ 671 0286 0E94 0000 		call os_atomic_end
+ 672               	.LBE9:
+ 121:interupter.c  **** 	
+ 122:interupter.c  ****     Timer3_fire();
+ 674               	.LM37:
+ 675 028a 0E94 0000 		call Timer3_fire
+ 676               	/* epilogue: frame size=0 */
+ 677 028e FF91      		pop r31
+ 678 0290 EF91      		pop r30
+ 679 0292 CF91      		pop r28
+ 680 0294 BF91      		pop r27
+ 681 0296 AF91      		pop r26
+ 682 0298 9F91      		pop r25
+ 683 029a 8F91      		pop r24
+ 684 029c 7F91      		pop r23
+ 685 029e 6F91      		pop r22
+ 686 02a0 5F91      		pop r21
+ 687 02a2 4F91      		pop r20
+ 688 02a4 3F91      		pop r19
+ 689 02a6 2F91      		pop r18
+ 690 02a8 0F90      		pop __tmp_reg__
+ 691 02aa 0FBE      		out __SREG__,__tmp_reg__
+ 692 02ac 0F90      		pop __tmp_reg__
+ 693 02ae 1F90      		pop __zero_reg__
+ 694 02b0 1895      		reti
+ 695               	/* epilogue end (size=18) */
+ 696               	/* function __vector_26 size 56 (19) */
+ 704               	.Lscope5:
+ 706               	.global	__vector_15
+ 708               	__vector_15:
+ 123:interupter.c  ****     //printf("\n^^^timer3 interrupt occur^^OCR3A is %04x^^^systime is %08lx\n",OCR3A,sys_time_1);	
+ 124:interupter.c  **** }
+ 125:interupter.c  **** //---------------------------------------------------------定时器0中断
+ 126:interupter.c  **** void __attribute((interrupt))   __vector_15(void)
+ 127:interupter.c  **** {
+ 710               	.LM38:
+ 711               	/* prologue: frame size=0 */
+ 712 02b2 7894      		sei
+ 713 02b4 1F92      		push __zero_reg__
+ 714 02b6 0F92      		push __tmp_reg__
+ 715 02b8 0FB6      		in __tmp_reg__,__SREG__
+ 716 02ba 0F92      		push __tmp_reg__
+ 717 02bc 1124      		clr __zero_reg__
+ 718 02be 1F93      		push r17
+ 719 02c0 2F93      		push r18
+ 720 02c2 3F93      		push r19
+ 721 02c4 4F93      		push r20
+ 722 02c6 5F93      		push r21
+ 723 02c8 6F93      		push r22
+ 724 02ca 7F93      		push r23
+ 725 02cc 8F93      		push r24
+ 726 02ce 9F93      		push r25
+ 727 02d0 AF93      		push r26
+ 728 02d2 BF93      		push r27
+ 729 02d4 EF93      		push r30
+ 730 02d6 FF93      		push r31
+ 731               	/* prologue end (size=19) */
+ 732               	.LBB10:
+ 128:interupter.c  ****   { os_atomic_t _nesc_atomic = os_atomic_start();{
+ 734               	.LM39:
+ 735 02d8 0E94 0000 		call os_atomic_start
+ 736 02dc 182F      		mov r17,r24
+ 129:interupter.c  ****     
+ 130:interupter.c  ****     OS_post(&KERTimer_Fire);
+ 738               	.LM40:
+ 739 02de 80E0      		ldi r24,lo8(pm(KERTimer_Fire))
+ 740 02e0 90E0      		ldi r25,hi8(pm(KERTimer_Fire))
+ 741 02e2 0E94 0000 		call OS_post
+ 131:interupter.c  ****     }
+ 132:interupter.c  ****     os_atomic_end(_nesc_atomic); }
+ 743               	.LM41:
+ 744 02e6 812F      		mov r24,r17
+ 745 02e8 0E94 0000 		call os_atomic_end
+ 746               	.LBE10:
+ 747               	/* epilogue: frame size=0 */
+ 748 02ec FF91      		pop r31
+ 749 02ee EF91      		pop r30
+ 750 02f0 BF91      		pop r27
+ 751 02f2 AF91      		pop r26
+ 752 02f4 9F91      		pop r25
+ 753 02f6 8F91      		pop r24
+ 754 02f8 7F91      		pop r23
+ 755 02fa 6F91      		pop r22
+ 756 02fc 5F91      		pop r21
+ 757 02fe 4F91      		pop r20
+ 758 0300 3F91      		pop r19
+ 759 0302 2F91      		pop r18
+ 760 0304 1F91      		pop r17
+ 761 0306 0F90      		pop __tmp_reg__
+ 762 0308 0FBE      		out __SREG__,__tmp_reg__
+ 763 030a 0F90      		pop __tmp_reg__
+ 764 030c 1F90      		pop __zero_reg__
+ 765 030e 1895      		reti
+ 766               	/* epilogue end (size=18) */
+ 767               	/* function __vector_15 size 47 (10) */
+ 772               	.Lscope6:
+ 773               		.comm OS_queue,16,1
+ 774               		.comm OS_sched_full,1,1
+ 775               		.comm OS_sched_free,1,1
+ 776               		.comm mState,4,1
+ 777               		.comm setIntervalFlag,1,1
+ 778               		.comm mScale,1,1
+ 779               		.comm mInterval,1,1
+ 780               		.comm queue_head,1,1
+ 781               		.comm queue_tail,1,1
+ 782               		.comm queue_size,1,1
+ 783               		.comm queue,3,1
+ 784               		.comm mTimerList,33,1
+ 785               		.comm cc2420_bramspi,1,1
+ 786               		.comm cc2420_rambuf,2,1
+ 787               		.comm cc2420_ramlen,1,1
+ 788               		.comm cc2420_ramaddr,2,1
+ 789               		.comm cc2420fifo_bspi,1,1
+ 790               		.comm cc2420fifo_txbuf,2,1
+ 791               		.comm cc2420fifo_txlength,1,1
+ 792               		.comm cc2420_rxbuf,4,1
+ 793               		.comm cc2420_rxlength,1,1
+ 794               		.comm cc2420_rxbuf_now,2,1
+ 795               		.comm cc2420_rxlength_now,1,1
+ 796               		.comm cc2420_rxbufuse,1,1
+ 797               		.comm rfpackernum,1,1
+ 798               		.comm cc2420_rxflag,1,1
+ 799               		.comm cc2420_currentparameters,28,1
+ 800               		.comm receive_timestamp,4,1
+ 801               		.comm send_timestamp,4,1
+ 802               		.comm cc2420_stateRadio,1,1
+ 803               		.comm cc2420_LocalAddr,2,1
+ 804               		.comm ieee_address,8,1
+ 805               		.comm backoff_timer_Set,1,1
+ 806               		.comm backoff_call,2,1
+ 807               		.comm GTSDirectionMask,1,1
+ 808               		.comm phy_channel_state,1,1
+ 809               		.comm rxbuf_flag,1,1
+ 810               		.comm ppib,3,1
+ 811               		.comm SENSOR_DATA_VALUE,20,1
+ 812               		.comm ADC_INTERRUPT_FLAG,1,1
+ 813               		.comm currentTime,2,1
+ 814               		.comm head_of_systimer_queue,2,1
+ 815               		.comm timestamp_H,2,1
+ 859               		.text
+ 861               	Letext:
+ 862               	/* File "interupter.c": code  392 = 0x0188 ( 128), prologues 135, epilogues 129 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 interupter.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:221    .text:00000000 __vector_7
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:271    .text:00000048 __vector_12
+                            *COM*:00000002 head_of_systimer_queue
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:416    .text:0000011c __vector_11
+                            *COM*:00000002 timestamp_H
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:484    .text:0000017e __vector_14
+                            *COM*:00000002 currentTime
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:548    .text:000001e0 __vector_9
+                            *COM*:00000001 backoff_timer_Set
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:622    .text:00000242 __vector_26
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:708    .text:000002b2 __vector_15
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/ccwfbaaa.s:861    .text:00000310 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+cc2420_fifopintr
+systime32
+os_atomic_start
+Timer1_getnextInterval
+free
+Timer1_OCR_intDisable
+os_atomic_end
+systimer_task_fire
+systime16H
+timer2_intDisable
+backoff_timer_fire
+Timer3_getnextInterval
+Timer3_intDisable
+Timer3_fire
+KERTimer_Fire
+OS_post

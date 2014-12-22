@@ -1,0 +1,526 @@
+   1               		.file	"timer_queue.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  81               	.global	timer3queue_init
+  83               	timer3queue_init:
+   1:timer_queue.c **** #include "timer_queue.h"
+   2:timer_queue.c **** //#include "mac.h"
+   3:timer_queue.c **** //#include <avr/sfr_defs.h>
+   4:timer_queue.c **** //¸÷º¯Êý¶¨Òå 
+   5:timer_queue.c **** void  timer3queue_init(Timer_Queue_pointer queue_head)//³õÊ¼»¯º¯Êý£¬Ö÷ÒªÓÃÓÚÉèÖÃºÃT1¶¨Ê±Æ÷µÄ±È½Ï¼Ä´
+   6:timer_queue.c **** {
+  85               	.LM1:
+  86               	/* prologue: frame size=0 */
+  87               	/* prologue end (size=0) */
+  88               	/* epilogue: frame size=0 */
+  89 0000 0895      		ret
+  90               	/* epilogue end (size=1) */
+  91               	/* function timer3queue_init size 1 (0) */
+  93               	.Lscope0:
+ 100               	.global	timer3queue_start
+ 102               	timer3queue_start:
+   7:timer_queue.c **** 	// queue_head=NULL;
+   8:timer_queue.c **** }
+   9:timer_queue.c **** 
+  10:timer_queue.c **** extern  uint8_t    Timer3_adjustInterval(uint16_t interval); 
+  11:timer_queue.c **** extern  uint32_t 	Timer3_acquireInterval(uint16_t interval);
+  12:timer_queue.c **** extern  void      Timer3_sethalfsymbol(uint16_t symbols);
+  13:timer_queue.c **** extern   void Timer3_intDisable(void);
+  14:timer_queue.c **** //extern   Timer_Queue_pointer head_of_timer_queue;
+  15:timer_queue.c **** 
+  16:timer_queue.c **** //NOTE:Ö»Ö§³Ö16Î»¶¨Ê±
+  17:timer_queue.c **** //ÓÐ·µ»ØÖµ£¬Ö÷ÒªÊÇÒòÎªÃ»ÓÐ°Ñqueue_headÉè³ÉÈ«¾Ö±äÁ¿
+  18:timer_queue.c **** //´«µÝ½øÀ´µÄqueue_head¿ÉÄÜ±»ÐÞ¸Ä
+  19:timer_queue.c **** Timer_Queue_pointer   timer3queue_start(Timer_Queue_pointer queue_head, BYTE timertype, BYTE framed
+  20:timer_queue.c **** {
+ 104               	.LM2:
+ 105               	/* prologue: frame size=0 */
+ 106 0002 AF92      		push r10
+ 107 0004 BF92      		push r11
+ 108 0006 DF92      		push r13
+ 109 0008 EF92      		push r14
+ 110 000a FF92      		push r15
+ 111 000c 0F93      		push r16
+ 112 000e 1F93      		push r17
+ 113 0010 CF93      		push r28
+ 114 0012 DF93      		push r29
+ 115               	/* prologue end (size=9) */
+ 116 0014 5C01      		movw r10,r24
+ 117 0016 F62E      		mov r15,r22
+ 118 0018 D42E      		mov r13,r20
+ 119 001a E22E      		mov r14,r18
+  21:timer_queue.c **** 	//Íù¶¨Ê±¶ÓÁÐÖÐ²åÈëÒ»¸öÐÂµÄ¶¨Ê±ÈÎÎñ£¬ÐèÒªÉèÖÃ¶¨Ê±¶ÓÁÐÔªËØµÄ¸÷½á¹¹Óò
+  22:timer_queue.c ****        Timer_Queue_pointer   temp;
+  23:timer_queue.c **** 	Timer_Queue_pointer   p_temp1,p_temp2;
+  24:timer_queue.c **** 	DWORD  compare_reg;
+  25:timer_queue.c **** 	    temp=(Timer_Queue_pointer)malloc(sizeof(struct TimerM_timer_queue));
+ 121               	.LM3:
+ 122 001c 8BE0      		ldi r24,lo8(11)
+ 123 001e 90E0      		ldi r25,hi8(11)
+ 124 0020 0E94 0000 		call malloc
+ 125 0024 EC01      		movw r28,r24
+  26:timer_queue.c **** 	    temp->next=NULL;
+ 127               	.LM4:
+ 128 0026 1986      		std Y+9,__zero_reg__
+ 129 0028 1A86      		std Y+10,__zero_reg__
+  27:timer_queue.c **** 	    temp->timer_reason=timer_reason;
+ 131               	.LM5:
+ 132 002a EA82      		std Y+2,r14
+  28:timer_queue.c **** 	    temp->timer_type=timertype;
+ 134               	.LM6:
+ 135 002c F882      		st Y,r15
+  29:timer_queue.c **** 	    temp->framedsn=framedsn;
+ 137               	.LM7:
+ 138 002e D982      		std Y+1,r13
+  30:timer_queue.c **** 
+  31:timer_queue.c **** 	 if(queue_head==NULL)	   
+ 140               	.LM8:
+ 141 0030 A114      		cp r10,__zero_reg__
+ 142 0032 B104      		cpc r11,__zero_reg__
+ 143 0034 D1F4      		brne .L3
+  32:timer_queue.c **** 	 	{
+  33:timer_queue.c **** 	 	     //if() 
+  34:timer_queue.c ****  	            Timer3_sethalfsymbol(ticks);
+ 145               	.LM9:
+ 146 0036 C801      		movw r24,r16
+ 147 0038 0E94 0000 		call Timer3_sethalfsymbol
+  35:timer_queue.c **** 		     compare_reg=(((uint32_t)ticks)<<1);
+ 149               	.LM10:
+ 150 003c 2227      		clr r18
+ 151 003e 3327      		clr r19
+ 152 0040 000F      		lsl r16
+ 153 0042 111F      		rol r17
+ 154 0044 221F      		rol r18
+ 155 0046 331F      		rol r19
+  36:timer_queue.c **** 		     //if(compare_reg)	 
+  37:timer_queue.c **** 		     temp->ticks=(uint16_t)((compare_reg>65535)? (compare_reg-65535):compare_reg);
+ 157               	.LM11:
+ 158 0048 C801      		movw r24,r16
+ 159 004a 0030      		cpi r16,lo8(65536)
+ 160 004c 40E0      		ldi r20,hi8(65536)
+ 161 004e 1407      		cpc r17,r20
+ 162 0050 41E0      		ldi r20,hlo8(65536)
+ 163 0052 2407      		cpc r18,r20
+ 164 0054 40E0      		ldi r20,hhi8(65536)
+ 165 0056 3407      		cpc r19,r20
+ 166 0058 08F0      		brlo .L4
+ 167 005a 0196      		adiw r24,1
+ 168               	.L4:
+ 169 005c 8B83      		std Y+3,r24
+ 170 005e 9C83      		std Y+4,r25
+  38:timer_queue.c ****                    temp->ticksLeft=compare_reg;
+ 172               	.LM12:
+ 173 0060 0D83      		std Y+5,r16
+ 174 0062 1E83      		std Y+6,r17
+ 175 0064 2F83      		std Y+7,r18
+ 176 0066 3887      		std Y+8,r19
+ 177 0068 45C0      		rjmp .L13
+ 178               	.L3:
+  39:timer_queue.c ****  	    	     queue_head=temp;	 
+  40:timer_queue.c **** 		     //printf("\n***the ticks is %08x\n",temp->ticks);	 
+  41:timer_queue.c **** 		     
+  42:timer_queue.c **** 		     //printf("\n***the ticksleft  is %08lx\n",temp->ticksLeft);		 
+  43:timer_queue.c **** 		}
+  44:timer_queue.c ****           else
+  45:timer_queue.c **** 		{
+  46:timer_queue.c **** 	              //²åÈëµ½¶¨Ê±¶ÓÁÐÖÐÈ¥£¬°´temp->ticksµÄË³Ðò
+  47:timer_queue.c ****                    compare_reg=Timer3_acquireInterval(ticks);
+ 180               	.LM13:
+ 181 006a C801      		movw r24,r16
+ 182 006c 0E94 0000 		call Timer3_acquireInterval
+ 183 0070 8B01      		movw r16,r22
+ 184 0072 9C01      		movw r18,r24
+  48:timer_queue.c **** 		     temp->ticks=(uint16_t)((compare_reg>65535)? (compare_reg-65535):compare_reg);
+ 186               	.LM14:
+ 187 0074 CB01      		movw r24,r22
+ 188 0076 0030      		cpi r16,lo8(65536)
+ 189 0078 E0E0      		ldi r30,hi8(65536)
+ 190 007a 1E07      		cpc r17,r30
+ 191 007c E1E0      		ldi r30,hlo8(65536)
+ 192 007e 2E07      		cpc r18,r30
+ 193 0080 E0E0      		ldi r30,hhi8(65536)
+ 194 0082 3E07      		cpc r19,r30
+ 195 0084 08F0      		brlo .L6
+ 196 0086 0196      		adiw r24,1
+ 197               	.L6:
+ 198 0088 8B83      		std Y+3,r24
+ 199 008a 9C83      		std Y+4,r25
+  49:timer_queue.c ****                    temp->ticksLeft=compare_reg;
+ 201               	.LM15:
+ 202 008c 0D83      		std Y+5,r16
+ 203 008e 1E83      		std Y+6,r17
+ 204 0090 2F83      		std Y+7,r18
+ 205 0092 3887      		std Y+8,r19
+  50:timer_queue.c **** 	            p_temp1=queue_head;
+ 207               	.LM16:
+ 208 0094 B501      		movw r22,r10
+  51:timer_queue.c ****                    p_temp2=queue_head;
+ 210               	.LM17:
+ 211 0096 7501      		movw r14,r10
+  52:timer_queue.c **** 			while((p_temp2!=NULL)&&((temp->ticksLeft)>(p_temp2->ticksLeft)))
+  53:timer_queue.c **** 				{
+  54:timer_queue.c **** 				    p_temp1=p_temp2;
+  55:timer_queue.c **** 				    p_temp2=p_temp1->next;	 
+ 213               	.LM18:
+ 214 0098 F501      		movw r30,r10
+ 215 009a 8581      		ldd r24,Z+5
+ 216 009c 9681      		ldd r25,Z+6
+ 217 009e A781      		ldd r26,Z+7
+ 218 00a0 B085      		ldd r27,Z+8
+ 219 00a2 8017      		cp r24,r16
+ 220 00a4 9107      		cpc r25,r17
+ 221 00a6 A207      		cpc r26,r18
+ 222 00a8 B307      		cpc r27,r19
+ 223 00aa A8F4      		brsh .L8
+ 224               	.L9:
+ 226               	.LM19:
+ 227 00ac B701      		movw r22,r14
+ 229               	.LM20:
+ 230 00ae F701      		movw r30,r14
+ 231 00b0 E184      		ldd r14,Z+9
+ 232 00b2 F284      		ldd r15,Z+10
+ 233 00b4 E114      		cp r14,__zero_reg__
+ 234 00b6 F104      		cpc r15,__zero_reg__
+ 235 00b8 71F0      		breq .L8
+ 236 00ba 2D81      		ldd r18,Y+5
+ 237 00bc 3E81      		ldd r19,Y+6
+ 238 00be 4F81      		ldd r20,Y+7
+ 239 00c0 5885      		ldd r21,Y+8
+ 240 00c2 F701      		movw r30,r14
+ 241 00c4 8581      		ldd r24,Z+5
+ 242 00c6 9681      		ldd r25,Z+6
+ 243 00c8 A781      		ldd r26,Z+7
+ 244 00ca B085      		ldd r27,Z+8
+ 245 00cc 8217      		cp r24,r18
+ 246 00ce 9307      		cpc r25,r19
+ 247 00d0 A407      		cpc r26,r20
+ 248 00d2 B507      		cpc r27,r21
+ 249 00d4 58F3      		brlo .L9
+ 250               	.L8:
+  56:timer_queue.c **** 				}
+  57:timer_queue.c **** 			if(p_temp2!=queue_head)
+ 252               	.LM21:
+ 253 00d6 EA14      		cp r14,r10
+ 254 00d8 FB04      		cpc r15,r11
+ 255 00da 31F0      		breq .L10
+  58:timer_queue.c **** 				{
+  59:timer_queue.c **** 			           p_temp1->next=temp;
+ 257               	.LM22:
+ 258 00dc FB01      		movw r30,r22
+ 259 00de C187      		std Z+9,r28
+ 260 00e0 D287      		std Z+10,r29
+  60:timer_queue.c **** 			           temp->next=p_temp2;
+ 262               	.LM23:
+ 263 00e2 E986      		std Y+9,r14
+ 264 00e4 FA86      		std Y+10,r15
+ 265 00e6 07C0      		rjmp .L5
+ 266               	.L10:
+  61:timer_queue.c **** 				}
+  62:timer_queue.c **** 			else
+  63:timer_queue.c **** 				//ÎªÍ·½Úµã£¬ÐèÒªµ÷ÕûÎïÀí¶¨Ê±Æ÷
+  64:timer_queue.c **** 				{
+  65:timer_queue.c **** 				     Timer3_adjustInterval(temp->ticks);
+ 268               	.LM24:
+ 269 00e8 8B81      		ldd r24,Y+3
+ 270 00ea 9C81      		ldd r25,Y+4
+ 271 00ec 0E94 0000 		call Timer3_adjustInterval
+  66:timer_queue.c **** 				     temp->next=queue_head;
+ 273               	.LM25:
+ 274 00f0 A986      		std Y+9,r10
+ 275 00f2 BA86      		std Y+10,r11
+ 276               	.L13:
+  67:timer_queue.c **** 				     queue_head=temp;
+ 278               	.LM26:
+ 279 00f4 5E01      		movw r10,r28
+ 280               	.L5:
+  68:timer_queue.c **** 				}
+  69:timer_queue.c **** 		}
+  70:timer_queue.c **** 	return queue_head;
+  71:timer_queue.c **** 	
+  72:timer_queue.c **** }
+ 282               	.LM27:
+ 283 00f6 C501      		movw r24,r10
+ 284               	/* epilogue: frame size=0 */
+ 285 00f8 DF91      		pop r29
+ 286 00fa CF91      		pop r28
+ 287 00fc 1F91      		pop r17
+ 288 00fe 0F91      		pop r16
+ 289 0100 FF90      		pop r15
+ 290 0102 EF90      		pop r14
+ 291 0104 DF90      		pop r13
+ 292 0106 BF90      		pop r11
+ 293 0108 AF90      		pop r10
+ 294 010a 0895      		ret
+ 295               	/* epilogue end (size=10) */
+ 296               	/* function timer3queue_start size 133 (114) */
+ 304               	.Lscope1:
+ 305               		.data
+ 306               	.LC0:
+ 307 0000 0A63 616E 		.string	"\ncannot find an element in the timer_queue\n"
+ 307      6E6F 7420 
+ 307      6669 6E64 
+ 307      2061 6E20 
+ 307      656C 656D 
+ 308               		.text
+ 313               	.global	timer3quere_cancel
+ 315               	timer3quere_cancel:
+  73:timer_queue.c **** 
+  74:timer_queue.c **** //´«µÝ½øÀ´µÄqueue_head¿ÉÄÜ±»ÐÞ¸Ä
+  75:timer_queue.c **** Timer_Queue_pointer  timer3quere_cancel(Timer_Queue_pointer queue_head, BYTE framedsn,BYTE timer_re
+  76:timer_queue.c **** {
+ 317               	.LM28:
+ 318               	/* prologue: frame size=0 */
+ 319 010c EF92      		push r14
+ 320 010e FF92      		push r15
+ 321 0110 0F93      		push r16
+ 322 0112 1F93      		push r17
+ 323 0114 CF93      		push r28
+ 324 0116 DF93      		push r29
+ 325               	/* prologue end (size=6) */
+ 326 0118 7C01      		movw r14,r24
+  77:timer_queue.c **** 	//ÒÀ¾ÝÈ¡ÏûµÄframehandle,Èç¹ûÊÇ¶ÓÁÐÍ·£¬ÔòÐèÒªÖØÐÂÉèÖÃ±È½Ï¼Ä´æÆ÷µÄÖµ£¬·ñÔòÖ»Ðè°ÑËü´Ó¶ÓÁÐÖÐÕªµô¼´¿É¡£
+  78:timer_queue.c ****        Timer_Queue_pointer  p_temp1,p_temp2,p_temp3;
+  79:timer_queue.c **** 	p_temp1=queue_head;
+ 328               	.LM29:
+ 329 011a DC01      		movw r26,r24
+  80:timer_queue.c **** 	p_temp2=queue_head;
+ 331               	.LM30:
+ 332 011c EC01      		movw r28,r24
+  81:timer_queue.c **** 	p_temp3=queue_head;
+  82:timer_queue.c **** 	//printf("\ntimer head->framedsn is %d----\n",queue_head->framedsn);
+  83:timer_queue.c **** 	if(timer_reason!=WAIT_FOR_RESPONSE)
+ 334               	.LM31:
+ 335 011e 4130      		cpi r20,lo8(1)
+ 336 0120 71F0      		breq .L15
+  84:timer_queue.c **** 	{
+  85:timer_queue.c **** 	     while(((p_temp2->framedsn!=framedsn)||(p_temp2->timer_reason!=timer_reason))&&(p_temp2!=NULL)
+ 338               	.LM32:
+ 339 0122 04C0      		rjmp .L16
+ 340               	.L19:
+  86:timer_queue.c **** 		 {
+  87:timer_queue.c **** 		    p_temp1=p_temp2;
+ 342               	.LM33:
+ 343 0124 DE01      		movw r26,r28
+  88:timer_queue.c **** 		    p_temp2=p_temp2->next;	 
+ 345               	.LM34:
+ 346 0126 0984      		ldd __tmp_reg__,Y+9
+ 347 0128 DA85      		ldd r29,Y+10
+ 348 012a C02D      		mov r28,__tmp_reg__
+ 349               	.L16:
+ 350 012c 8981      		ldd r24,Y+1
+ 351 012e 8617      		cp r24,r22
+ 352 0130 19F4      		brne .L18
+ 353 0132 8A81      		ldd r24,Y+2
+ 354 0134 8417      		cp r24,r20
+ 355 0136 99F0      		breq .L20
+ 356               	.L18:
+ 357 0138 2097      		sbiw r28,0
+ 358 013a A1F7      		brne .L19
+ 359 013c 12C0      		rjmp .L31
+ 360               	.L15:
+  89:timer_queue.c **** 		 }
+  90:timer_queue.c **** 	}
+  91:timer_queue.c **** 	else
+  92:timer_queue.c **** 	{
+  93:timer_queue.c **** 	     while((p_temp2->timer_reason!=timer_reason)&&(p_temp2!=NULL))
+  94:timer_queue.c **** 		 {
+  95:timer_queue.c **** 		    p_temp1=p_temp2;
+  96:timer_queue.c **** 		    p_temp2=p_temp2->next;	 
+ 362               	.LM35:
+ 363 013e FC01      		movw r30,r24
+ 364 0140 8281      		ldd r24,Z+2
+ 365 0142 8417      		cp r24,r20
+ 366 0144 61F0      		breq .L20
+ 367 0146 E114      		cp r14,__zero_reg__
+ 368 0148 F104      		cpc r15,__zero_reg__
+ 369 014a 49F0      		breq .L20
+ 370               	.L23:
+ 372               	.LM36:
+ 373 014c DE01      		movw r26,r28
+ 375               	.LM37:
+ 376 014e 0984      		ldd __tmp_reg__,Y+9
+ 377 0150 DA85      		ldd r29,Y+10
+ 378 0152 C02D      		mov r28,__tmp_reg__
+ 379 0154 8A81      		ldd r24,Y+2
+ 380 0156 8130      		cpi r24,lo8(1)
+ 381 0158 11F0      		breq .L20
+ 382 015a 2097      		sbiw r28,0
+ 383 015c B9F7      		brne .L23
+ 384               	.L20:
+  97:timer_queue.c **** 		 }	      
+  98:timer_queue.c **** 	}
+  99:timer_queue.c **** 	if(p_temp2==NULL)  
+ 386               	.LM38:
+ 387 015e 2097      		sbiw r28,0
+ 388 0160 29F4      		brne .L24
+ 389               	.L31:
+ 390               	.LBB2:
+ 100:timer_queue.c **** 		error("\ncannot find an element in the timer_queue\n");
+ 392               	.LM39:
+ 393 0162 80E0      		ldi r24,lo8(.LC0)
+ 394 0164 90E0      		ldi r25,hi8(.LC0)
+ 395 0166 0E94 0000 		call error
+ 396               	.LBE2:
+ 397 016a 18C0      		rjmp .L25
+ 398               	.L24:
+ 101:timer_queue.c **** 	else
+ 102:timer_queue.c **** 		{
+ 103:timer_queue.c **** 		     p_temp3=p_temp2->next;
+ 400               	.LM40:
+ 401 016c 0985      		ldd r16,Y+9
+ 402 016e 1A85      		ldd r17,Y+10
+ 104:timer_queue.c **** 		     if(p_temp2==queue_head)
+ 404               	.LM41:
+ 405 0170 CE15      		cp r28,r14
+ 406 0172 DF05      		cpc r29,r15
+ 407 0174 69F4      		brne .L26
+ 408               	.LBB3:
+ 105:timer_queue.c **** 		     	{
+ 106:timer_queue.c **** 	                   if(p_temp2->next==NULL)
+ 410               	.LM42:
+ 411 0176 0115      		cp r16,__zero_reg__
+ 412 0178 1105      		cpc r17,__zero_reg__
+ 413 017a 19F4      		brne .L27
+ 107:timer_queue.c **** 	                   	{
+ 108:timer_queue.c **** 	                   	 //printf("\n\n");
+ 109:timer_queue.c **** 	                   	 Timer3_intDisable();
+ 415               	.LM43:
+ 416 017c 0E94 0000 		call Timer3_intDisable
+ 417 0180 05C0      		rjmp .L28
+ 418               	.L27:
+ 110:timer_queue.c **** 				 //printf("\ntimer3 is disabled\n");		 
+ 111:timer_queue.c **** 	                   	}		 
+ 112:timer_queue.c **** 			     else
+ 113:timer_queue.c **** 			     	{
+ 114:timer_queue.c **** 			     	     //ÖØÐÂÉèÖÃ¶¨Ê±Æ÷
+ 115:timer_queue.c **** 			            Timer3_adjustInterval(p_temp3->ticks);
+ 420               	.LM44:
+ 421 0182 F801      		movw r30,r16
+ 422 0184 8381      		ldd r24,Z+3
+ 423 0186 9481      		ldd r25,Z+4
+ 424 0188 0E94 0000 		call Timer3_adjustInterval
+ 425               	.L28:
+ 116:timer_queue.c **** 			     	}
+ 117:timer_queue.c **** 			     //È¡ÏÂhead½Úµã,ÊÍ·Å¿Õ¼ä
+ 118:timer_queue.c **** 			     queue_head=p_temp3;
+ 427               	.LM45:
+ 428 018c 7801      		movw r14,r16
+ 429 018e 03C0      		rjmp .L32
+ 430               	.L26:
+ 431               	.LBE3:
+ 432               	.LBB4:
+ 119:timer_queue.c **** 			     free(p_temp2); 
+ 120:timer_queue.c **** 		     	}
+ 121:timer_queue.c **** 		     else
+ 122:timer_queue.c **** 		     	{
+ 123:timer_queue.c **** 		     	      p_temp1->next=p_temp3;
+ 434               	.LM46:
+ 435 0190 FD01      		movw r30,r26
+ 436 0192 0187      		std Z+9,r16
+ 437 0194 1287      		std Z+10,r17
+ 438               	.L32:
+ 124:timer_queue.c **** 		     	      free(p_temp2);
+ 440               	.LM47:
+ 441 0196 CE01      		movw r24,r28
+ 442 0198 0E94 0000 		call free
+ 443               	.L25:
+ 444               	.LBE4:
+ 125:timer_queue.c **** 		     	}
+ 126:timer_queue.c **** 		}
+ 127:timer_queue.c **** 	return queue_head;
+ 128:timer_queue.c **** }
+ 446               	.LM48:
+ 447 019c C701      		movw r24,r14
+ 448               	/* epilogue: frame size=0 */
+ 449 019e DF91      		pop r29
+ 450 01a0 CF91      		pop r28
+ 451 01a2 1F91      		pop r17
+ 452 01a4 0F91      		pop r16
+ 453 01a6 FF90      		pop r15
+ 454 01a8 EF90      		pop r14
+ 455 01aa 0895      		ret
+ 456               	/* epilogue end (size=7) */
+ 457               	/* function timer3quere_cancel size 80 (67) */
+ 464               	.Lscope2:
+ 466               	.global	timer3queue_getnextinterval
+ 468               	timer3queue_getnextinterval:
+ 129:timer_queue.c **** 
+ 130:timer_queue.c **** //µ÷ÓÃµÄMAC.hÖÐµÄº¯Êý,½øÐÐÏàÓ¦µÄ´¦Àí¡£
+ 131:timer_queue.c **** extern  void mac_timer_task(void);
+ 132:timer_queue.c **** extern  void timerqueue_adjust(void);
+ 133:timer_queue.c **** extern  uint16_t mac_timer3queue_getnextinterval(void);
+ 134:timer_queue.c **** 
+ 135:timer_queue.c **** 
+ 136:timer_queue.c **** uint16_t  timer3queue_getnextinterval(void)
+ 137:timer_queue.c **** {
+ 470               	.LM49:
+ 471               	/* prologue: frame size=0 */
+ 472               	/* prologue end (size=0) */
+ 138:timer_queue.c ****         return mac_timer3queue_getnextinterval();
+ 474               	.LM50:
+ 475 01ac 0E94 0000 		call mac_timer3queue_getnextinterval
+ 476               	/* epilogue: frame size=0 */
+ 477 01b0 0895      		ret
+ 478               	/* epilogue end (size=1) */
+ 479               	/* function timer3queue_getnextinterval size 3 (2) */
+ 481               	.Lscope3:
+ 483               	.global	timer3queue_interrupt
+ 485               	timer3queue_interrupt:
+ 139:timer_queue.c **** }
+ 140:timer_queue.c **** void  timer3queue_interrupt(void)
+ 141:timer_queue.c **** {
+ 487               	.LM51:
+ 488               	/* prologue: frame size=0 */
+ 489               	/* prologue end (size=0) */
+ 142:timer_queue.c ****        timerqueue_adjust();
+ 491               	.LM52:
+ 492 01b2 0E94 0000 		call timerqueue_adjust
+ 143:timer_queue.c ****        OS_post(mac_timer_task);      
+ 494               	.LM53:
+ 495 01b6 80E0      		ldi r24,lo8(pm(mac_timer_task))
+ 496 01b8 90E0      		ldi r25,hi8(pm(mac_timer_task))
+ 497 01ba 0E94 0000 		call OS_post
+ 498               	/* epilogue: frame size=0 */
+ 499 01be 0895      		ret
+ 500               	/* epilogue end (size=1) */
+ 501               	/* function timer3queue_interrupt size 7 (6) */
+ 503               	.Lscope4:
+ 504               		.text
+ 506               	Letext:
+ 507               	/* File "timer_queue.c": code  224 = 0x00e0 ( 189), prologues  15, epilogues  20 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 timer_queue.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccO4aaaa.s:83     .text:00000000 timer3queue_init
+C:\Users\sunhejie\AppData\Local\Temp/ccO4aaaa.s:102    .text:00000002 timer3queue_start
+C:\Users\sunhejie\AppData\Local\Temp/ccO4aaaa.s:315    .text:0000010c timer3quere_cancel
+C:\Users\sunhejie\AppData\Local\Temp/ccO4aaaa.s:468    .text:000001ac timer3queue_getnextinterval
+C:\Users\sunhejie\AppData\Local\Temp/ccO4aaaa.s:485    .text:000001b2 timer3queue_interrupt
+C:\Users\sunhejie\AppData\Local\Temp/ccO4aaaa.s:506    .text:000001c0 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+malloc
+Timer3_sethalfsymbol
+Timer3_acquireInterval
+Timer3_adjustInterval
+error
+Timer3_intDisable
+free
+mac_timer3queue_getnextinterval
+timerqueue_adjust
+mac_timer_task
+OS_post

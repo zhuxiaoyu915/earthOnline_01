@@ -1,0 +1,762 @@
+   1               		.file	"router.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	associate_tab_init
+ 221               	associate_tab_init:
+   1:router.c      **** #include "project.h"
+   2:router.c      **** #include "router.h"
+   3:router.c      **** 
+   4:router.c      **** extern  SHORT_ADDR  default_short_addr;
+   5:router.c      **** extern  MAC_PIB  mac_pib_data;
+   6:router.c      **** 
+   7:router.c      **** ASSOCIATE_TABLE_ELEM   associate_tab[MAX_ASSOCIATE_TABLE_NUM];
+   8:router.c      **** 
+   9:router.c      **** uint16_t   short_address_initial;
+  10:router.c      **** uint16_t   address_allocated_num;
+  11:router.c      **** 
+  12:router.c      **** 
+  13:router.c      **** void  associate_tab_init(void)
+  14:router.c      **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+ 226 0000 E0E0      		ldi r30,lo8(associate_tab)
+ 227 0002 F0E0      		ldi r31,hi8(associate_tab)
+ 228 0004 89E0      		ldi r24,lo8(9)
+ 229               	.L5:
+ 230               	.LBB2:
+  15:router.c      ****     for(uint8_t index=0;index<MAX_ASSOCIATE_TABLE_NUM;index++)
+  16:router.c      ****     	{
+  17:router.c      **** 		associate_tab[index].is_valid=FALSE;
+ 232               	.LM2:
+ 233 0006 1286      		std Z+10,__zero_reg__
+  18:router.c      **** 		associate_tab[index].ieee_addr.longaddr=0x0000000000000000;
+ 235               	.LM3:
+ 236 0008 1082      		st Z,__zero_reg__
+ 237 000a 1182      		std Z+1,__zero_reg__
+ 238 000c 1282      		std Z+2,__zero_reg__
+ 239 000e 1382      		std Z+3,__zero_reg__
+ 240 0010 1482      		std Z+4,__zero_reg__
+ 241 0012 1582      		std Z+5,__zero_reg__
+ 242 0014 1682      		std Z+6,__zero_reg__
+ 243 0016 1782      		std Z+7,__zero_reg__
+ 245               	.LM4:
+ 246 0018 8150      		subi r24,lo8(-(-1))
+ 247 001a 3B96      		adiw r30,11
+ 248 001c 87FF      		sbrs r24,7
+ 249 001e F3CF      		rjmp .L5
+ 250               	.LBE2:
+ 251               	/* epilogue: frame size=0 */
+ 252 0020 0895      		ret
+ 253               	/* epilogue end (size=1) */
+ 254               	/* function associate_tab_init size 17 (16) */
+ 259               	.Lscope0:
+ 261               	.global	router_init
+ 263               	router_init:
+  19:router.c      ****     	}	
+  20:router.c      **** }
+  21:router.c      **** void  router_init(void)
+  22:router.c      **** {
+ 265               	.LM5:
+ 266               	/* prologue: frame size=0 */
+ 267               	/* prologue end (size=0) */
+  23:router.c      ****      associate_tab_init();
+ 269               	.LM6:
+ 270 0022 0E94 0000 		call associate_tab_init
+  24:router.c      ****      short_address_initial=0x1234;	 
+ 272               	.LM7:
+ 273 0026 84E3      		ldi r24,lo8(4660)
+ 274 0028 92E1      		ldi r25,hi8(4660)
+ 275 002a 9093 0000 		sts (short_address_initial)+1,r25
+ 276 002e 8093 0000 		sts short_address_initial,r24
+  25:router.c      ****      address_allocated_num=0;	 
+ 278               	.LM8:
+ 279 0032 1092 0000 		sts (address_allocated_num)+1,__zero_reg__
+ 280 0036 1092 0000 		sts address_allocated_num,__zero_reg__
+ 281               	/* epilogue: frame size=0 */
+ 282 003a 0895      		ret
+ 283               	/* epilogue end (size=1) */
+ 284               	/* function router_init size 13 (12) */
+ 286               	.Lscope1:
+ 289               	.global	Is_associated
+ 291               	Is_associated:
+  26:router.c      **** }
+  27:router.c      **** SHORT_ADDR short_address_allocate_req(LONG_ADDR  ieee_addr)
+  28:router.c      **** {
+  29:router.c      ****       //地址分配，记录关联信息
+  30:router.c      ****       SHORT_ADDR  allocated_addr;
+  31:router.c      ****       uint8_t index;
+  32:router.c      ****       //allocated_addr.Val=0x0044;
+  33:router.c      ****       //	  return allocated_addr;
+  34:router.c      ****       index=Is_associated(ieee_addr);	  	  
+  35:router.c      ****       if(index!=MAX_ASSOCIATE_TABLE_NUM)
+  36:router.c      **** 	  	return associate_tab[index].allocated_addr;
+  37:router.c      **** 
+  38:router.c      ****       index=0;	  
+  39:router.c      ****       while((associate_tab[index].is_valid)&&(index<MAX_ASSOCIATE_TABLE_NUM))
+  40:router.c      **** 	  	index++;
+  41:router.c      **** 	  
+  42:router.c      ****       if(index==MAX_ASSOCIATE_TABLE_NUM)
+  43:router.c      **** 	  	return default_short_addr;
+  44:router.c      ****       associate_tab[index].ieee_addr=ieee_addr;
+  45:router.c      ****       associate_tab[index].is_valid=TRUE;
+  46:router.c      ****       associate_tab[index].allocated_addr=get_a_short_address();
+  47:router.c      ****       return 	associate_tab[index].allocated_addr;  
+  48:router.c      **** }
+  49:router.c      **** 
+  50:router.c      **** 
+  51:router.c      **** uint8_t Is_associated(LONG_ADDR long_address)
+  52:router.c      **** {
+ 293               	.LM9:
+ 294               	/* prologue: frame size=8 */
+ 295 003c EF92      		push r14
+ 296 003e FF92      		push r15
+ 297 0040 0F93      		push r16
+ 298 0042 1F93      		push r17
+ 299 0044 CF93      		push r28
+ 300 0046 DF93      		push r29
+ 301 0048 CDB7      		in r28,__SP_L__
+ 302 004a DEB7      		in r29,__SP_H__
+ 303 004c 2897      		sbiw r28,8
+ 304 004e 0FB6      		in __tmp_reg__,__SREG__
+ 305 0050 F894      		cli
+ 306 0052 DEBF      		out __SP_H__,r29
+ 307 0054 0FBE      		out __SREG__,__tmp_reg__
+ 308 0056 CDBF      		out __SP_L__,r28
+ 309               	/* prologue end (size=14) */
+ 310 0058 2983      		std Y+1,r18
+ 311 005a 3A83      		std Y+2,r19
+ 312 005c 4B83      		std Y+3,r20
+ 313 005e 5C83      		std Y+4,r21
+ 314 0060 6D83      		std Y+5,r22
+ 315 0062 7E83      		std Y+6,r23
+ 316 0064 8F83      		std Y+7,r24
+ 317 0066 9887      		std Y+8,r25
+ 318 0068 7BE0      		ldi r23,lo8(11)
+ 319 006a E72E      		mov r14,r23
+ 320 006c F12C      		mov r15,__zero_reg__
+ 321 006e 022F      		mov r16,r18
+ 322 0070 132F      		mov r17,r19
+ 323 0072 B42F      		mov r27,r20
+ 324 0074 752F      		mov r23,r21
+ 325 0076 5E81      		ldd r21,Y+6
+ 326 0078 482F      		mov r20,r24
+  53:router.c      ****       uint8_t index;
+  54:router.c      ****       while((!associate_tab[index].is_valid)||(associate_tab[index].ieee_addr.longaddr!=long_addres
+ 328               	.LM10:
+ 329 007a 06C0      		rjmp .L10
+ 330               	.L14:
+  55:router.c      ****       {
+  56:router.c      ****           index++;
+ 332               	.LM11:
+ 333 007c AF5F      		subi r26,lo8(-(1))
+  57:router.c      **** 	   if(index==MAX_ASSOCIATE_TABLE_NUM)
+ 335               	.LM12:
+ 336 007e AA30      		cpi r26,lo8(10)
+ 337 0080 19F4      		brne .L10
+  58:router.c      **** 	   	return MAX_ASSOCIATE_TABLE_NUM;
+ 339               	.LM13:
+ 340 0082 8AE0      		ldi r24,lo8(10)
+ 341 0084 90E0      		ldi r25,hi8(10)
+ 342 0086 27C0      		rjmp .L9
+ 343               	.L10:
+ 344 0088 2A2F      		mov r18,r26
+ 345 008a 3327      		clr r19
+ 346 008c 2E9D      		mul r18,r14
+ 347 008e F001      		movw r30,r0
+ 348 0090 2F9D      		mul r18,r15
+ 349 0092 F00D      		add r31,r0
+ 350 0094 3E9D      		mul r19,r14
+ 351 0096 F00D      		add r31,r0
+ 352 0098 1124      		clr r1
+ 353 009a E050      		subi r30,lo8(-(associate_tab))
+ 354 009c F040      		sbci r31,hi8(-(associate_tab))
+ 355 009e 8285      		ldd r24,Z+10
+ 356 00a0 8823      		tst r24
+ 357 00a2 61F3      		breq .L14
+ 358 00a4 8081      		ld r24,Z
+ 359 00a6 8017      		cp r24,r16
+ 360 00a8 49F7      		brne .L14
+ 361 00aa 8181      		ldd r24,Z+1
+ 362 00ac 8117      		cp r24,r17
+ 363 00ae 31F7      		brne .L14
+ 364 00b0 8281      		ldd r24,Z+2
+ 365 00b2 8B17      		cp r24,r27
+ 366 00b4 19F7      		brne .L14
+ 367 00b6 8381      		ldd r24,Z+3
+ 368 00b8 8717      		cp r24,r23
+ 369 00ba 01F7      		brne .L14
+ 370 00bc 8481      		ldd r24,Z+4
+ 371 00be 8617      		cp r24,r22
+ 372 00c0 E9F6      		brne .L14
+ 373 00c2 8581      		ldd r24,Z+5
+ 374 00c4 8517      		cp r24,r21
+ 375 00c6 D1F6      		brne .L14
+ 376 00c8 8681      		ldd r24,Z+6
+ 377 00ca 8417      		cp r24,r20
+ 378 00cc B9F6      		brne .L14
+ 379 00ce 8781      		ldd r24,Z+7
+ 380 00d0 8917      		cp r24,r25
+ 381 00d2 A1F6      		brne .L14
+  59:router.c      ****       	}
+  60:router.c      ****       return index;
+ 383               	.LM14:
+ 384 00d4 C901      		movw r24,r18
+ 385               	.L9:
+ 386               	/* epilogue: frame size=8 */
+ 387 00d6 2896      		adiw r28,8
+ 388 00d8 0FB6      		in __tmp_reg__,__SREG__
+ 389 00da F894      		cli
+ 390 00dc DEBF      		out __SP_H__,r29
+ 391 00de 0FBE      		out __SREG__,__tmp_reg__
+ 392 00e0 CDBF      		out __SP_L__,r28
+ 393 00e2 DF91      		pop r29
+ 394 00e4 CF91      		pop r28
+ 395 00e6 1F91      		pop r17
+ 396 00e8 0F91      		pop r16
+ 397 00ea FF90      		pop r15
+ 398 00ec EF90      		pop r14
+ 399 00ee 0895      		ret
+ 400               	/* epilogue end (size=13) */
+ 401               	/* function Is_associated size 90 (63) */
+ 406               	.Lscope2:
+ 408               	.global	get_a_short_address
+ 410               	get_a_short_address:
+  61:router.c      **** }
+  62:router.c      **** 
+  63:router.c      **** SHORT_ADDR  get_a_short_address(void)
+  64:router.c      **** {
+ 412               	.LM15:
+ 413               	/* prologue: frame size=0 */
+ 414               	/* prologue end (size=0) */
+  65:router.c      ****        //从地址库中得到一个短地址
+  66:router.c      ****        SHORT_ADDR  allocated_addr;
+  67:router.c      ****        allocated_addr.Val=(short_address_initial+address_allocated_num);
+ 416               	.LM16:
+ 417 00f0 2091 0000 		lds r18,short_address_initial
+ 418 00f4 3091 0000 		lds r19,(short_address_initial)+1
+ 419 00f8 8091 0000 		lds r24,address_allocated_num
+ 420 00fc 9091 0000 		lds r25,(address_allocated_num)+1
+  68:router.c      **** 	address_allocated_num++;
+ 422               	.LM17:
+ 423 0100 0196      		adiw r24,1
+ 424 0102 9093 0000 		sts (address_allocated_num)+1,r25
+ 425 0106 8093 0000 		sts address_allocated_num,r24
+ 426 010a 0197      		sbiw r24,1
+  69:router.c      **** 	return allocated_addr;
+  70:router.c      **** }
+ 428               	.LM18:
+ 429 010c 820F      		add r24,r18
+ 430 010e 931F      		adc r25,r19
+ 431               	/* epilogue: frame size=0 */
+ 432 0110 0895      		ret
+ 433               	/* epilogue end (size=1) */
+ 434               	/* function get_a_short_address size 17 (16) */
+ 436               	.Lscope3:
+ 439               	.global	short_address_allocate_req
+ 441               	short_address_allocate_req:
+ 443               	.LM19:
+ 444               	/* prologue: frame size=8 */
+ 445 0112 0F93      		push r16
+ 446 0114 1F93      		push r17
+ 447 0116 CF93      		push r28
+ 448 0118 DF93      		push r29
+ 449 011a CDB7      		in r28,__SP_L__
+ 450 011c DEB7      		in r29,__SP_H__
+ 451 011e 2897      		sbiw r28,8
+ 452 0120 0FB6      		in __tmp_reg__,__SREG__
+ 453 0122 F894      		cli
+ 454 0124 DEBF      		out __SP_H__,r29
+ 455 0126 0FBE      		out __SREG__,__tmp_reg__
+ 456 0128 CDBF      		out __SP_L__,r28
+ 457               	/* prologue end (size=12) */
+ 458 012a 2983      		std Y+1,r18
+ 459 012c 3A83      		std Y+2,r19
+ 460 012e 4B83      		std Y+3,r20
+ 461 0130 5C83      		std Y+4,r21
+ 462 0132 6D83      		std Y+5,r22
+ 463 0134 7E83      		std Y+6,r23
+ 464 0136 8F83      		std Y+7,r24
+ 465 0138 9887      		std Y+8,r25
+ 467               	.LM20:
+ 468 013a 0E94 0000 		call Is_associated
+ 469 013e 282F      		mov r18,r24
+ 471               	.LM21:
+ 472 0140 8A30      		cpi r24,lo8(10)
+ 473 0142 79F0      		breq .L17
+ 475               	.LM22:
+ 476 0144 3327      		clr r19
+ 477 0146 8BE0      		ldi r24,lo8(11)
+ 478 0148 90E0      		ldi r25,hi8(11)
+ 479 014a 289F      		mul r18,r24
+ 480 014c F001      		movw r30,r0
+ 481 014e 299F      		mul r18,r25
+ 482 0150 F00D      		add r31,r0
+ 483 0152 389F      		mul r19,r24
+ 484 0154 F00D      		add r31,r0
+ 485 0156 1124      		clr r1
+ 486 0158 E050      		subi r30,lo8(-(associate_tab))
+ 487 015a F040      		sbci r31,hi8(-(associate_tab))
+ 488 015c 8085      		ldd r24,Z+8
+ 489 015e 9185      		ldd r25,Z+9
+ 490 0160 31C0      		rjmp .L16
+ 491               	.L17:
+ 493               	.LM23:
+ 494 0162 20E0      		ldi r18,lo8(0)
+ 496               	.LM24:
+ 497 0164 8091 0000 		lds r24,associate_tab+10
+ 498 0168 8823      		tst r24
+ 499 016a 81F0      		breq .L21
+ 500 016c E0E0      		ldi r30,lo8(associate_tab+10)
+ 501 016e F0E0      		ldi r31,hi8(associate_tab+10)
+ 502               	.L20:
+ 503 0170 2F5F      		subi r18,lo8(-(1))
+ 504 0172 3B96      		adiw r30,11
+ 505 0174 8081      		ld r24,Z
+ 506 0176 8823      		tst r24
+ 507 0178 11F0      		breq .L19
+ 508 017a 2A30      		cpi r18,lo8(10)
+ 509 017c C8F3      		brlo .L20
+ 510               	.L19:
+ 512               	.LM25:
+ 513 017e 2A30      		cpi r18,lo8(10)
+ 514 0180 29F4      		brne .L21
+ 516               	.LM26:
+ 517 0182 8091 0000 		lds r24,default_short_addr
+ 518 0186 9091 0000 		lds r25,(default_short_addr)+1
+ 519 018a 1CC0      		rjmp .L16
+ 520               	.L21:
+ 522               	.LM27:
+ 523 018c 3327      		clr r19
+ 524 018e 8BE0      		ldi r24,lo8(11)
+ 525 0190 90E0      		ldi r25,hi8(11)
+ 526 0192 289F      		mul r18,r24
+ 527 0194 8001      		movw r16,r0
+ 528 0196 299F      		mul r18,r25
+ 529 0198 100D      		add r17,r0
+ 530 019a 389F      		mul r19,r24
+ 531 019c 100D      		add r17,r0
+ 532 019e 1124      		clr r1
+ 533 01a0 0050      		subi r16,lo8(-(associate_tab))
+ 534 01a2 1040      		sbci r17,hi8(-(associate_tab))
+ 535 01a4 88E0      		ldi r24,lo8(8)
+ 536 01a6 FE01      		movw r30,r28
+ 537 01a8 3196      		adiw r30,1
+ 538 01aa D801      		movw r26,r16
+ 539 01ac 0190      		ld __tmp_reg__,Z+
+ 540 01ae 0D92      		st X+,__tmp_reg__
+ 541 01b0 8A95      		dec r24
+ 542 01b2 E1F7      		brne .-8
+ 544               	.LM28:
+ 545 01b4 81E0      		ldi r24,lo8(1)
+ 546 01b6 F801      		movw r30,r16
+ 547 01b8 8287      		std Z+10,r24
+ 549               	.LM29:
+ 550 01ba 0E94 0000 		call get_a_short_address
+ 551 01be F801      		movw r30,r16
+ 552 01c0 8087      		std Z+8,r24
+ 553 01c2 9187      		std Z+9,r25
+ 554               	.L16:
+ 555               	/* epilogue: frame size=8 */
+ 556 01c4 2896      		adiw r28,8
+ 557 01c6 0FB6      		in __tmp_reg__,__SREG__
+ 558 01c8 F894      		cli
+ 559 01ca DEBF      		out __SP_H__,r29
+ 560 01cc 0FBE      		out __SREG__,__tmp_reg__
+ 561 01ce CDBF      		out __SP_L__,r28
+ 562 01d0 DF91      		pop r29
+ 563 01d2 CF91      		pop r28
+ 564 01d4 1F91      		pop r17
+ 565 01d6 0F91      		pop r16
+ 566 01d8 0895      		ret
+ 567               	/* epilogue end (size=11) */
+ 568               	/* function short_address_allocate_req size 100 (77) */
+ 573               	.Lscope4:
+ 576               	.global	disassociate_req
+ 578               	disassociate_req:
+  71:router.c      **** 
+  72:router.c      **** 
+  73:router.c      **** bool   disassociate_req(LONG_ADDR ieee_addr)
+  74:router.c      **** {
+ 580               	.LM30:
+ 581               	/* prologue: frame size=8 */
+ 582 01da CF93      		push r28
+ 583 01dc DF93      		push r29
+ 584 01de CDB7      		in r28,__SP_L__
+ 585 01e0 DEB7      		in r29,__SP_H__
+ 586 01e2 2897      		sbiw r28,8
+ 587 01e4 0FB6      		in __tmp_reg__,__SREG__
+ 588 01e6 F894      		cli
+ 589 01e8 DEBF      		out __SP_H__,r29
+ 590 01ea 0FBE      		out __SREG__,__tmp_reg__
+ 591 01ec CDBF      		out __SP_L__,r28
+ 592               	/* prologue end (size=10) */
+ 593 01ee 2983      		std Y+1,r18
+ 594 01f0 3A83      		std Y+2,r19
+ 595 01f2 4B83      		std Y+3,r20
+ 596 01f4 5C83      		std Y+4,r21
+ 597 01f6 6D83      		std Y+5,r22
+ 598 01f8 7E83      		std Y+6,r23
+ 599 01fa 8F83      		std Y+7,r24
+ 600 01fc 9887      		std Y+8,r25
+  75:router.c      ****       //地址删除，删除关联信息
+  76:router.c      ****       uint8_t index;
+  77:router.c      ****       index=0;
+ 602               	.LM31:
+ 603 01fe 20E0      		ldi r18,lo8(0)
+ 604 0200 4BE0      		ldi r20,lo8(11)
+ 605 0202 50E0      		ldi r21,hi8(11)
+ 606 0204 3981      		ldd r19,Y+1
+  78:router.c      ****       while((associate_tab[index].ieee_addr.longaddr!=ieee_addr.longaddr)||(!associate_tab[index].i
+ 608               	.LM32:
+ 609 0206 06C0      		rjmp .L24
+ 610               	.L28:
+  79:router.c      ****       	{
+  80:router.c      ****       	   index++;
+ 612               	.LM33:
+ 613 0208 2F5F      		subi r18,lo8(-(1))
+  81:router.c      **** 	   if(index==MAX_ASSOCIATE_TABLE_NUM)
+ 615               	.LM34:
+ 616 020a 2A30      		cpi r18,lo8(10)
+ 617 020c 19F4      		brne .L24
+  82:router.c      **** 	   	return  FALSE;
+ 619               	.LM35:
+ 620 020e 80E0      		ldi r24,lo8(0)
+ 621 0210 90E0      		ldi r25,hi8(0)
+ 622 0212 30C0      		rjmp .L23
+ 623               	.L24:
+ 624 0214 822F      		mov r24,r18
+ 625 0216 9927      		clr r25
+ 626 0218 849F      		mul r24,r20
+ 627 021a F001      		movw r30,r0
+ 628 021c 859F      		mul r24,r21
+ 629 021e F00D      		add r31,r0
+ 630 0220 949F      		mul r25,r20
+ 631 0222 F00D      		add r31,r0
+ 632 0224 1124      		clr r1
+ 633 0226 E050      		subi r30,lo8(-(associate_tab))
+ 634 0228 F040      		sbci r31,hi8(-(associate_tab))
+ 635 022a 8081      		ld r24,Z
+ 636 022c 8317      		cp r24,r19
+ 637 022e 61F7      		brne .L28
+ 638 0230 9181      		ldd r25,Z+1
+ 639 0232 8A81      		ldd r24,Y+2
+ 640 0234 9817      		cp r25,r24
+ 641 0236 41F7      		brne .L28
+ 642 0238 9281      		ldd r25,Z+2
+ 643 023a 8B81      		ldd r24,Y+3
+ 644 023c 9817      		cp r25,r24
+ 645 023e 21F7      		brne .L28
+ 646 0240 9381      		ldd r25,Z+3
+ 647 0242 8C81      		ldd r24,Y+4
+ 648 0244 9817      		cp r25,r24
+ 649 0246 01F7      		brne .L28
+ 650 0248 9481      		ldd r25,Z+4
+ 651 024a 8D81      		ldd r24,Y+5
+ 652 024c 9817      		cp r25,r24
+ 653 024e E1F6      		brne .L28
+ 654 0250 9581      		ldd r25,Z+5
+ 655 0252 8E81      		ldd r24,Y+6
+ 656 0254 9817      		cp r25,r24
+ 657 0256 C1F6      		brne .L28
+ 658 0258 9681      		ldd r25,Z+6
+ 659 025a 8F81      		ldd r24,Y+7
+ 660 025c 9817      		cp r25,r24
+ 661 025e A1F6      		brne .L28
+ 662 0260 9781      		ldd r25,Z+7
+ 663 0262 8885      		ldd r24,Y+8
+ 664 0264 9817      		cp r25,r24
+ 665 0266 81F6      		brne .L28
+ 666 0268 8285      		ldd r24,Z+10
+ 667 026a 8823      		tst r24
+ 668 026c 69F2      		breq .L28
+  83:router.c      ****       	}
+  84:router.c      ****       if((associate_tab[index].ieee_addr.longaddr==ieee_addr.longaddr)&&(associate_tab[index].is_va
+  85:router.c      ****       	     associate_tab[index].is_valid=FALSE;
+ 670               	.LM36:
+ 671 026e 1286      		std Z+10,__zero_reg__
+  86:router.c      **** 	  	return TRUE;
+ 673               	.LM37:
+ 674 0270 81E0      		ldi r24,lo8(1)
+ 675 0272 90E0      		ldi r25,hi8(1)
+ 676               	.L23:
+ 677               	/* epilogue: frame size=8 */
+ 678 0274 2896      		adiw r28,8
+ 679 0276 0FB6      		in __tmp_reg__,__SREG__
+ 680 0278 F894      		cli
+ 681 027a DEBF      		out __SP_H__,r29
+ 682 027c 0FBE      		out __SREG__,__tmp_reg__
+ 683 027e CDBF      		out __SP_L__,r28
+ 684 0280 DF91      		pop r29
+ 685 0282 CF91      		pop r28
+ 686 0284 0895      		ret
+ 687               	/* epilogue end (size=9) */
+ 688               	/* function disassociate_req size 86 (67) */
+ 693               	.Lscope5:
+ 696               	.global	sensor_data_tx_to_pc
+ 698               	sensor_data_tx_to_pc:
+  87:router.c      ****       		
+  88:router.c      **** }
+  89:router.c      **** 
+  90:router.c      **** void sensor_data_tx_to_pc(MCPS_DATA_INDICATION mcps_data_indication_info)
+  91:router.c      **** {
+ 700               	.LM38:
+ 701               	/* prologue: frame size=0 */
+ 702 0286 EF92      		push r14
+ 703 0288 FF92      		push r15
+ 704 028a 0F93      		push r16
+ 705 028c 1F93      		push r17
+ 706 028e CF93      		push r28
+ 707 0290 DF93      		push r29
+ 708 0292 CDB7      		in r28,__SP_L__
+ 709 0294 DEB7      		in r29,__SP_H__
+ 710               	/* prologue end (size=8) */
+  92:router.c      ****     SHORT_ADDR  src_short_addr;  
+  93:router.c      ****     SHORT_ADDR  dst_short_addr;
+  94:router.c      ****     if(mcps_data_indication_info.src.addrMode==0x03)	
+ 712               	.LM39:
+ 713 0296 8985      		ldd r24,Y+9
+ 714 0298 8330      		cpi r24,lo8(3)
+ 715 029a 61F4      		brne .L31
+  95:router.c      ****         src_short_addr=short_address_allocate_req(mcps_data_indication_info.src.longAddr);
+ 717               	.LM40:
+ 718 029c 2A85      		ldd r18,Y+10
+ 719 029e 3B85      		ldd r19,Y+11
+ 720 02a0 4C85      		ldd r20,Y+12
+ 721 02a2 5D85      		ldd r21,Y+13
+ 722 02a4 6E85      		ldd r22,Y+14
+ 723 02a6 7F85      		ldd r23,Y+15
+ 724 02a8 8889      		ldd r24,Y+16
+ 725 02aa 9989      		ldd r25,Y+17
+ 726 02ac 0E94 0000 		call short_address_allocate_req
+ 727 02b0 7C01      		movw r14,r24
+ 728 02b2 04C0      		rjmp .L32
+ 729               	.L31:
+  96:router.c      ****     else if(mcps_data_indication_info.src.addrMode==0x02)
+ 731               	.LM41:
+ 732 02b4 8230      		cpi r24,lo8(2)
+ 733 02b6 11F4      		brne .L32
+  97:router.c      **** 	 src_short_addr=mcps_data_indication_info.src.shortAddr;
+ 735               	.LM42:
+ 736 02b8 EA88      		ldd r14,Y+18
+ 737 02ba FB88      		ldd r15,Y+19
+ 738               	.L32:
+  98:router.c      ****     dst_short_addr=mac_pib_data.macCoordShortAddress;
+ 740               	.LM43:
+ 741 02bc 0091 0000 		lds r16,mac_pib_data+22
+ 742 02c0 1091 0000 		lds r17,(mac_pib_data+22)+1
+  99:router.c      **** 
+ 100:router.c      ****     //传向后台
+ 101:router.c      ****     usart_putbyte(0x7e);
+ 744               	.LM44:
+ 745 02c4 8EE7      		ldi r24,lo8(126)
+ 746 02c6 0E94 0000 		call usart_putbyte
+ 102:router.c      ****     usart_putbyte(0x42);
+ 748               	.LM45:
+ 749 02ca 82E4      		ldi r24,lo8(66)
+ 750 02cc 0E94 0000 		call usart_putbyte
+ 103:router.c      **** 
+ 104:router.c      ****     usart_putbyte(0x1f);
+ 752               	.LM46:
+ 753 02d0 8FE1      		ldi r24,lo8(31)
+ 754 02d2 0E94 0000 		call usart_putbyte
+ 105:router.c      ****     usart_putbyte(0x02);
+ 756               	.LM47:
+ 757 02d6 82E0      		ldi r24,lo8(2)
+ 758 02d8 0E94 0000 		call usart_putbyte
+ 106:router.c      ****     usart_putbyte(dst_short_addr.v[1]);
+ 760               	.LM48:
+ 761 02dc 812F      		mov r24,r17
+ 762 02de 0E94 0000 		call usart_putbyte
+ 107:router.c      ****     usart_putbyte(src_short_addr.v[1]);
+ 764               	.LM49:
+ 765 02e2 8F2D      		mov r24,r15
+ 766 02e4 0E94 0000 		call usart_putbyte
+ 108:router.c      **** 
+ 109:router.c      ****     usart_putbyte(0x01);
+ 768               	.LM50:
+ 769 02e8 81E0      		ldi r24,lo8(1)
+ 770 02ea 0E94 0000 		call usart_putbyte
+ 110:router.c      **** 
+ 111:router.c      ****     usart_putbyte(0x00);
+ 772               	.LM51:
+ 773 02ee 80E0      		ldi r24,lo8(0)
+ 774 02f0 0E94 0000 		call usart_putbyte
+ 775 02f4 E9E0      		ldi r30,lo8(9)
+ 776 02f6 FE2E      		mov r15,r30
+ 777 02f8 8E01      		movw r16,r28
+ 778 02fa 095D      		subi r16,lo8(-(39))
+ 779 02fc 1F4F      		sbci r17,hi8(-(39))
+ 780               	.L37:
+ 781               	.LBB3:
+ 112:router.c      **** 
+ 113:router.c      ****     for(uint8_t index=0;index<10;index++)
+ 114:router.c      ****     	{
+ 115:router.c      ****     	    usart_putbyte(mcps_data_indication_info.pMsdu[2*index]);
+ 783               	.LM52:
+ 784 02fe F801      		movw r30,r16
+ 785 0300 8081      		ld r24,Z
+ 786 0302 0E94 0000 		call usart_putbyte
+ 116:router.c      **** 	    usart_putbyte(mcps_data_indication_info.pMsdu[2*index+1]);
+ 788               	.LM53:
+ 789 0306 F801      		movw r30,r16
+ 790 0308 8181      		ldd r24,Z+1
+ 791 030a 0E94 0000 		call usart_putbyte
+ 793               	.LM54:
+ 794 030e FA94      		dec r15
+ 795 0310 0E5F      		subi r16,lo8(-(2))
+ 796 0312 1F4F      		sbci r17,hi8(-(2))
+ 797 0314 F7FE      		sbrs r15,7
+ 798 0316 F3CF      		rjmp .L37
+ 799               	.LBE3:
+ 117:router.c      ****     	}
+ 118:router.c      **** 
+ 119:router.c      ****     usart_putbyte(0x01);//crc1
+ 801               	.LM55:
+ 802 0318 81E0      		ldi r24,lo8(1)
+ 803 031a 0E94 0000 		call usart_putbyte
+ 120:router.c      ****     usart_putbyte(0x01);//crc0
+ 805               	.LM56:
+ 806 031e 81E0      		ldi r24,lo8(1)
+ 807 0320 0E94 0000 		call usart_putbyte
+ 121:router.c      **** 	
+ 122:router.c      ****     usart_putbyte(0x7e);
+ 809               	.LM57:
+ 810 0324 8EE7      		ldi r24,lo8(126)
+ 811 0326 0E94 0000 		call usart_putbyte
+ 812               	/* epilogue: frame size=0 */
+ 813 032a DF91      		pop r29
+ 814 032c CF91      		pop r28
+ 815 032e 1F91      		pop r17
+ 816 0330 0F91      		pop r16
+ 817 0332 FF90      		pop r15
+ 818 0334 EF90      		pop r14
+ 819 0336 0895      		ret
+ 820               	/* epilogue end (size=7) */
+ 821               	/* function sensor_data_tx_to_pc size 89 (74) */
+ 830               	.Lscope6:
+ 831               		.comm OS_queue,16,1
+ 832               		.comm OS_sched_full,1,1
+ 833               		.comm OS_sched_free,1,1
+ 834               		.comm currentTime,2,1
+ 835               		.comm head_of_systimer_queue,2,1
+ 836               		.comm timestamp_H,2,1
+ 837               		.comm mState,4,1
+ 838               		.comm setIntervalFlag,1,1
+ 839               		.comm mScale,1,1
+ 840               		.comm mInterval,1,1
+ 841               		.comm queue_head,1,1
+ 842               		.comm queue_tail,1,1
+ 843               		.comm queue_size,1,1
+ 844               		.comm queue,3,1
+ 845               		.comm mTimerList,33,1
+ 846               		.comm backoff_timer_Set,1,1
+ 847               		.comm backoff_call,2,1
+ 848               		.comm SENSOR_DATA_VALUE,20,1
+ 849               		.comm ADC_INTERRUPT_FLAG,1,1
+ 850               		.comm cc2420_bramspi,1,1
+ 851               		.comm cc2420_rambuf,2,1
+ 852               		.comm cc2420_ramlen,1,1
+ 853               		.comm cc2420_ramaddr,2,1
+ 854               		.comm cc2420fifo_bspi,1,1
+ 855               		.comm cc2420fifo_txbuf,2,1
+ 856               		.comm cc2420fifo_txlength,1,1
+ 857               		.comm cc2420_rxbuf,4,1
+ 858               		.comm cc2420_rxlength,1,1
+ 859               		.comm cc2420_rxbuf_now,2,1
+ 860               		.comm cc2420_rxlength_now,1,1
+ 861               		.comm cc2420_rxbufuse,1,1
+ 862               		.comm rfpackernum,1,1
+ 863               		.comm cc2420_rxflag,1,1
+ 864               		.comm cc2420_currentparameters,28,1
+ 865               		.comm receive_timestamp,4,1
+ 866               		.comm send_timestamp,4,1
+ 867               		.comm cc2420_stateRadio,1,1
+ 868               		.comm cc2420_LocalAddr,2,1
+ 869               		.comm ieee_address,8,1
+ 870               		.comm rxbuf_flag,1,1
+ 871               		.comm ppib,3,1
+ 872               		.comm GTSDirectionMask,1,1
+ 873               		.comm phy_channel_state,1,1
+ 874               		.comm associate_tab,110,1
+ 875               		.comm short_address_initial,2,1
+ 876               		.comm address_allocated_num,2,1
+ 923               		.text
+ 925               	Letext:
+ 926               	/* File "router.c": code  412 = 0x019c ( 325), prologues  44, epilogues  43 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 router.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:221    .text:00000000 associate_tab_init
+                            *COM*:0000006e associate_tab
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:263    .text:00000022 router_init
+                            *COM*:00000002 short_address_initial
+                            *COM*:00000002 address_allocated_num
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:291    .text:0000003c Is_associated
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:410    .text:000000f0 get_a_short_address
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:441    .text:00000112 short_address_allocate_req
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:578    .text:000001da disassociate_req
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:698    .text:00000286 sensor_data_tx_to_pc
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+C:\Users\sunhejie\AppData\Local\Temp/ccopbaaa.s:925    .text:00000338 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+default_short_addr
+mac_pib_data
+usart_putbyte

@@ -1,0 +1,3288 @@
+   1               		.file	"avrhardware.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 104               	.global	OS_wait_250ns
+ 106               	OS_wait_250ns:
+   1:avrhardware.c **** #include "avrhardware.h"
+   2:avrhardware.c **** #include "project.h"
+   3:avrhardware.c **** inline void  OS_wait_250ns() {
+ 108               	.LM1:
+ 109               	/* prologue: frame size=0 */
+ 110               	/* prologue end (size=0) */
+   4:avrhardware.c **** #include "avrhardware.h"
+ 112               	.LM2:
+ 113               	/* #APP */
+ 114 0000 0000      		nop
+   5:avrhardware.c **** #include "avrhardware.h"
+ 116               	.LM3:
+ 117 0002 0000      		nop
+ 118               	/* #NOAPP */
+ 119               	/* epilogue: frame size=0 */
+ 120 0004 0895      		ret
+ 121               	/* epilogue end (size=1) */
+ 122               	/* function OS_wait_250ns size 5 (4) */
+ 124               	.Lscope0:
+ 127               	.global	OS_uwait
+ 129               	OS_uwait:
+   6:avrhardware.c **** #include "avrhardware.h"
+   7:avrhardware.c **** #include "project.h"
+   8:avrhardware.c **** inline void  OS_wait_250ns() {
+ 131               	.LM4:
+ 132               	/* prologue: frame size=0 */
+ 133               	/* prologue end (size=0) */
+ 134               	.L8:
+   9:avrhardware.c **** #include "avrhardware.h"
+  10:avrhardware.c **** #include "project.h"
+  11:avrhardware.c **** inline void  OS_wait_250ns() {
+  12:avrhardware.c ****       asm volatile  ("nop" ::);
+  13:avrhardware.c ****       asm volatile  ("nop" ::);
+  14:avrhardware.c **** }
+  15:avrhardware.c **** 
+  16:avrhardware.c **** inline void  OS_uwait(int u_sec) {
+  17:avrhardware.c ****     while (u_sec > 0) {
+  18:avrhardware.c ****       asm volatile  ("nop" ::);
+ 136               	.LM5:
+ 137 0006 1816      		cp __zero_reg__,r24
+ 138 0008 1906      		cpc __zero_reg__,r25
+ 139 000a 54F4      		brge .L7
+ 141               	.LM6:
+ 142               	/* #APP */
+ 143 000c 0000      		nop
+ 145               	.LM7:
+ 146 000e 0000      		nop
+ 148               	.LM8:
+ 149 0010 0000      		nop
+ 151               	.LM9:
+ 152 0012 0000      		nop
+ 154               	.LM10:
+ 155 0014 0000      		nop
+ 157               	.LM11:
+ 158 0016 0000      		nop
+ 160               	.LM12:
+ 161 0018 0000      		nop
+ 163               	.LM13:
+ 164 001a 0000      		nop
+ 166               	.LM14:
+ 167               	/* #NOAPP */
+ 168 001c 0197      		sbiw r24,1
+ 169 001e F3CF      		rjmp .L8
+ 170               	.L7:
+ 171 0020 0895      		ret
+ 172               	/* epilogue: frame size=0 */
+ 173               	/* epilogue: noreturn */
+ 174               	/* epilogue end (size=0) */
+ 175               	/* function OS_uwait size 22 (22) */
+ 177               	.Lscope1:
+ 179               	.global	OS_SET_RED_LED_PIN
+ 181               	OS_SET_RED_LED_PIN:
+  19:avrhardware.c **** m volatile  ("nop" ::);
+  20:avrhardware.c ****       asm volatile  ("nop" ::);
+  21:avrhardware.c **** }
+  22:avrhardware.c **** 
+  23:avrhardware.c **** inline void  OS_uwait(int u_sec) {
+ 183               	.LM15:
+ 184               	/* prologue: frame size=0 */
+ 185               	/* prologue end (size=0) */
+ 186 0022 DA9A      		sbi 59-0x20,2
+ 187               	/* epilogue: frame size=0 */
+ 188 0024 0895      		ret
+ 189               	/* epilogue end (size=1) */
+ 190               	/* function OS_SET_RED_LED_PIN size 2 (1) */
+ 192               	.Lscope2:
+ 194               	.global	OS_CLR_RED_LED_PIN
+ 196               	OS_CLR_RED_LED_PIN:
+ 198               	.LM16:
+ 199               	/* prologue: frame size=0 */
+ 200               	/* prologue end (size=0) */
+ 201 0026 DA98      		cbi 59-0x20,2
+ 202               	/* epilogue: frame size=0 */
+ 203 0028 0895      		ret
+ 204               	/* epilogue end (size=1) */
+ 205               	/* function OS_CLR_RED_LED_PIN size 2 (1) */
+ 207               	.Lscope3:
+ 209               	.global	OS_READ_RED_LED_PIN
+ 211               	OS_READ_RED_LED_PIN:
+ 213               	.LM17:
+ 214               	/* prologue: frame size=0 */
+ 215               	/* prologue end (size=0) */
+ 216 002a 89B3      		in r24,57-0x20
+ 217 002c 9927      		clr r25
+ 218 002e 9695      		lsr r25
+ 219 0030 8795      		ror r24
+ 220 0032 9695      		lsr r25
+ 221 0034 8795      		ror r24
+ 222 0036 8170      		andi r24,lo8(1)
+ 223 0038 9070      		andi r25,hi8(1)
+ 224               	/* epilogue: frame size=0 */
+ 225 003a 0895      		ret
+ 226               	/* epilogue end (size=1) */
+ 227               	/* function OS_READ_RED_LED_PIN size 9 (8) */
+ 229               	.Lscope4:
+ 231               	.global	OS_MAKE_RED_LED_OUTPUT
+ 233               	OS_MAKE_RED_LED_OUTPUT:
+ 235               	.LM18:
+ 236               	/* prologue: frame size=0 */
+ 237               	/* prologue end (size=0) */
+ 238 003c D29A      		sbi 58-0x20,2
+ 239               	/* epilogue: frame size=0 */
+ 240 003e 0895      		ret
+ 241               	/* epilogue end (size=1) */
+ 242               	/* function OS_MAKE_RED_LED_OUTPUT size 2 (1) */
+ 244               	.Lscope5:
+ 246               	.global	OS_MAKE_RED_LED_INPUT
+ 248               	OS_MAKE_RED_LED_INPUT:
+ 250               	.LM19:
+ 251               	/* prologue: frame size=0 */
+ 252               	/* prologue end (size=0) */
+ 253 0040 D298      		cbi 58-0x20,2
+ 254               	/* epilogue: frame size=0 */
+ 255 0042 0895      		ret
+ 256               	/* epilogue end (size=1) */
+ 257               	/* function OS_MAKE_RED_LED_INPUT size 2 (1) */
+ 259               	.Lscope6:
+ 261               	.global	OS_SET_GREEN_LED_PIN
+ 263               	OS_SET_GREEN_LED_PIN:
+  24:avrhardware.c **** lude "project.h"
+ 265               	.LM20:
+ 266               	/* prologue: frame size=0 */
+ 267               	/* prologue end (size=0) */
+ 268 0044 D99A      		sbi 59-0x20,1
+ 269               	/* epilogue: frame size=0 */
+ 270 0046 0895      		ret
+ 271               	/* epilogue end (size=1) */
+ 272               	/* function OS_SET_GREEN_LED_PIN size 2 (1) */
+ 274               	.Lscope7:
+ 276               	.global	OS_CLR_GREEN_LED_PIN
+ 278               	OS_CLR_GREEN_LED_PIN:
+ 280               	.LM21:
+ 281               	/* prologue: frame size=0 */
+ 282               	/* prologue end (size=0) */
+ 283 0048 D998      		cbi 59-0x20,1
+ 284               	/* epilogue: frame size=0 */
+ 285 004a 0895      		ret
+ 286               	/* epilogue end (size=1) */
+ 287               	/* function OS_CLR_GREEN_LED_PIN size 2 (1) */
+ 289               	.Lscope8:
+ 291               	.global	OS_READ_GREEN_LED_PIN
+ 293               	OS_READ_GREEN_LED_PIN:
+ 295               	.LM22:
+ 296               	/* prologue: frame size=0 */
+ 297               	/* prologue end (size=0) */
+ 298 004c 89B3      		in r24,57-0x20
+ 299 004e 9927      		clr r25
+ 300 0050 9695      		lsr r25
+ 301 0052 8795      		ror r24
+ 302 0054 8170      		andi r24,lo8(1)
+ 303 0056 9070      		andi r25,hi8(1)
+ 304               	/* epilogue: frame size=0 */
+ 305 0058 0895      		ret
+ 306               	/* epilogue end (size=1) */
+ 307               	/* function OS_READ_GREEN_LED_PIN size 7 (6) */
+ 309               	.Lscope9:
+ 311               	.global	OS_MAKE_GREEN_LED_OUTPUT
+ 313               	OS_MAKE_GREEN_LED_OUTPUT:
+ 315               	.LM23:
+ 316               	/* prologue: frame size=0 */
+ 317               	/* prologue end (size=0) */
+ 318 005a D19A      		sbi 58-0x20,1
+ 319               	/* epilogue: frame size=0 */
+ 320 005c 0895      		ret
+ 321               	/* epilogue end (size=1) */
+ 322               	/* function OS_MAKE_GREEN_LED_OUTPUT size 2 (1) */
+ 324               	.Lscope10:
+ 326               	.global	OS_MAKE_GREEN_LED_INPUT
+ 328               	OS_MAKE_GREEN_LED_INPUT:
+ 330               	.LM24:
+ 331               	/* prologue: frame size=0 */
+ 332               	/* prologue end (size=0) */
+ 333 005e D198      		cbi 58-0x20,1
+ 334               	/* epilogue: frame size=0 */
+ 335 0060 0895      		ret
+ 336               	/* epilogue end (size=1) */
+ 337               	/* function OS_MAKE_GREEN_LED_INPUT size 2 (1) */
+ 339               	.Lscope11:
+ 341               	.global	OS_SET_YELLOW_LED_PIN
+ 343               	OS_SET_YELLOW_LED_PIN:
+  25:avrhardware.c **** #include "avrhardware.h"
+ 345               	.LM25:
+ 346               	/* prologue: frame size=0 */
+ 347               	/* prologue end (size=0) */
+ 348 0062 D89A      		sbi 59-0x20,0
+ 349               	/* epilogue: frame size=0 */
+ 350 0064 0895      		ret
+ 351               	/* epilogue end (size=1) */
+ 352               	/* function OS_SET_YELLOW_LED_PIN size 2 (1) */
+ 354               	.Lscope12:
+ 356               	.global	OS_CLR_YELLOW_LED_PIN
+ 358               	OS_CLR_YELLOW_LED_PIN:
+ 360               	.LM26:
+ 361               	/* prologue: frame size=0 */
+ 362               	/* prologue end (size=0) */
+ 363 0066 D898      		cbi 59-0x20,0
+ 364               	/* epilogue: frame size=0 */
+ 365 0068 0895      		ret
+ 366               	/* epilogue end (size=1) */
+ 367               	/* function OS_CLR_YELLOW_LED_PIN size 2 (1) */
+ 369               	.Lscope13:
+ 371               	.global	OS_READ_YELLOW_LED_PIN
+ 373               	OS_READ_YELLOW_LED_PIN:
+ 375               	.LM27:
+ 376               	/* prologue: frame size=0 */
+ 377               	/* prologue end (size=0) */
+ 378 006a 89B3      		in r24,57-0x20
+ 379 006c 9927      		clr r25
+ 380 006e 8170      		andi r24,lo8(1)
+ 381 0070 9070      		andi r25,hi8(1)
+ 382               	/* epilogue: frame size=0 */
+ 383 0072 0895      		ret
+ 384               	/* epilogue end (size=1) */
+ 385               	/* function OS_READ_YELLOW_LED_PIN size 5 (4) */
+ 387               	.Lscope14:
+ 389               	.global	OS_MAKE_YELLOW_LED_OUTPUT
+ 391               	OS_MAKE_YELLOW_LED_OUTPUT:
+ 393               	.LM28:
+ 394               	/* prologue: frame size=0 */
+ 395               	/* prologue end (size=0) */
+ 396 0074 D09A      		sbi 58-0x20,0
+ 397               	/* epilogue: frame size=0 */
+ 398 0076 0895      		ret
+ 399               	/* epilogue end (size=1) */
+ 400               	/* function OS_MAKE_YELLOW_LED_OUTPUT size 2 (1) */
+ 402               	.Lscope15:
+ 404               	.global	OS_MAKE_YELLOW_LED_INPUT
+ 406               	OS_MAKE_YELLOW_LED_INPUT:
+ 408               	.LM29:
+ 409               	/* prologue: frame size=0 */
+ 410               	/* prologue end (size=0) */
+ 411 0078 D098      		cbi 58-0x20,0
+ 412               	/* epilogue: frame size=0 */
+ 413 007a 0895      		ret
+ 414               	/* epilogue end (size=1) */
+ 415               	/* function OS_MAKE_YELLOW_LED_INPUT size 2 (1) */
+ 417               	.Lscope16:
+ 419               	.global	OS_SET_SERIAL_ID_PIN
+ 421               	OS_SET_SERIAL_ID_PIN:
+  26:avrhardware.c **** #include "avrhardware.h"
+  27:avrhardware.c **** #include "project.h"
+ 423               	.LM30:
+ 424               	/* prologue: frame size=0 */
+ 425               	/* prologue end (size=0) */
+ 426 007c DC9A      		sbi 59-0x20,4
+ 427               	/* epilogue: frame size=0 */
+ 428 007e 0895      		ret
+ 429               	/* epilogue end (size=1) */
+ 430               	/* function OS_SET_SERIAL_ID_PIN size 2 (1) */
+ 432               	.Lscope17:
+ 434               	.global	OS_CLR_SERIAL_ID_PIN
+ 436               	OS_CLR_SERIAL_ID_PIN:
+ 438               	.LM31:
+ 439               	/* prologue: frame size=0 */
+ 440               	/* prologue end (size=0) */
+ 441 0080 DC98      		cbi 59-0x20,4
+ 442               	/* epilogue: frame size=0 */
+ 443 0082 0895      		ret
+ 444               	/* epilogue end (size=1) */
+ 445               	/* function OS_CLR_SERIAL_ID_PIN size 2 (1) */
+ 447               	.Lscope18:
+ 449               	.global	OS_READ_SERIAL_ID_PIN
+ 451               	OS_READ_SERIAL_ID_PIN:
+ 453               	.LM32:
+ 454               	/* prologue: frame size=0 */
+ 455               	/* prologue end (size=0) */
+ 456 0084 89B3      		in r24,57-0x20
+ 457 0086 9927      		clr r25
+ 458 0088 44E0      		ldi r20,4
+ 459 008a 9695      	1:	lsr r25
+ 460 008c 8795      		ror r24
+ 461 008e 4A95      		dec r20
+ 462 0090 E1F7      		brne 1b
+ 463 0092 8170      		andi r24,lo8(1)
+ 464 0094 9070      		andi r25,hi8(1)
+ 465               	/* epilogue: frame size=0 */
+ 466 0096 0895      		ret
+ 467               	/* epilogue end (size=1) */
+ 468               	/* function OS_READ_SERIAL_ID_PIN size 10 (9) */
+ 470               	.Lscope19:
+ 472               	.global	OS_MAKE_SERIAL_ID_OUTPUT
+ 474               	OS_MAKE_SERIAL_ID_OUTPUT:
+ 476               	.LM33:
+ 477               	/* prologue: frame size=0 */
+ 478               	/* prologue end (size=0) */
+ 479 0098 D49A      		sbi 58-0x20,4
+ 480               	/* epilogue: frame size=0 */
+ 481 009a 0895      		ret
+ 482               	/* epilogue end (size=1) */
+ 483               	/* function OS_MAKE_SERIAL_ID_OUTPUT size 2 (1) */
+ 485               	.Lscope20:
+ 487               	.global	OS_MAKE_SERIAL_ID_INPUT
+ 489               	OS_MAKE_SERIAL_ID_INPUT:
+ 491               	.LM34:
+ 492               	/* prologue: frame size=0 */
+ 493               	/* prologue end (size=0) */
+ 494 009c D498      		cbi 58-0x20,4
+ 495               	/* epilogue: frame size=0 */
+ 496 009e 0895      		ret
+ 497               	/* epilogue end (size=1) */
+ 498               	/* function OS_MAKE_SERIAL_ID_INPUT size 2 (1) */
+ 500               	.Lscope21:
+ 502               	.global	OS_SET_BAT_MON_PIN
+ 504               	OS_SET_BAT_MON_PIN:
+  28:avrhardware.c **** #include "avrhardware.h"
+ 506               	.LM35:
+ 507               	/* prologue: frame size=0 */
+ 508               	/* prologue end (size=0) */
+ 509 00a0 DD9A      		sbi 59-0x20,5
+ 510               	/* epilogue: frame size=0 */
+ 511 00a2 0895      		ret
+ 512               	/* epilogue end (size=1) */
+ 513               	/* function OS_SET_BAT_MON_PIN size 2 (1) */
+ 515               	.Lscope22:
+ 517               	.global	OS_CLR_BAT_MON_PIN
+ 519               	OS_CLR_BAT_MON_PIN:
+ 521               	.LM36:
+ 522               	/* prologue: frame size=0 */
+ 523               	/* prologue end (size=0) */
+ 524 00a4 DD98      		cbi 59-0x20,5
+ 525               	/* epilogue: frame size=0 */
+ 526 00a6 0895      		ret
+ 527               	/* epilogue end (size=1) */
+ 528               	/* function OS_CLR_BAT_MON_PIN size 2 (1) */
+ 530               	.Lscope23:
+ 532               	.global	OS_READ_BAT_MON_PIN
+ 534               	OS_READ_BAT_MON_PIN:
+ 536               	.LM37:
+ 537               	/* prologue: frame size=0 */
+ 538               	/* prologue end (size=0) */
+ 539 00a8 89B3      		in r24,57-0x20
+ 540 00aa 9927      		clr r25
+ 541 00ac 55E0      		ldi r21,5
+ 542 00ae 9695      	1:	lsr r25
+ 543 00b0 8795      		ror r24
+ 544 00b2 5A95      		dec r21
+ 545 00b4 E1F7      		brne 1b
+ 546 00b6 8170      		andi r24,lo8(1)
+ 547 00b8 9070      		andi r25,hi8(1)
+ 548               	/* epilogue: frame size=0 */
+ 549 00ba 0895      		ret
+ 550               	/* epilogue end (size=1) */
+ 551               	/* function OS_READ_BAT_MON_PIN size 10 (9) */
+ 553               	.Lscope24:
+ 555               	.global	OS_MAKE_BAT_MON_OUTPUT
+ 557               	OS_MAKE_BAT_MON_OUTPUT:
+ 559               	.LM38:
+ 560               	/* prologue: frame size=0 */
+ 561               	/* prologue end (size=0) */
+ 562 00bc D59A      		sbi 58-0x20,5
+ 563               	/* epilogue: frame size=0 */
+ 564 00be 0895      		ret
+ 565               	/* epilogue end (size=1) */
+ 566               	/* function OS_MAKE_BAT_MON_OUTPUT size 2 (1) */
+ 568               	.Lscope25:
+ 570               	.global	OS_MAKE_BAT_MON_INPUT
+ 572               	OS_MAKE_BAT_MON_INPUT:
+ 574               	.LM39:
+ 575               	/* prologue: frame size=0 */
+ 576               	/* prologue end (size=0) */
+ 577 00c0 D598      		cbi 58-0x20,5
+ 578               	/* epilogue: frame size=0 */
+ 579 00c2 0895      		ret
+ 580               	/* epilogue end (size=1) */
+ 581               	/* function OS_MAKE_BAT_MON_INPUT size 2 (1) */
+ 583               	.Lscope26:
+ 585               	.global	OS_SET_THERM_PWR_PIN
+ 587               	OS_SET_THERM_PWR_PIN:
+  29:avrhardware.c **** #include "avrhardware.h"
+ 589               	.LM40:
+ 590               	/* prologue: frame size=0 */
+ 591               	/* prologue end (size=0) */
+ 592 00c4 DF9A      		sbi 59-0x20,7
+ 593               	/* epilogue: frame size=0 */
+ 594 00c6 0895      		ret
+ 595               	/* epilogue end (size=1) */
+ 596               	/* function OS_SET_THERM_PWR_PIN size 2 (1) */
+ 598               	.Lscope27:
+ 600               	.global	OS_CLR_THERM_PWR_PIN
+ 602               	OS_CLR_THERM_PWR_PIN:
+ 604               	.LM41:
+ 605               	/* prologue: frame size=0 */
+ 606               	/* prologue end (size=0) */
+ 607 00c8 DF98      		cbi 59-0x20,7
+ 608               	/* epilogue: frame size=0 */
+ 609 00ca 0895      		ret
+ 610               	/* epilogue end (size=1) */
+ 611               	/* function OS_CLR_THERM_PWR_PIN size 2 (1) */
+ 613               	.Lscope28:
+ 615               	.global	OS_READ_THERM_PWR_PIN
+ 617               	OS_READ_THERM_PWR_PIN:
+ 619               	.LM42:
+ 620               	/* prologue: frame size=0 */
+ 621               	/* prologue end (size=0) */
+ 622 00cc 80E0      		ldi r24,lo8(0)
+ 623 00ce 90E0      		ldi r25,hi8(0)
+ 624 00d0 CF9B      		sbis 57-0x20,7
+ 625 00d2 02C0      		rjmp .L37
+ 627               	.LM43:
+ 628 00d4 81E0      		ldi r24,lo8(1)
+ 629 00d6 90E0      		ldi r25,hi8(1)
+ 630               	.L37:
+ 631 00d8 0895      		ret
+ 632               	/* epilogue: frame size=0 */
+ 633 00da 0895      		ret
+ 634               	/* epilogue end (size=1) */
+ 635               	/* function OS_READ_THERM_PWR_PIN size 8 (7) */
+ 637               	.Lscope29:
+ 639               	.global	OS_MAKE_THERM_PWR_OUTPUT
+ 641               	OS_MAKE_THERM_PWR_OUTPUT:
+ 643               	.LM44:
+ 644               	/* prologue: frame size=0 */
+ 645               	/* prologue end (size=0) */
+ 646 00dc D79A      		sbi 58-0x20,7
+ 647               	/* epilogue: frame size=0 */
+ 648 00de 0895      		ret
+ 649               	/* epilogue end (size=1) */
+ 650               	/* function OS_MAKE_THERM_PWR_OUTPUT size 2 (1) */
+ 652               	.Lscope30:
+ 654               	.global	OS_MAKE_THERM_PWR_INPUT
+ 656               	OS_MAKE_THERM_PWR_INPUT:
+ 658               	.LM45:
+ 659               	/* prologue: frame size=0 */
+ 660               	/* prologue end (size=0) */
+ 661 00e0 D798      		cbi 58-0x20,7
+ 662               	/* epilogue: frame size=0 */
+ 663 00e2 0895      		ret
+ 664               	/* epilogue end (size=1) */
+ 665               	/* function OS_MAKE_THERM_PWR_INPUT size 2 (1) */
+ 667               	.Lscope31:
+ 669               	.global	OS_SET_CC_RSTN_PIN
+ 671               	OS_SET_CC_RSTN_PIN:
+  30:avrhardware.c **** #include "avrhardware.h"
+  31:avrhardware.c **** #include "project.h"
+  32:avrhardware.c **** inline void  OS_wait_250ns() {
+  33:avrhardware.c ****       asm volatile  ("nop" ::);
+  34:avrhardware.c ****       asm volatile  ("nop" ::);
+ 673               	.LM46:
+ 674               	/* prologue: frame size=0 */
+ 675               	/* prologue end (size=0) */
+ 676 00e4 DE9A      		sbi 59-0x20,6
+ 677               	/* epilogue: frame size=0 */
+ 678 00e6 0895      		ret
+ 679               	/* epilogue end (size=1) */
+ 680               	/* function OS_SET_CC_RSTN_PIN size 2 (1) */
+ 682               	.Lscope32:
+ 684               	.global	OS_CLR_CC_RSTN_PIN
+ 686               	OS_CLR_CC_RSTN_PIN:
+ 688               	.LM47:
+ 689               	/* prologue: frame size=0 */
+ 690               	/* prologue end (size=0) */
+ 691 00e8 DE98      		cbi 59-0x20,6
+ 692               	/* epilogue: frame size=0 */
+ 693 00ea 0895      		ret
+ 694               	/* epilogue end (size=1) */
+ 695               	/* function OS_CLR_CC_RSTN_PIN size 2 (1) */
+ 697               	.Lscope33:
+ 699               	.global	OS_READ_CC_RSTN_PIN
+ 701               	OS_READ_CC_RSTN_PIN:
+ 703               	.LM48:
+ 704               	/* prologue: frame size=0 */
+ 705               	/* prologue end (size=0) */
+ 706 00ec 89B3      		in r24,57-0x20
+ 707 00ee 9927      		clr r25
+ 708 00f0 66E0      		ldi r22,6
+ 709 00f2 9695      	1:	lsr r25
+ 710 00f4 8795      		ror r24
+ 711 00f6 6A95      		dec r22
+ 712 00f8 E1F7      		brne 1b
+ 713 00fa 8170      		andi r24,lo8(1)
+ 714 00fc 9070      		andi r25,hi8(1)
+ 715               	/* epilogue: frame size=0 */
+ 716 00fe 0895      		ret
+ 717               	/* epilogue end (size=1) */
+ 718               	/* function OS_READ_CC_RSTN_PIN size 10 (9) */
+ 720               	.Lscope34:
+ 722               	.global	OS_MAKE_CC_RSTN_OUTPUT
+ 724               	OS_MAKE_CC_RSTN_OUTPUT:
+ 726               	.LM49:
+ 727               	/* prologue: frame size=0 */
+ 728               	/* prologue end (size=0) */
+ 729 0100 D69A      		sbi 58-0x20,6
+ 730               	/* epilogue: frame size=0 */
+ 731 0102 0895      		ret
+ 732               	/* epilogue end (size=1) */
+ 733               	/* function OS_MAKE_CC_RSTN_OUTPUT size 2 (1) */
+ 735               	.Lscope35:
+ 737               	.global	OS_MAKE_CC_RSTN_INPUT
+ 739               	OS_MAKE_CC_RSTN_INPUT:
+ 741               	.LM50:
+ 742               	/* prologue: frame size=0 */
+ 743               	/* prologue end (size=0) */
+ 744 0104 D698      		cbi 58-0x20,6
+ 745               	/* epilogue: frame size=0 */
+ 746 0106 0895      		ret
+ 747               	/* epilogue end (size=1) */
+ 748               	/* function OS_MAKE_CC_RSTN_INPUT size 2 (1) */
+ 750               	.Lscope36:
+ 752               	.global	OS_SET_CC_VREN_PIN
+ 754               	OS_SET_CC_VREN_PIN:
+  35:avrhardware.c **** #include "avrhardware.h"
+ 756               	.LM51:
+ 757               	/* prologue: frame size=0 */
+ 758               	/* prologue end (size=0) */
+ 759 0108 DD9A      		sbi 59-0x20,5
+ 760               	/* epilogue: frame size=0 */
+ 761 010a 0895      		ret
+ 762               	/* epilogue end (size=1) */
+ 763               	/* function OS_SET_CC_VREN_PIN size 2 (1) */
+ 765               	.Lscope37:
+ 767               	.global	OS_CLR_CC_VREN_PIN
+ 769               	OS_CLR_CC_VREN_PIN:
+ 771               	.LM52:
+ 772               	/* prologue: frame size=0 */
+ 773               	/* prologue end (size=0) */
+ 774 010c DD98      		cbi 59-0x20,5
+ 775               	/* epilogue: frame size=0 */
+ 776 010e 0895      		ret
+ 777               	/* epilogue end (size=1) */
+ 778               	/* function OS_CLR_CC_VREN_PIN size 2 (1) */
+ 780               	.Lscope38:
+ 782               	.global	OS_READ_CC_VREN_PIN
+ 784               	OS_READ_CC_VREN_PIN:
+ 786               	.LM53:
+ 787               	/* prologue: frame size=0 */
+ 788               	/* prologue end (size=0) */
+ 789 0110 89B3      		in r24,57-0x20
+ 790 0112 9927      		clr r25
+ 791 0114 75E0      		ldi r23,5
+ 792 0116 9695      	1:	lsr r25
+ 793 0118 8795      		ror r24
+ 794 011a 7A95      		dec r23
+ 795 011c E1F7      		brne 1b
+ 796 011e 8170      		andi r24,lo8(1)
+ 797 0120 9070      		andi r25,hi8(1)
+ 798               	/* epilogue: frame size=0 */
+ 799 0122 0895      		ret
+ 800               	/* epilogue end (size=1) */
+ 801               	/* function OS_READ_CC_VREN_PIN size 10 (9) */
+ 803               	.Lscope39:
+ 805               	.global	OS_MAKE_CC_VREN_OUTPUT
+ 807               	OS_MAKE_CC_VREN_OUTPUT:
+ 809               	.LM54:
+ 810               	/* prologue: frame size=0 */
+ 811               	/* prologue end (size=0) */
+ 812 0124 D59A      		sbi 58-0x20,5
+ 813               	/* epilogue: frame size=0 */
+ 814 0126 0895      		ret
+ 815               	/* epilogue end (size=1) */
+ 816               	/* function OS_MAKE_CC_VREN_OUTPUT size 2 (1) */
+ 818               	.Lscope40:
+ 820               	.global	OS_MAKE_CC_VREN_INPUT
+ 822               	OS_MAKE_CC_VREN_INPUT:
+ 824               	.LM55:
+ 825               	/* prologue: frame size=0 */
+ 826               	/* prologue end (size=0) */
+ 827 0128 D598      		cbi 58-0x20,5
+ 828               	/* epilogue: frame size=0 */
+ 829 012a 0895      		ret
+ 830               	/* epilogue end (size=1) */
+ 831               	/* function OS_MAKE_CC_VREN_INPUT size 2 (1) */
+ 833               	.Lscope41:
+ 835               	.global	OS_SET_CC_FIFOP1_PIN
+ 837               	OS_SET_CC_FIFOP1_PIN:
+  36:avrhardware.c **** #include "avrhardware.h"
+  37:avrhardware.c **** #include "project.h"
+ 839               	.LM56:
+ 840               	/* prologue: frame size=0 */
+ 841               	/* prologue end (size=0) */
+ 842 012c 1E9A      		sbi 35-0x20,6
+ 843               	/* epilogue: frame size=0 */
+ 844 012e 0895      		ret
+ 845               	/* epilogue end (size=1) */
+ 846               	/* function OS_SET_CC_FIFOP1_PIN size 2 (1) */
+ 848               	.Lscope42:
+ 850               	.global	OS_CLR_CC_FIFOP1_PIN
+ 852               	OS_CLR_CC_FIFOP1_PIN:
+ 854               	.LM57:
+ 855               	/* prologue: frame size=0 */
+ 856               	/* prologue end (size=0) */
+ 857 0130 1E98      		cbi 35-0x20,6
+ 858               	/* epilogue: frame size=0 */
+ 859 0132 0895      		ret
+ 860               	/* epilogue end (size=1) */
+ 861               	/* function OS_CLR_CC_FIFOP1_PIN size 2 (1) */
+ 863               	.Lscope43:
+ 865               	.global	OS_READ_CC_FIFOP1_PIN
+ 867               	OS_READ_CC_FIFOP1_PIN:
+ 869               	.LM58:
+ 870               	/* prologue: frame size=0 */
+ 871               	/* prologue end (size=0) */
+ 872 0134 81B1      		in r24,33-0x20
+ 873 0136 9927      		clr r25
+ 874 0138 E6E0      		ldi r30,6
+ 875 013a 9695      	1:	lsr r25
+ 876 013c 8795      		ror r24
+ 877 013e EA95      		dec r30
+ 878 0140 E1F7      		brne 1b
+ 879 0142 8170      		andi r24,lo8(1)
+ 880 0144 9070      		andi r25,hi8(1)
+ 881               	/* epilogue: frame size=0 */
+ 882 0146 0895      		ret
+ 883               	/* epilogue end (size=1) */
+ 884               	/* function OS_READ_CC_FIFOP1_PIN size 10 (9) */
+ 886               	.Lscope44:
+ 888               	.global	OS_MAKE_CC_FIFOP1_OUTPUT
+ 890               	OS_MAKE_CC_FIFOP1_OUTPUT:
+ 892               	.LM59:
+ 893               	/* prologue: frame size=0 */
+ 894               	/* prologue end (size=0) */
+ 895 0148 169A      		sbi 34-0x20,6
+ 896               	/* epilogue: frame size=0 */
+ 897 014a 0895      		ret
+ 898               	/* epilogue end (size=1) */
+ 899               	/* function OS_MAKE_CC_FIFOP1_OUTPUT size 2 (1) */
+ 901               	.Lscope45:
+ 903               	.global	OS_MAKE_CC_FIFOP1_INPUT
+ 905               	OS_MAKE_CC_FIFOP1_INPUT:
+ 907               	.LM60:
+ 908               	/* prologue: frame size=0 */
+ 909               	/* prologue end (size=0) */
+ 910 014c 1698      		cbi 34-0x20,6
+ 911               	/* epilogue: frame size=0 */
+ 912 014e 0895      		ret
+ 913               	/* epilogue end (size=1) */
+ 914               	/* function OS_MAKE_CC_FIFOP1_INPUT size 2 (1) */
+ 916               	.Lscope46:
+ 918               	.global	OS_SET_CC_CCA_PIN
+ 920               	OS_SET_CC_CCA_PIN:
+  38:avrhardware.c **** #include "avrhardware.h"
+  39:avrhardware.c **** #include "project.h"
+ 922               	.LM61:
+ 923               	/* prologue: frame size=0 */
+ 924               	/* prologue end (size=0) */
+ 925 0150 969A      		sbi 50-0x20,6
+ 926               	/* epilogue: frame size=0 */
+ 927 0152 0895      		ret
+ 928               	/* epilogue end (size=1) */
+ 929               	/* function OS_SET_CC_CCA_PIN size 2 (1) */
+ 931               	.Lscope47:
+ 933               	.global	OS_CLR_CC_CCA_PIN
+ 935               	OS_CLR_CC_CCA_PIN:
+ 937               	.LM62:
+ 938               	/* prologue: frame size=0 */
+ 939               	/* prologue end (size=0) */
+ 940 0154 9698      		cbi 50-0x20,6
+ 941               	/* epilogue: frame size=0 */
+ 942 0156 0895      		ret
+ 943               	/* epilogue end (size=1) */
+ 944               	/* function OS_CLR_CC_CCA_PIN size 2 (1) */
+ 946               	.Lscope48:
+ 948               	.global	OS_READ_CC_CCA_PIN
+ 950               	OS_READ_CC_CCA_PIN:
+ 952               	.LM63:
+ 953               	/* prologue: frame size=0 */
+ 954               	/* prologue end (size=0) */
+ 955 0158 80B3      		in r24,48-0x20
+ 956 015a 9927      		clr r25
+ 957 015c F6E0      		ldi r31,6
+ 958 015e 9695      	1:	lsr r25
+ 959 0160 8795      		ror r24
+ 960 0162 FA95      		dec r31
+ 961 0164 E1F7      		brne 1b
+ 962 0166 8170      		andi r24,lo8(1)
+ 963 0168 9070      		andi r25,hi8(1)
+ 964               	/* epilogue: frame size=0 */
+ 965 016a 0895      		ret
+ 966               	/* epilogue end (size=1) */
+ 967               	/* function OS_READ_CC_CCA_PIN size 10 (9) */
+ 969               	.Lscope49:
+ 971               	.global	OS_MAKE_CC_CCA_OUTPUT
+ 973               	OS_MAKE_CC_CCA_OUTPUT:
+ 975               	.LM64:
+ 976               	/* prologue: frame size=0 */
+ 977               	/* prologue end (size=0) */
+ 978 016c 8E9A      		sbi 49-0x20,6
+ 979               	/* epilogue: frame size=0 */
+ 980 016e 0895      		ret
+ 981               	/* epilogue end (size=1) */
+ 982               	/* function OS_MAKE_CC_CCA_OUTPUT size 2 (1) */
+ 984               	.Lscope50:
+ 986               	.global	OS_MAKE_CC_CCA_INPUT
+ 988               	OS_MAKE_CC_CCA_INPUT:
+ 990               	.LM65:
+ 991               	/* prologue: frame size=0 */
+ 992               	/* prologue end (size=0) */
+ 993 0170 8E98      		cbi 49-0x20,6
+ 994               	/* epilogue: frame size=0 */
+ 995 0172 0895      		ret
+ 996               	/* epilogue end (size=1) */
+ 997               	/* function OS_MAKE_CC_CCA_INPUT size 2 (1) */
+ 999               	.Lscope51:
+ 1001               	.global	OS_SET_CC_SFD_PIN
+ 1003               	OS_SET_CC_SFD_PIN:
+  40:avrhardware.c **** #include "avrhardware.h"
+ 1005               	.LM66:
+ 1006               	/* prologue: frame size=0 */
+ 1007               	/* prologue end (size=0) */
+ 1008 0174 949A      		sbi 50-0x20,4
+ 1009               	/* epilogue: frame size=0 */
+ 1010 0176 0895      		ret
+ 1011               	/* epilogue end (size=1) */
+ 1012               	/* function OS_SET_CC_SFD_PIN size 2 (1) */
+ 1014               	.Lscope52:
+ 1016               	.global	OS_CLR_CC_SFD_PIN
+ 1018               	OS_CLR_CC_SFD_PIN:
+ 1020               	.LM67:
+ 1021               	/* prologue: frame size=0 */
+ 1022               	/* prologue end (size=0) */
+ 1023 0178 9498      		cbi 50-0x20,4
+ 1024               	/* epilogue: frame size=0 */
+ 1025 017a 0895      		ret
+ 1026               	/* epilogue end (size=1) */
+ 1027               	/* function OS_CLR_CC_SFD_PIN size 2 (1) */
+ 1029               	.Lscope53:
+ 1031               	.global	OS_READ_CC_SFD_PIN
+ 1033               	OS_READ_CC_SFD_PIN:
+ 1035               	.LM68:
+ 1036               	/* prologue: frame size=0 */
+ 1037               	/* prologue end (size=0) */
+ 1038 017c 80B3      		in r24,48-0x20
+ 1039 017e 9927      		clr r25
+ 1040 0180 A4E0      		ldi r26,4
+ 1041 0182 9695      	1:	lsr r25
+ 1042 0184 8795      		ror r24
+ 1043 0186 AA95      		dec r26
+ 1044 0188 E1F7      		brne 1b
+ 1045 018a 8170      		andi r24,lo8(1)
+ 1046 018c 9070      		andi r25,hi8(1)
+ 1047               	/* epilogue: frame size=0 */
+ 1048 018e 0895      		ret
+ 1049               	/* epilogue end (size=1) */
+ 1050               	/* function OS_READ_CC_SFD_PIN size 10 (9) */
+ 1052               	.Lscope54:
+ 1054               	.global	OS_MAKE_CC_SFD_OUTPUT
+ 1056               	OS_MAKE_CC_SFD_OUTPUT:
+ 1058               	.LM69:
+ 1059               	/* prologue: frame size=0 */
+ 1060               	/* prologue end (size=0) */
+ 1061 0190 8C9A      		sbi 49-0x20,4
+ 1062               	/* epilogue: frame size=0 */
+ 1063 0192 0895      		ret
+ 1064               	/* epilogue end (size=1) */
+ 1065               	/* function OS_MAKE_CC_SFD_OUTPUT size 2 (1) */
+ 1067               	.Lscope55:
+ 1069               	.global	OS_MAKE_CC_SFD_INPUT
+ 1071               	OS_MAKE_CC_SFD_INPUT:
+ 1073               	.LM70:
+ 1074               	/* prologue: frame size=0 */
+ 1075               	/* prologue end (size=0) */
+ 1076 0194 8C98      		cbi 49-0x20,4
+ 1077               	/* epilogue: frame size=0 */
+ 1078 0196 0895      		ret
+ 1079               	/* epilogue end (size=1) */
+ 1080               	/* function OS_MAKE_CC_SFD_INPUT size 2 (1) */
+ 1082               	.Lscope56:
+ 1084               	.global	OS_SET_CC_CS_PIN
+ 1086               	OS_SET_CC_CS_PIN:
+  41:avrhardware.c **** #include "avrhardware.h"
+ 1088               	.LM71:
+ 1089               	/* prologue: frame size=0 */
+ 1090               	/* prologue end (size=0) */
+ 1091 0198 C09A      		sbi 56-0x20,0
+ 1092               	/* epilogue: frame size=0 */
+ 1093 019a 0895      		ret
+ 1094               	/* epilogue end (size=1) */
+ 1095               	/* function OS_SET_CC_CS_PIN size 2 (1) */
+ 1097               	.Lscope57:
+ 1099               	.global	OS_CLR_CC_CS_PIN
+ 1101               	OS_CLR_CC_CS_PIN:
+ 1103               	.LM72:
+ 1104               	/* prologue: frame size=0 */
+ 1105               	/* prologue end (size=0) */
+ 1106 019c C098      		cbi 56-0x20,0
+ 1107               	/* epilogue: frame size=0 */
+ 1108 019e 0895      		ret
+ 1109               	/* epilogue end (size=1) */
+ 1110               	/* function OS_CLR_CC_CS_PIN size 2 (1) */
+ 1112               	.Lscope58:
+ 1114               	.global	OS_READ_CC_CS_PIN
+ 1116               	OS_READ_CC_CS_PIN:
+ 1118               	.LM73:
+ 1119               	/* prologue: frame size=0 */
+ 1120               	/* prologue end (size=0) */
+ 1121 01a0 86B3      		in r24,54-0x20
+ 1122 01a2 9927      		clr r25
+ 1123 01a4 8170      		andi r24,lo8(1)
+ 1124 01a6 9070      		andi r25,hi8(1)
+ 1125               	/* epilogue: frame size=0 */
+ 1126 01a8 0895      		ret
+ 1127               	/* epilogue end (size=1) */
+ 1128               	/* function OS_READ_CC_CS_PIN size 5 (4) */
+ 1130               	.Lscope59:
+ 1132               	.global	OS_MAKE_CC_CS_OUTPUT
+ 1134               	OS_MAKE_CC_CS_OUTPUT:
+ 1136               	.LM74:
+ 1137               	/* prologue: frame size=0 */
+ 1138               	/* prologue end (size=0) */
+ 1139 01aa B89A      		sbi 55-0x20,0
+ 1140               	/* epilogue: frame size=0 */
+ 1141 01ac 0895      		ret
+ 1142               	/* epilogue end (size=1) */
+ 1143               	/* function OS_MAKE_CC_CS_OUTPUT size 2 (1) */
+ 1145               	.Lscope60:
+ 1147               	.global	OS_MAKE_CC_CS_INPUT
+ 1149               	OS_MAKE_CC_CS_INPUT:
+ 1151               	.LM75:
+ 1152               	/* prologue: frame size=0 */
+ 1153               	/* prologue end (size=0) */
+ 1154 01ae B898      		cbi 55-0x20,0
+ 1155               	/* epilogue: frame size=0 */
+ 1156 01b0 0895      		ret
+ 1157               	/* epilogue end (size=1) */
+ 1158               	/* function OS_MAKE_CC_CS_INPUT size 2 (1) */
+ 1160               	.Lscope61:
+ 1162               	.global	OS_SET_CC_FIFO_PIN
+ 1164               	OS_SET_CC_FIFO_PIN:
+  42:avrhardware.c **** #include "avrhardware.h"
+ 1166               	.LM76:
+ 1167               	/* prologue: frame size=0 */
+ 1168               	/* prologue end (size=0) */
+ 1169 01b2 C79A      		sbi 56-0x20,7
+ 1170               	/* epilogue: frame size=0 */
+ 1171 01b4 0895      		ret
+ 1172               	/* epilogue end (size=1) */
+ 1173               	/* function OS_SET_CC_FIFO_PIN size 2 (1) */
+ 1175               	.Lscope62:
+ 1177               	.global	OS_CLR_CC_FIFO_PIN
+ 1179               	OS_CLR_CC_FIFO_PIN:
+ 1181               	.LM77:
+ 1182               	/* prologue: frame size=0 */
+ 1183               	/* prologue end (size=0) */
+ 1184 01b6 C798      		cbi 56-0x20,7
+ 1185               	/* epilogue: frame size=0 */
+ 1186 01b8 0895      		ret
+ 1187               	/* epilogue end (size=1) */
+ 1188               	/* function OS_CLR_CC_FIFO_PIN size 2 (1) */
+ 1190               	.Lscope63:
+ 1192               	.global	OS_READ_CC_FIFO_PIN
+ 1194               	OS_READ_CC_FIFO_PIN:
+ 1196               	.LM78:
+ 1197               	/* prologue: frame size=0 */
+ 1198               	/* prologue end (size=0) */
+ 1199 01ba 80E0      		ldi r24,lo8(0)
+ 1200 01bc 90E0      		ldi r25,hi8(0)
+ 1201 01be B79B      		sbis 54-0x20,7
+ 1202 01c0 02C0      		rjmp .L73
+ 1204               	.LM79:
+ 1205 01c2 81E0      		ldi r24,lo8(1)
+ 1206 01c4 90E0      		ldi r25,hi8(1)
+ 1207               	.L73:
+ 1208 01c6 0895      		ret
+ 1209               	/* epilogue: frame size=0 */
+ 1210 01c8 0895      		ret
+ 1211               	/* epilogue end (size=1) */
+ 1212               	/* function OS_READ_CC_FIFO_PIN size 8 (7) */
+ 1214               	.Lscope64:
+ 1216               	.global	OS_MAKE_CC_FIFO_OUTPUT
+ 1218               	OS_MAKE_CC_FIFO_OUTPUT:
+ 1220               	.LM80:
+ 1221               	/* prologue: frame size=0 */
+ 1222               	/* prologue end (size=0) */
+ 1223 01ca BF9A      		sbi 55-0x20,7
+ 1224               	/* epilogue: frame size=0 */
+ 1225 01cc 0895      		ret
+ 1226               	/* epilogue end (size=1) */
+ 1227               	/* function OS_MAKE_CC_FIFO_OUTPUT size 2 (1) */
+ 1229               	.Lscope65:
+ 1231               	.global	OS_MAKE_CC_FIFO_INPUT
+ 1233               	OS_MAKE_CC_FIFO_INPUT:
+ 1235               	.LM81:
+ 1236               	/* prologue: frame size=0 */
+ 1237               	/* prologue end (size=0) */
+ 1238 01ce BF98      		cbi 55-0x20,7
+ 1239               	/* epilogue: frame size=0 */
+ 1240 01d0 0895      		ret
+ 1241               	/* epilogue end (size=1) */
+ 1242               	/* function OS_MAKE_CC_FIFO_INPUT size 2 (1) */
+ 1244               	.Lscope66:
+ 1246               	.global	OS_SET_RADIO_CCA_PIN
+ 1248               	OS_SET_RADIO_CCA_PIN:
+  43:avrhardware.c **** #include "avrhardware.h"
+  44:avrhardware.c **** #include "project.h"
+ 1250               	.LM82:
+ 1251               	/* prologue: frame size=0 */
+ 1252               	/* prologue end (size=0) */
+ 1253 01d2 969A      		sbi 50-0x20,6
+ 1254               	/* epilogue: frame size=0 */
+ 1255 01d4 0895      		ret
+ 1256               	/* epilogue end (size=1) */
+ 1257               	/* function OS_SET_RADIO_CCA_PIN size 2 (1) */
+ 1259               	.Lscope67:
+ 1261               	.global	OS_CLR_RADIO_CCA_PIN
+ 1263               	OS_CLR_RADIO_CCA_PIN:
+ 1265               	.LM83:
+ 1266               	/* prologue: frame size=0 */
+ 1267               	/* prologue end (size=0) */
+ 1268 01d6 9698      		cbi 50-0x20,6
+ 1269               	/* epilogue: frame size=0 */
+ 1270 01d8 0895      		ret
+ 1271               	/* epilogue end (size=1) */
+ 1272               	/* function OS_CLR_RADIO_CCA_PIN size 2 (1) */
+ 1274               	.Lscope68:
+ 1276               	.global	OS_READ_RADIO_CCA_PIN
+ 1278               	OS_READ_RADIO_CCA_PIN:
+ 1280               	.LM84:
+ 1281               	/* prologue: frame size=0 */
+ 1282               	/* prologue end (size=0) */
+ 1283 01da 80B3      		in r24,48-0x20
+ 1284 01dc 9927      		clr r25
+ 1285 01de B6E0      		ldi r27,6
+ 1286 01e0 9695      	1:	lsr r25
+ 1287 01e2 8795      		ror r24
+ 1288 01e4 BA95      		dec r27
+ 1289 01e6 E1F7      		brne 1b
+ 1290 01e8 8170      		andi r24,lo8(1)
+ 1291 01ea 9070      		andi r25,hi8(1)
+ 1292               	/* epilogue: frame size=0 */
+ 1293 01ec 0895      		ret
+ 1294               	/* epilogue end (size=1) */
+ 1295               	/* function OS_READ_RADIO_CCA_PIN size 10 (9) */
+ 1297               	.Lscope69:
+ 1299               	.global	OS_MAKE_RADIO_CCA_OUTPUT
+ 1301               	OS_MAKE_RADIO_CCA_OUTPUT:
+ 1303               	.LM85:
+ 1304               	/* prologue: frame size=0 */
+ 1305               	/* prologue end (size=0) */
+ 1306 01ee 8E9A      		sbi 49-0x20,6
+ 1307               	/* epilogue: frame size=0 */
+ 1308 01f0 0895      		ret
+ 1309               	/* epilogue end (size=1) */
+ 1310               	/* function OS_MAKE_RADIO_CCA_OUTPUT size 2 (1) */
+ 1312               	.Lscope70:
+ 1314               	.global	OS_MAKE_RADIO_CCA_INPUT
+ 1316               	OS_MAKE_RADIO_CCA_INPUT:
+ 1318               	.LM86:
+ 1319               	/* prologue: frame size=0 */
+ 1320               	/* prologue end (size=0) */
+ 1321 01f2 8E98      		cbi 49-0x20,6
+ 1322               	/* epilogue: frame size=0 */
+ 1323 01f4 0895      		ret
+ 1324               	/* epilogue end (size=1) */
+ 1325               	/* function OS_MAKE_RADIO_CCA_INPUT size 2 (1) */
+ 1327               	.Lscope71:
+ 1329               	.global	OS_SET_FLASH_SELECT_PIN
+ 1331               	OS_SET_FLASH_SELECT_PIN:
+  45:avrhardware.c **** #include "avrhardware.h"
+  46:avrhardware.c **** #include "project.h"
+  47:avrhardware.c **** inline void  OS_wait_250ns() {
+ 1333               	.LM87:
+ 1334               	/* prologue: frame size=0 */
+ 1335               	/* prologue end (size=0) */
+ 1336 01f6 DB9A      		sbi 59-0x20,3
+ 1337               	/* epilogue: frame size=0 */
+ 1338 01f8 0895      		ret
+ 1339               	/* epilogue end (size=1) */
+ 1340               	/* function OS_SET_FLASH_SELECT_PIN size 2 (1) */
+ 1342               	.Lscope72:
+ 1344               	.global	OS_CLR_FLASH_SELECT_PIN
+ 1346               	OS_CLR_FLASH_SELECT_PIN:
+ 1348               	.LM88:
+ 1349               	/* prologue: frame size=0 */
+ 1350               	/* prologue end (size=0) */
+ 1351 01fa DB98      		cbi 59-0x20,3
+ 1352               	/* epilogue: frame size=0 */
+ 1353 01fc 0895      		ret
+ 1354               	/* epilogue end (size=1) */
+ 1355               	/* function OS_CLR_FLASH_SELECT_PIN size 2 (1) */
+ 1357               	.Lscope73:
+ 1359               	.global	OS_READ_FLASH_SELECT_PIN
+ 1361               	OS_READ_FLASH_SELECT_PIN:
+ 1363               	.LM89:
+ 1364               	/* prologue: frame size=0 */
+ 1365               	/* prologue end (size=0) */
+ 1366 01fe 89B3      		in r24,57-0x20
+ 1367 0200 9927      		clr r25
+ 1368 0202 23E0      		ldi r18,3
+ 1369 0204 9695      	1:	lsr r25
+ 1370 0206 8795      		ror r24
+ 1371 0208 2A95      		dec r18
+ 1372 020a E1F7      		brne 1b
+ 1373 020c 8170      		andi r24,lo8(1)
+ 1374 020e 9070      		andi r25,hi8(1)
+ 1375               	/* epilogue: frame size=0 */
+ 1376 0210 0895      		ret
+ 1377               	/* epilogue end (size=1) */
+ 1378               	/* function OS_READ_FLASH_SELECT_PIN size 10 (9) */
+ 1380               	.Lscope74:
+ 1382               	.global	OS_MAKE_FLASH_SELECT_OUTPUT
+ 1384               	OS_MAKE_FLASH_SELECT_OUTPUT:
+ 1386               	.LM90:
+ 1387               	/* prologue: frame size=0 */
+ 1388               	/* prologue end (size=0) */
+ 1389 0212 D39A      		sbi 58-0x20,3
+ 1390               	/* epilogue: frame size=0 */
+ 1391 0214 0895      		ret
+ 1392               	/* epilogue end (size=1) */
+ 1393               	/* function OS_MAKE_FLASH_SELECT_OUTPUT size 2 (1) */
+ 1395               	.Lscope75:
+ 1397               	.global	OS_MAKE_FLASH_SELECT_INPUT
+ 1399               	OS_MAKE_FLASH_SELECT_INPUT:
+ 1401               	.LM91:
+ 1402               	/* prologue: frame size=0 */
+ 1403               	/* prologue end (size=0) */
+ 1404 0216 D398      		cbi 58-0x20,3
+ 1405               	/* epilogue: frame size=0 */
+ 1406 0218 0895      		ret
+ 1407               	/* epilogue end (size=1) */
+ 1408               	/* function OS_MAKE_FLASH_SELECT_INPUT size 2 (1) */
+ 1410               	.Lscope76:
+ 1412               	.global	OS_SET_FLASH_CLK_PIN
+ 1414               	OS_SET_FLASH_CLK_PIN:
+  48:avrhardware.c **** #include "avrhardware.h"
+ 1416               	.LM92:
+ 1417               	/* prologue: frame size=0 */
+ 1418               	/* prologue end (size=0) */
+ 1419 021a 959A      		sbi 50-0x20,5
+ 1420               	/* epilogue: frame size=0 */
+ 1421 021c 0895      		ret
+ 1422               	/* epilogue end (size=1) */
+ 1423               	/* function OS_SET_FLASH_CLK_PIN size 2 (1) */
+ 1425               	.Lscope77:
+ 1427               	.global	OS_CLR_FLASH_CLK_PIN
+ 1429               	OS_CLR_FLASH_CLK_PIN:
+ 1431               	.LM93:
+ 1432               	/* prologue: frame size=0 */
+ 1433               	/* prologue end (size=0) */
+ 1434 021e 9598      		cbi 50-0x20,5
+ 1435               	/* epilogue: frame size=0 */
+ 1436 0220 0895      		ret
+ 1437               	/* epilogue end (size=1) */
+ 1438               	/* function OS_CLR_FLASH_CLK_PIN size 2 (1) */
+ 1440               	.Lscope78:
+ 1442               	.global	OS_READ_FLASH_CLK_PIN
+ 1444               	OS_READ_FLASH_CLK_PIN:
+ 1446               	.LM94:
+ 1447               	/* prologue: frame size=0 */
+ 1448               	/* prologue end (size=0) */
+ 1449 0222 80B3      		in r24,48-0x20
+ 1450 0224 9927      		clr r25
+ 1451 0226 35E0      		ldi r19,5
+ 1452 0228 9695      	1:	lsr r25
+ 1453 022a 8795      		ror r24
+ 1454 022c 3A95      		dec r19
+ 1455 022e E1F7      		brne 1b
+ 1456 0230 8170      		andi r24,lo8(1)
+ 1457 0232 9070      		andi r25,hi8(1)
+ 1458               	/* epilogue: frame size=0 */
+ 1459 0234 0895      		ret
+ 1460               	/* epilogue end (size=1) */
+ 1461               	/* function OS_READ_FLASH_CLK_PIN size 10 (9) */
+ 1463               	.Lscope79:
+ 1465               	.global	OS_MAKE_FLASH_CLK_OUTPUT
+ 1467               	OS_MAKE_FLASH_CLK_OUTPUT:
+ 1469               	.LM95:
+ 1470               	/* prologue: frame size=0 */
+ 1471               	/* prologue end (size=0) */
+ 1472 0236 8D9A      		sbi 49-0x20,5
+ 1473               	/* epilogue: frame size=0 */
+ 1474 0238 0895      		ret
+ 1475               	/* epilogue end (size=1) */
+ 1476               	/* function OS_MAKE_FLASH_CLK_OUTPUT size 2 (1) */
+ 1478               	.Lscope80:
+ 1480               	.global	OS_MAKE_FLASH_CLK_INPUT
+ 1482               	OS_MAKE_FLASH_CLK_INPUT:
+ 1484               	.LM96:
+ 1485               	/* prologue: frame size=0 */
+ 1486               	/* prologue end (size=0) */
+ 1487 023a 8D98      		cbi 49-0x20,5
+ 1488               	/* epilogue: frame size=0 */
+ 1489 023c 0895      		ret
+ 1490               	/* epilogue end (size=1) */
+ 1491               	/* function OS_MAKE_FLASH_CLK_INPUT size 2 (1) */
+ 1493               	.Lscope81:
+ 1495               	.global	OS_SET_FLASH_OUT_PIN
+ 1497               	OS_SET_FLASH_OUT_PIN:
+  49:avrhardware.c **** #include "avrhardware.h"
+ 1499               	.LM97:
+ 1500               	/* prologue: frame size=0 */
+ 1501               	/* prologue end (size=0) */
+ 1502 023e 939A      		sbi 50-0x20,3
+ 1503               	/* epilogue: frame size=0 */
+ 1504 0240 0895      		ret
+ 1505               	/* epilogue end (size=1) */
+ 1506               	/* function OS_SET_FLASH_OUT_PIN size 2 (1) */
+ 1508               	.Lscope82:
+ 1510               	.global	OS_CLR_FLASH_OUT_PIN
+ 1512               	OS_CLR_FLASH_OUT_PIN:
+ 1514               	.LM98:
+ 1515               	/* prologue: frame size=0 */
+ 1516               	/* prologue end (size=0) */
+ 1517 0242 9398      		cbi 50-0x20,3
+ 1518               	/* epilogue: frame size=0 */
+ 1519 0244 0895      		ret
+ 1520               	/* epilogue end (size=1) */
+ 1521               	/* function OS_CLR_FLASH_OUT_PIN size 2 (1) */
+ 1523               	.Lscope83:
+ 1525               	.global	OS_READ_FLASH_OUT_PIN
+ 1527               	OS_READ_FLASH_OUT_PIN:
+ 1529               	.LM99:
+ 1530               	/* prologue: frame size=0 */
+ 1531               	/* prologue end (size=0) */
+ 1532 0246 80B3      		in r24,48-0x20
+ 1533 0248 9927      		clr r25
+ 1534 024a 43E0      		ldi r20,3
+ 1535 024c 9695      	1:	lsr r25
+ 1536 024e 8795      		ror r24
+ 1537 0250 4A95      		dec r20
+ 1538 0252 E1F7      		brne 1b
+ 1539 0254 8170      		andi r24,lo8(1)
+ 1540 0256 9070      		andi r25,hi8(1)
+ 1541               	/* epilogue: frame size=0 */
+ 1542 0258 0895      		ret
+ 1543               	/* epilogue end (size=1) */
+ 1544               	/* function OS_READ_FLASH_OUT_PIN size 10 (9) */
+ 1546               	.Lscope84:
+ 1548               	.global	OS_MAKE_FLASH_OUT_OUTPUT
+ 1550               	OS_MAKE_FLASH_OUT_OUTPUT:
+ 1552               	.LM100:
+ 1553               	/* prologue: frame size=0 */
+ 1554               	/* prologue end (size=0) */
+ 1555 025a 8B9A      		sbi 49-0x20,3
+ 1556               	/* epilogue: frame size=0 */
+ 1557 025c 0895      		ret
+ 1558               	/* epilogue end (size=1) */
+ 1559               	/* function OS_MAKE_FLASH_OUT_OUTPUT size 2 (1) */
+ 1561               	.Lscope85:
+ 1563               	.global	OS_MAKE_FLASH_OUT_INPUT
+ 1565               	OS_MAKE_FLASH_OUT_INPUT:
+ 1567               	.LM101:
+ 1568               	/* prologue: frame size=0 */
+ 1569               	/* prologue end (size=0) */
+ 1570 025e 8B98      		cbi 49-0x20,3
+ 1571               	/* epilogue: frame size=0 */
+ 1572 0260 0895      		ret
+ 1573               	/* epilogue end (size=1) */
+ 1574               	/* function OS_MAKE_FLASH_OUT_INPUT size 2 (1) */
+ 1576               	.Lscope86:
+ 1578               	.global	OS_SET_FLASH_IN_PIN
+ 1580               	OS_SET_FLASH_IN_PIN:
+  50:avrhardware.c **** #include "avrhardware.h"
+ 1582               	.LM102:
+ 1583               	/* prologue: frame size=0 */
+ 1584               	/* prologue end (size=0) */
+ 1585 0262 929A      		sbi 50-0x20,2
+ 1586               	/* epilogue: frame size=0 */
+ 1587 0264 0895      		ret
+ 1588               	/* epilogue end (size=1) */
+ 1589               	/* function OS_SET_FLASH_IN_PIN size 2 (1) */
+ 1591               	.Lscope87:
+ 1593               	.global	OS_CLR_FLASH_IN_PIN
+ 1595               	OS_CLR_FLASH_IN_PIN:
+ 1597               	.LM103:
+ 1598               	/* prologue: frame size=0 */
+ 1599               	/* prologue end (size=0) */
+ 1600 0266 9298      		cbi 50-0x20,2
+ 1601               	/* epilogue: frame size=0 */
+ 1602 0268 0895      		ret
+ 1603               	/* epilogue end (size=1) */
+ 1604               	/* function OS_CLR_FLASH_IN_PIN size 2 (1) */
+ 1606               	.Lscope88:
+ 1608               	.global	OS_READ_FLASH_IN_PIN
+ 1610               	OS_READ_FLASH_IN_PIN:
+ 1612               	.LM104:
+ 1613               	/* prologue: frame size=0 */
+ 1614               	/* prologue end (size=0) */
+ 1615 026a 80B3      		in r24,48-0x20
+ 1616 026c 9927      		clr r25
+ 1617 026e 9695      		lsr r25
+ 1618 0270 8795      		ror r24
+ 1619 0272 9695      		lsr r25
+ 1620 0274 8795      		ror r24
+ 1621 0276 8170      		andi r24,lo8(1)
+ 1622 0278 9070      		andi r25,hi8(1)
+ 1623               	/* epilogue: frame size=0 */
+ 1624 027a 0895      		ret
+ 1625               	/* epilogue end (size=1) */
+ 1626               	/* function OS_READ_FLASH_IN_PIN size 9 (8) */
+ 1628               	.Lscope89:
+ 1630               	.global	OS_MAKE_FLASH_IN_OUTPUT
+ 1632               	OS_MAKE_FLASH_IN_OUTPUT:
+ 1634               	.LM105:
+ 1635               	/* prologue: frame size=0 */
+ 1636               	/* prologue end (size=0) */
+ 1637 027c 8A9A      		sbi 49-0x20,2
+ 1638               	/* epilogue: frame size=0 */
+ 1639 027e 0895      		ret
+ 1640               	/* epilogue end (size=1) */
+ 1641               	/* function OS_MAKE_FLASH_IN_OUTPUT size 2 (1) */
+ 1643               	.Lscope90:
+ 1645               	.global	OS_MAKE_FLASH_IN_INPUT
+ 1647               	OS_MAKE_FLASH_IN_INPUT:
+ 1649               	.LM106:
+ 1650               	/* prologue: frame size=0 */
+ 1651               	/* prologue end (size=0) */
+ 1652 0280 8A98      		cbi 49-0x20,2
+ 1653               	/* epilogue: frame size=0 */
+ 1654 0282 0895      		ret
+ 1655               	/* epilogue end (size=1) */
+ 1656               	/* function OS_MAKE_FLASH_IN_INPUT size 2 (1) */
+ 1658               	.Lscope91:
+ 1660               	.global	OS_SET_INT0_PIN
+ 1662               	OS_SET_INT0_PIN:
+  51:avrhardware.c **** #include "avrhardware.h"
+  52:avrhardware.c **** #include "project.h"
+  53:avrhardware.c **** inline void  OS_wait_250ns() {
+ 1664               	.LM107:
+ 1665               	/* prologue: frame size=0 */
+ 1666               	/* prologue end (size=0) */
+ 1667 0284 1C9A      		sbi 35-0x20,4
+ 1668               	/* epilogue: frame size=0 */
+ 1669 0286 0895      		ret
+ 1670               	/* epilogue end (size=1) */
+ 1671               	/* function OS_SET_INT0_PIN size 2 (1) */
+ 1673               	.Lscope92:
+ 1675               	.global	OS_CLR_INT0_PIN
+ 1677               	OS_CLR_INT0_PIN:
+ 1679               	.LM108:
+ 1680               	/* prologue: frame size=0 */
+ 1681               	/* prologue end (size=0) */
+ 1682 0288 1C98      		cbi 35-0x20,4
+ 1683               	/* epilogue: frame size=0 */
+ 1684 028a 0895      		ret
+ 1685               	/* epilogue end (size=1) */
+ 1686               	/* function OS_CLR_INT0_PIN size 2 (1) */
+ 1688               	.Lscope93:
+ 1690               	.global	OS_READ_INT0_PIN
+ 1692               	OS_READ_INT0_PIN:
+ 1694               	.LM109:
+ 1695               	/* prologue: frame size=0 */
+ 1696               	/* prologue end (size=0) */
+ 1697 028c 81B1      		in r24,33-0x20
+ 1698 028e 9927      		clr r25
+ 1699 0290 64E0      		ldi r22,4
+ 1700 0292 9695      	1:	lsr r25
+ 1701 0294 8795      		ror r24
+ 1702 0296 6A95      		dec r22
+ 1703 0298 E1F7      		brne 1b
+ 1704 029a 8170      		andi r24,lo8(1)
+ 1705 029c 9070      		andi r25,hi8(1)
+ 1706               	/* epilogue: frame size=0 */
+ 1707 029e 0895      		ret
+ 1708               	/* epilogue end (size=1) */
+ 1709               	/* function OS_READ_INT0_PIN size 10 (9) */
+ 1711               	.Lscope94:
+ 1713               	.global	OS_MAKE_INT0_OUTPUT
+ 1715               	OS_MAKE_INT0_OUTPUT:
+ 1717               	.LM110:
+ 1718               	/* prologue: frame size=0 */
+ 1719               	/* prologue end (size=0) */
+ 1720 02a0 149A      		sbi 34-0x20,4
+ 1721               	/* epilogue: frame size=0 */
+ 1722 02a2 0895      		ret
+ 1723               	/* epilogue end (size=1) */
+ 1724               	/* function OS_MAKE_INT0_OUTPUT size 2 (1) */
+ 1726               	.Lscope95:
+ 1728               	.global	OS_MAKE_INT0_INPUT
+ 1730               	OS_MAKE_INT0_INPUT:
+ 1732               	.LM111:
+ 1733               	/* prologue: frame size=0 */
+ 1734               	/* prologue end (size=0) */
+ 1735 02a4 1498      		cbi 34-0x20,4
+ 1736               	/* epilogue: frame size=0 */
+ 1737 02a6 0895      		ret
+ 1738               	/* epilogue end (size=1) */
+ 1739               	/* function OS_MAKE_INT0_INPUT size 2 (1) */
+ 1741               	.Lscope96:
+ 1743               	.global	OS_SET_INT1_PIN
+ 1745               	OS_SET_INT1_PIN:
+  54:avrhardware.c **** #include "avrhardware.h"
+ 1747               	.LM112:
+ 1748               	/* prologue: frame size=0 */
+ 1749               	/* prologue end (size=0) */
+ 1750 02a8 1D9A      		sbi 35-0x20,5
+ 1751               	/* epilogue: frame size=0 */
+ 1752 02aa 0895      		ret
+ 1753               	/* epilogue end (size=1) */
+ 1754               	/* function OS_SET_INT1_PIN size 2 (1) */
+ 1756               	.Lscope97:
+ 1758               	.global	OS_CLR_INT1_PIN
+ 1760               	OS_CLR_INT1_PIN:
+ 1762               	.LM113:
+ 1763               	/* prologue: frame size=0 */
+ 1764               	/* prologue end (size=0) */
+ 1765 02ac 1D98      		cbi 35-0x20,5
+ 1766               	/* epilogue: frame size=0 */
+ 1767 02ae 0895      		ret
+ 1768               	/* epilogue end (size=1) */
+ 1769               	/* function OS_CLR_INT1_PIN size 2 (1) */
+ 1771               	.Lscope98:
+ 1773               	.global	OS_READ_INT1_PIN
+ 1775               	OS_READ_INT1_PIN:
+ 1777               	.LM114:
+ 1778               	/* prologue: frame size=0 */
+ 1779               	/* prologue end (size=0) */
+ 1780 02b0 81B1      		in r24,33-0x20
+ 1781 02b2 9927      		clr r25
+ 1782 02b4 75E0      		ldi r23,5
+ 1783 02b6 9695      	1:	lsr r25
+ 1784 02b8 8795      		ror r24
+ 1785 02ba 7A95      		dec r23
+ 1786 02bc E1F7      		brne 1b
+ 1787 02be 8170      		andi r24,lo8(1)
+ 1788 02c0 9070      		andi r25,hi8(1)
+ 1789               	/* epilogue: frame size=0 */
+ 1790 02c2 0895      		ret
+ 1791               	/* epilogue end (size=1) */
+ 1792               	/* function OS_READ_INT1_PIN size 10 (9) */
+ 1794               	.Lscope99:
+ 1796               	.global	OS_MAKE_INT1_OUTPUT
+ 1798               	OS_MAKE_INT1_OUTPUT:
+ 1800               	.LM115:
+ 1801               	/* prologue: frame size=0 */
+ 1802               	/* prologue end (size=0) */
+ 1803 02c4 159A      		sbi 34-0x20,5
+ 1804               	/* epilogue: frame size=0 */
+ 1805 02c6 0895      		ret
+ 1806               	/* epilogue end (size=1) */
+ 1807               	/* function OS_MAKE_INT1_OUTPUT size 2 (1) */
+ 1809               	.Lscope100:
+ 1811               	.global	OS_MAKE_INT1_INPUT
+ 1813               	OS_MAKE_INT1_INPUT:
+ 1815               	.LM116:
+ 1816               	/* prologue: frame size=0 */
+ 1817               	/* prologue end (size=0) */
+ 1818 02c8 1598      		cbi 34-0x20,5
+ 1819               	/* epilogue: frame size=0 */
+ 1820 02ca 0895      		ret
+ 1821               	/* epilogue end (size=1) */
+ 1822               	/* function OS_MAKE_INT1_INPUT size 2 (1) */
+ 1824               	.Lscope101:
+ 1826               	.global	OS_SET_INT2_PIN
+ 1828               	OS_SET_INT2_PIN:
+  55:avrhardware.c **** #include "avrhardware.h"
+ 1830               	.LM117:
+ 1831               	/* prologue: frame size=0 */
+ 1832               	/* prologue end (size=0) */
+ 1833 02cc 1E9A      		sbi 35-0x20,6
+ 1834               	/* epilogue: frame size=0 */
+ 1835 02ce 0895      		ret
+ 1836               	/* epilogue end (size=1) */
+ 1837               	/* function OS_SET_INT2_PIN size 2 (1) */
+ 1839               	.Lscope102:
+ 1841               	.global	OS_CLR_INT2_PIN
+ 1843               	OS_CLR_INT2_PIN:
+ 1845               	.LM118:
+ 1846               	/* prologue: frame size=0 */
+ 1847               	/* prologue end (size=0) */
+ 1848 02d0 1E98      		cbi 35-0x20,6
+ 1849               	/* epilogue: frame size=0 */
+ 1850 02d2 0895      		ret
+ 1851               	/* epilogue end (size=1) */
+ 1852               	/* function OS_CLR_INT2_PIN size 2 (1) */
+ 1854               	.Lscope103:
+ 1856               	.global	OS_READ_INT2_PIN
+ 1858               	OS_READ_INT2_PIN:
+ 1860               	.LM119:
+ 1861               	/* prologue: frame size=0 */
+ 1862               	/* prologue end (size=0) */
+ 1863 02d4 81B1      		in r24,33-0x20
+ 1864 02d6 9927      		clr r25
+ 1865 02d8 E6E0      		ldi r30,6
+ 1866 02da 9695      	1:	lsr r25
+ 1867 02dc 8795      		ror r24
+ 1868 02de EA95      		dec r30
+ 1869 02e0 E1F7      		brne 1b
+ 1870 02e2 8170      		andi r24,lo8(1)
+ 1871 02e4 9070      		andi r25,hi8(1)
+ 1872               	/* epilogue: frame size=0 */
+ 1873 02e6 0895      		ret
+ 1874               	/* epilogue end (size=1) */
+ 1875               	/* function OS_READ_INT2_PIN size 10 (9) */
+ 1877               	.Lscope104:
+ 1879               	.global	OS_MAKE_INT2_OUTPUT
+ 1881               	OS_MAKE_INT2_OUTPUT:
+ 1883               	.LM120:
+ 1884               	/* prologue: frame size=0 */
+ 1885               	/* prologue end (size=0) */
+ 1886 02e8 169A      		sbi 34-0x20,6
+ 1887               	/* epilogue: frame size=0 */
+ 1888 02ea 0895      		ret
+ 1889               	/* epilogue end (size=1) */
+ 1890               	/* function OS_MAKE_INT2_OUTPUT size 2 (1) */
+ 1892               	.Lscope105:
+ 1894               	.global	OS_MAKE_INT2_INPUT
+ 1896               	OS_MAKE_INT2_INPUT:
+ 1898               	.LM121:
+ 1899               	/* prologue: frame size=0 */
+ 1900               	/* prologue end (size=0) */
+ 1901 02ec 1698      		cbi 34-0x20,6
+ 1902               	/* epilogue: frame size=0 */
+ 1903 02ee 0895      		ret
+ 1904               	/* epilogue end (size=1) */
+ 1905               	/* function OS_MAKE_INT2_INPUT size 2 (1) */
+ 1907               	.Lscope106:
+ 1909               	.global	OS_SET_INT3_PIN
+ 1911               	OS_SET_INT3_PIN:
+  56:avrhardware.c **** #include "avrhardware.h"
+ 1913               	.LM122:
+ 1914               	/* prologue: frame size=0 */
+ 1915               	/* prologue end (size=0) */
+ 1916 02f0 1F9A      		sbi 35-0x20,7
+ 1917               	/* epilogue: frame size=0 */
+ 1918 02f2 0895      		ret
+ 1919               	/* epilogue end (size=1) */
+ 1920               	/* function OS_SET_INT3_PIN size 2 (1) */
+ 1922               	.Lscope107:
+ 1924               	.global	OS_CLR_INT3_PIN
+ 1926               	OS_CLR_INT3_PIN:
+ 1928               	.LM123:
+ 1929               	/* prologue: frame size=0 */
+ 1930               	/* prologue end (size=0) */
+ 1931 02f4 1F98      		cbi 35-0x20,7
+ 1932               	/* epilogue: frame size=0 */
+ 1933 02f6 0895      		ret
+ 1934               	/* epilogue end (size=1) */
+ 1935               	/* function OS_CLR_INT3_PIN size 2 (1) */
+ 1937               	.Lscope108:
+ 1939               	.global	OS_READ_INT3_PIN
+ 1941               	OS_READ_INT3_PIN:
+ 1943               	.LM124:
+ 1944               	/* prologue: frame size=0 */
+ 1945               	/* prologue end (size=0) */
+ 1946 02f8 80E0      		ldi r24,lo8(0)
+ 1947 02fa 90E0      		ldi r25,hi8(0)
+ 1948 02fc 0F9B      		sbis 33-0x20,7
+ 1949 02fe 02C0      		rjmp .L119
+ 1951               	.LM125:
+ 1952 0300 81E0      		ldi r24,lo8(1)
+ 1953 0302 90E0      		ldi r25,hi8(1)
+ 1954               	.L119:
+ 1955 0304 0895      		ret
+ 1956               	/* epilogue: frame size=0 */
+ 1957 0306 0895      		ret
+ 1958               	/* epilogue end (size=1) */
+ 1959               	/* function OS_READ_INT3_PIN size 8 (7) */
+ 1961               	.Lscope109:
+ 1963               	.global	OS_MAKE_INT3_OUTPUT
+ 1965               	OS_MAKE_INT3_OUTPUT:
+ 1967               	.LM126:
+ 1968               	/* prologue: frame size=0 */
+ 1969               	/* prologue end (size=0) */
+ 1970 0308 179A      		sbi 34-0x20,7
+ 1971               	/* epilogue: frame size=0 */
+ 1972 030a 0895      		ret
+ 1973               	/* epilogue end (size=1) */
+ 1974               	/* function OS_MAKE_INT3_OUTPUT size 2 (1) */
+ 1976               	.Lscope110:
+ 1978               	.global	OS_MAKE_INT3_INPUT
+ 1980               	OS_MAKE_INT3_INPUT:
+ 1982               	.LM127:
+ 1983               	/* prologue: frame size=0 */
+ 1984               	/* prologue end (size=0) */
+ 1985 030c 1798      		cbi 34-0x20,7
+ 1986               	/* epilogue: frame size=0 */
+ 1987 030e 0895      		ret
+ 1988               	/* epilogue end (size=1) */
+ 1989               	/* function OS_MAKE_INT3_INPUT size 2 (1) */
+ 1991               	.Lscope111:
+ 1993               	.global	OS_SET_MOSI_PIN
+ 1995               	OS_SET_MOSI_PIN:
+  57:avrhardware.c **** #include "avrhardware.h"
+  58:avrhardware.c **** #include "project.h"
+  59:avrhardware.c **** inline void  OS_wait_250ns() {
+ 1997               	.LM128:
+ 1998               	/* prologue: frame size=0 */
+ 1999               	/* prologue end (size=0) */
+ 2000 0310 C29A      		sbi 56-0x20,2
+ 2001               	/* epilogue: frame size=0 */
+ 2002 0312 0895      		ret
+ 2003               	/* epilogue end (size=1) */
+ 2004               	/* function OS_SET_MOSI_PIN size 2 (1) */
+ 2006               	.Lscope112:
+ 2008               	.global	OS_CLR_MOSI_PIN
+ 2010               	OS_CLR_MOSI_PIN:
+ 2012               	.LM129:
+ 2013               	/* prologue: frame size=0 */
+ 2014               	/* prologue end (size=0) */
+ 2015 0314 C298      		cbi 56-0x20,2
+ 2016               	/* epilogue: frame size=0 */
+ 2017 0316 0895      		ret
+ 2018               	/* epilogue end (size=1) */
+ 2019               	/* function OS_CLR_MOSI_PIN size 2 (1) */
+ 2021               	.Lscope113:
+ 2023               	.global	OS_READ_MOSI_PIN
+ 2025               	OS_READ_MOSI_PIN:
+ 2027               	.LM130:
+ 2028               	/* prologue: frame size=0 */
+ 2029               	/* prologue end (size=0) */
+ 2030 0318 86B3      		in r24,54-0x20
+ 2031 031a 9927      		clr r25
+ 2032 031c 9695      		lsr r25
+ 2033 031e 8795      		ror r24
+ 2034 0320 9695      		lsr r25
+ 2035 0322 8795      		ror r24
+ 2036 0324 8170      		andi r24,lo8(1)
+ 2037 0326 9070      		andi r25,hi8(1)
+ 2038               	/* epilogue: frame size=0 */
+ 2039 0328 0895      		ret
+ 2040               	/* epilogue end (size=1) */
+ 2041               	/* function OS_READ_MOSI_PIN size 9 (8) */
+ 2043               	.Lscope114:
+ 2045               	.global	OS_MAKE_MOSI_OUTPUT
+ 2047               	OS_MAKE_MOSI_OUTPUT:
+ 2049               	.LM131:
+ 2050               	/* prologue: frame size=0 */
+ 2051               	/* prologue end (size=0) */
+ 2052 032a BA9A      		sbi 55-0x20,2
+ 2053               	/* epilogue: frame size=0 */
+ 2054 032c 0895      		ret
+ 2055               	/* epilogue end (size=1) */
+ 2056               	/* function OS_MAKE_MOSI_OUTPUT size 2 (1) */
+ 2058               	.Lscope115:
+ 2060               	.global	OS_MAKE_MOSI_INPUT
+ 2062               	OS_MAKE_MOSI_INPUT:
+ 2064               	.LM132:
+ 2065               	/* prologue: frame size=0 */
+ 2066               	/* prologue end (size=0) */
+ 2067 032e BA98      		cbi 55-0x20,2
+ 2068               	/* epilogue: frame size=0 */
+ 2069 0330 0895      		ret
+ 2070               	/* epilogue end (size=1) */
+ 2071               	/* function OS_MAKE_MOSI_INPUT size 2 (1) */
+ 2073               	.Lscope116:
+ 2075               	.global	OS_SET_MISO_PIN
+ 2077               	OS_SET_MISO_PIN:
+  60:avrhardware.c **** #include "avrhardware.h"
+ 2079               	.LM133:
+ 2080               	/* prologue: frame size=0 */
+ 2081               	/* prologue end (size=0) */
+ 2082 0332 C39A      		sbi 56-0x20,3
+ 2083               	/* epilogue: frame size=0 */
+ 2084 0334 0895      		ret
+ 2085               	/* epilogue end (size=1) */
+ 2086               	/* function OS_SET_MISO_PIN size 2 (1) */
+ 2088               	.Lscope117:
+ 2090               	.global	OS_CLR_MISO_PIN
+ 2092               	OS_CLR_MISO_PIN:
+ 2094               	.LM134:
+ 2095               	/* prologue: frame size=0 */
+ 2096               	/* prologue end (size=0) */
+ 2097 0336 C398      		cbi 56-0x20,3
+ 2098               	/* epilogue: frame size=0 */
+ 2099 0338 0895      		ret
+ 2100               	/* epilogue end (size=1) */
+ 2101               	/* function OS_CLR_MISO_PIN size 2 (1) */
+ 2103               	.Lscope118:
+ 2105               	.global	OS_READ_MISO_PIN
+ 2107               	OS_READ_MISO_PIN:
+ 2109               	.LM135:
+ 2110               	/* prologue: frame size=0 */
+ 2111               	/* prologue end (size=0) */
+ 2112 033a 86B3      		in r24,54-0x20
+ 2113 033c 9927      		clr r25
+ 2114 033e A3E0      		ldi r26,3
+ 2115 0340 9695      	1:	lsr r25
+ 2116 0342 8795      		ror r24
+ 2117 0344 AA95      		dec r26
+ 2118 0346 E1F7      		brne 1b
+ 2119 0348 8170      		andi r24,lo8(1)
+ 2120 034a 9070      		andi r25,hi8(1)
+ 2121               	/* epilogue: frame size=0 */
+ 2122 034c 0895      		ret
+ 2123               	/* epilogue end (size=1) */
+ 2124               	/* function OS_READ_MISO_PIN size 10 (9) */
+ 2126               	.Lscope119:
+ 2128               	.global	OS_MAKE_MISO_OUTPUT
+ 2130               	OS_MAKE_MISO_OUTPUT:
+ 2132               	.LM136:
+ 2133               	/* prologue: frame size=0 */
+ 2134               	/* prologue end (size=0) */
+ 2135 034e BB9A      		sbi 55-0x20,3
+ 2136               	/* epilogue: frame size=0 */
+ 2137 0350 0895      		ret
+ 2138               	/* epilogue end (size=1) */
+ 2139               	/* function OS_MAKE_MISO_OUTPUT size 2 (1) */
+ 2141               	.Lscope120:
+ 2143               	.global	OS_MAKE_MISO_INPUT
+ 2145               	OS_MAKE_MISO_INPUT:
+ 2147               	.LM137:
+ 2148               	/* prologue: frame size=0 */
+ 2149               	/* prologue end (size=0) */
+ 2150 0352 BB98      		cbi 55-0x20,3
+ 2151               	/* epilogue: frame size=0 */
+ 2152 0354 0895      		ret
+ 2153               	/* epilogue end (size=1) */
+ 2154               	/* function OS_MAKE_MISO_INPUT size 2 (1) */
+ 2156               	.Lscope121:
+ 2158               	.global	OS_SET_SPI_SCK_PIN
+ 2160               	OS_SET_SPI_SCK_PIN:
+  61:avrhardware.c **** #include "avrhardware.h"
+  62:avrhardware.c **** #include "project.h"
+ 2162               	.LM138:
+ 2163               	/* prologue: frame size=0 */
+ 2164               	/* prologue end (size=0) */
+ 2165 0356 C19A      		sbi 56-0x20,1
+ 2166               	/* epilogue: frame size=0 */
+ 2167 0358 0895      		ret
+ 2168               	/* epilogue end (size=1) */
+ 2169               	/* function OS_SET_SPI_SCK_PIN size 2 (1) */
+ 2171               	.Lscope122:
+ 2173               	.global	OS_CLR_SPI_SCK_PIN
+ 2175               	OS_CLR_SPI_SCK_PIN:
+ 2177               	.LM139:
+ 2178               	/* prologue: frame size=0 */
+ 2179               	/* prologue end (size=0) */
+ 2180 035a C198      		cbi 56-0x20,1
+ 2181               	/* epilogue: frame size=0 */
+ 2182 035c 0895      		ret
+ 2183               	/* epilogue end (size=1) */
+ 2184               	/* function OS_CLR_SPI_SCK_PIN size 2 (1) */
+ 2186               	.Lscope123:
+ 2188               	.global	OS_READ_SPI_SCK_PIN
+ 2190               	OS_READ_SPI_SCK_PIN:
+ 2192               	.LM140:
+ 2193               	/* prologue: frame size=0 */
+ 2194               	/* prologue end (size=0) */
+ 2195 035e 86B3      		in r24,54-0x20
+ 2196 0360 9927      		clr r25
+ 2197 0362 9695      		lsr r25
+ 2198 0364 8795      		ror r24
+ 2199 0366 8170      		andi r24,lo8(1)
+ 2200 0368 9070      		andi r25,hi8(1)
+ 2201               	/* epilogue: frame size=0 */
+ 2202 036a 0895      		ret
+ 2203               	/* epilogue end (size=1) */
+ 2204               	/* function OS_READ_SPI_SCK_PIN size 7 (6) */
+ 2206               	.Lscope124:
+ 2208               	.global	OS_MAKE_SPI_SCK_OUTPUT
+ 2210               	OS_MAKE_SPI_SCK_OUTPUT:
+ 2212               	.LM141:
+ 2213               	/* prologue: frame size=0 */
+ 2214               	/* prologue end (size=0) */
+ 2215 036c B99A      		sbi 55-0x20,1
+ 2216               	/* epilogue: frame size=0 */
+ 2217 036e 0895      		ret
+ 2218               	/* epilogue end (size=1) */
+ 2219               	/* function OS_MAKE_SPI_SCK_OUTPUT size 2 (1) */
+ 2221               	.Lscope125:
+ 2223               	.global	OS_MAKE_SPI_SCK_INPUT
+ 2225               	OS_MAKE_SPI_SCK_INPUT:
+ 2227               	.LM142:
+ 2228               	/* prologue: frame size=0 */
+ 2229               	/* prologue end (size=0) */
+ 2230 0370 B998      		cbi 55-0x20,1
+ 2231               	/* epilogue: frame size=0 */
+ 2232 0372 0895      		ret
+ 2233               	/* epilogue end (size=1) */
+ 2234               	/* function OS_MAKE_SPI_SCK_INPUT size 2 (1) */
+ 2236               	.Lscope126:
+ 2238               	.global	OS_SET_PW0_PIN
+ 2240               	OS_SET_PW0_PIN:
+  63:avrhardware.c **** #include "avrhardware.h"
+  64:avrhardware.c **** #include "project.h"
+  65:avrhardware.c **** inline void  OS_wait_250ns() {
+ 2242               	.LM143:
+ 2243               	/* prologue: frame size=0 */
+ 2244               	/* prologue end (size=0) */
+ 2245 0374 A89A      		sbi 53-0x20,0
+ 2246               	/* epilogue: frame size=0 */
+ 2247 0376 0895      		ret
+ 2248               	/* epilogue end (size=1) */
+ 2249               	/* function OS_SET_PW0_PIN size 2 (1) */
+ 2251               	.Lscope127:
+ 2253               	.global	OS_CLR_PW0_PIN
+ 2255               	OS_CLR_PW0_PIN:
+ 2257               	.LM144:
+ 2258               	/* prologue: frame size=0 */
+ 2259               	/* prologue end (size=0) */
+ 2260 0378 A898      		cbi 53-0x20,0
+ 2261               	/* epilogue: frame size=0 */
+ 2262 037a 0895      		ret
+ 2263               	/* epilogue end (size=1) */
+ 2264               	/* function OS_CLR_PW0_PIN size 2 (1) */
+ 2266               	.Lscope128:
+ 2268               	.global	OS_READ_PW0_PIN
+ 2270               	OS_READ_PW0_PIN:
+ 2272               	.LM145:
+ 2273               	/* prologue: frame size=0 */
+ 2274               	/* prologue end (size=0) */
+ 2275 037c 83B3      		in r24,51-0x20
+ 2276 037e 9927      		clr r25
+ 2277 0380 8170      		andi r24,lo8(1)
+ 2278 0382 9070      		andi r25,hi8(1)
+ 2279               	/* epilogue: frame size=0 */
+ 2280 0384 0895      		ret
+ 2281               	/* epilogue end (size=1) */
+ 2282               	/* function OS_READ_PW0_PIN size 5 (4) */
+ 2284               	.Lscope129:
+ 2286               	.global	OS_MAKE_PW0_OUTPUT
+ 2288               	OS_MAKE_PW0_OUTPUT:
+ 2290               	.LM146:
+ 2291               	/* prologue: frame size=0 */
+ 2292               	/* prologue end (size=0) */
+ 2293 0386 A09A      		sbi 52-0x20,0
+ 2294               	/* epilogue: frame size=0 */
+ 2295 0388 0895      		ret
+ 2296               	/* epilogue end (size=1) */
+ 2297               	/* function OS_MAKE_PW0_OUTPUT size 2 (1) */
+ 2299               	.Lscope130:
+ 2301               	.global	OS_MAKE_PW0_INPUT
+ 2303               	OS_MAKE_PW0_INPUT:
+ 2305               	.LM147:
+ 2306               	/* prologue: frame size=0 */
+ 2307               	/* prologue end (size=0) */
+ 2308 038a A098      		cbi 52-0x20,0
+ 2309               	/* epilogue: frame size=0 */
+ 2310 038c 0895      		ret
+ 2311               	/* epilogue end (size=1) */
+ 2312               	/* function OS_MAKE_PW0_INPUT size 2 (1) */
+ 2314               	.Lscope131:
+ 2316               	.global	OS_SET_PW1_PIN
+ 2318               	OS_SET_PW1_PIN:
+  66:avrhardware.c **** #include "avrhardware.h"
+ 2320               	.LM148:
+ 2321               	/* prologue: frame size=0 */
+ 2322               	/* prologue end (size=0) */
+ 2323 038e A99A      		sbi 53-0x20,1
+ 2324               	/* epilogue: frame size=0 */
+ 2325 0390 0895      		ret
+ 2326               	/* epilogue end (size=1) */
+ 2327               	/* function OS_SET_PW1_PIN size 2 (1) */
+ 2329               	.Lscope132:
+ 2331               	.global	OS_CLR_PW1_PIN
+ 2333               	OS_CLR_PW1_PIN:
+ 2335               	.LM149:
+ 2336               	/* prologue: frame size=0 */
+ 2337               	/* prologue end (size=0) */
+ 2338 0392 A998      		cbi 53-0x20,1
+ 2339               	/* epilogue: frame size=0 */
+ 2340 0394 0895      		ret
+ 2341               	/* epilogue end (size=1) */
+ 2342               	/* function OS_CLR_PW1_PIN size 2 (1) */
+ 2344               	.Lscope133:
+ 2346               	.global	OS_READ_PW1_PIN
+ 2348               	OS_READ_PW1_PIN:
+ 2350               	.LM150:
+ 2351               	/* prologue: frame size=0 */
+ 2352               	/* prologue end (size=0) */
+ 2353 0396 83B3      		in r24,51-0x20
+ 2354 0398 9927      		clr r25
+ 2355 039a 9695      		lsr r25
+ 2356 039c 8795      		ror r24
+ 2357 039e 8170      		andi r24,lo8(1)
+ 2358 03a0 9070      		andi r25,hi8(1)
+ 2359               	/* epilogue: frame size=0 */
+ 2360 03a2 0895      		ret
+ 2361               	/* epilogue end (size=1) */
+ 2362               	/* function OS_READ_PW1_PIN size 7 (6) */
+ 2364               	.Lscope134:
+ 2366               	.global	OS_MAKE_PW1_OUTPUT
+ 2368               	OS_MAKE_PW1_OUTPUT:
+ 2370               	.LM151:
+ 2371               	/* prologue: frame size=0 */
+ 2372               	/* prologue end (size=0) */
+ 2373 03a4 A19A      		sbi 52-0x20,1
+ 2374               	/* epilogue: frame size=0 */
+ 2375 03a6 0895      		ret
+ 2376               	/* epilogue end (size=1) */
+ 2377               	/* function OS_MAKE_PW1_OUTPUT size 2 (1) */
+ 2379               	.Lscope135:
+ 2381               	.global	OS_MAKE_PW1_INPUT
+ 2383               	OS_MAKE_PW1_INPUT:
+ 2385               	.LM152:
+ 2386               	/* prologue: frame size=0 */
+ 2387               	/* prologue end (size=0) */
+ 2388 03a8 A198      		cbi 52-0x20,1
+ 2389               	/* epilogue: frame size=0 */
+ 2390 03aa 0895      		ret
+ 2391               	/* epilogue end (size=1) */
+ 2392               	/* function OS_MAKE_PW1_INPUT size 2 (1) */
+ 2394               	.Lscope136:
+ 2396               	.global	OS_SET_PW2_PIN
+ 2398               	OS_SET_PW2_PIN:
+  67:avrhardware.c **** #include "avrhardware.h"
+ 2400               	.LM153:
+ 2401               	/* prologue: frame size=0 */
+ 2402               	/* prologue end (size=0) */
+ 2403 03ac AA9A      		sbi 53-0x20,2
+ 2404               	/* epilogue: frame size=0 */
+ 2405 03ae 0895      		ret
+ 2406               	/* epilogue end (size=1) */
+ 2407               	/* function OS_SET_PW2_PIN size 2 (1) */
+ 2409               	.Lscope137:
+ 2411               	.global	OS_CLR_PW2_PIN
+ 2413               	OS_CLR_PW2_PIN:
+ 2415               	.LM154:
+ 2416               	/* prologue: frame size=0 */
+ 2417               	/* prologue end (size=0) */
+ 2418 03b0 AA98      		cbi 53-0x20,2
+ 2419               	/* epilogue: frame size=0 */
+ 2420 03b2 0895      		ret
+ 2421               	/* epilogue end (size=1) */
+ 2422               	/* function OS_CLR_PW2_PIN size 2 (1) */
+ 2424               	.Lscope138:
+ 2426               	.global	OS_READ_PW2_PIN
+ 2428               	OS_READ_PW2_PIN:
+ 2430               	.LM155:
+ 2431               	/* prologue: frame size=0 */
+ 2432               	/* prologue end (size=0) */
+ 2433 03b4 83B3      		in r24,51-0x20
+ 2434 03b6 9927      		clr r25
+ 2435 03b8 9695      		lsr r25
+ 2436 03ba 8795      		ror r24
+ 2437 03bc 9695      		lsr r25
+ 2438 03be 8795      		ror r24
+ 2439 03c0 8170      		andi r24,lo8(1)
+ 2440 03c2 9070      		andi r25,hi8(1)
+ 2441               	/* epilogue: frame size=0 */
+ 2442 03c4 0895      		ret
+ 2443               	/* epilogue end (size=1) */
+ 2444               	/* function OS_READ_PW2_PIN size 9 (8) */
+ 2446               	.Lscope139:
+ 2448               	.global	OS_MAKE_PW2_OUTPUT
+ 2450               	OS_MAKE_PW2_OUTPUT:
+ 2452               	.LM156:
+ 2453               	/* prologue: frame size=0 */
+ 2454               	/* prologue end (size=0) */
+ 2455 03c6 A29A      		sbi 52-0x20,2
+ 2456               	/* epilogue: frame size=0 */
+ 2457 03c8 0895      		ret
+ 2458               	/* epilogue end (size=1) */
+ 2459               	/* function OS_MAKE_PW2_OUTPUT size 2 (1) */
+ 2461               	.Lscope140:
+ 2463               	.global	OS_MAKE_PW2_INPUT
+ 2465               	OS_MAKE_PW2_INPUT:
+ 2467               	.LM157:
+ 2468               	/* prologue: frame size=0 */
+ 2469               	/* prologue end (size=0) */
+ 2470 03ca A298      		cbi 52-0x20,2
+ 2471               	/* epilogue: frame size=0 */
+ 2472 03cc 0895      		ret
+ 2473               	/* epilogue end (size=1) */
+ 2474               	/* function OS_MAKE_PW2_INPUT size 2 (1) */
+ 2476               	.Lscope141:
+ 2478               	.global	OS_SET_PW3_PIN
+ 2480               	OS_SET_PW3_PIN:
+  68:avrhardware.c **** #include "avrhardware.h"
+ 2482               	.LM158:
+ 2483               	/* prologue: frame size=0 */
+ 2484               	/* prologue end (size=0) */
+ 2485 03ce AB9A      		sbi 53-0x20,3
+ 2486               	/* epilogue: frame size=0 */
+ 2487 03d0 0895      		ret
+ 2488               	/* epilogue end (size=1) */
+ 2489               	/* function OS_SET_PW3_PIN size 2 (1) */
+ 2491               	.Lscope142:
+ 2493               	.global	OS_CLR_PW3_PIN
+ 2495               	OS_CLR_PW3_PIN:
+ 2497               	.LM159:
+ 2498               	/* prologue: frame size=0 */
+ 2499               	/* prologue end (size=0) */
+ 2500 03d2 AB98      		cbi 53-0x20,3
+ 2501               	/* epilogue: frame size=0 */
+ 2502 03d4 0895      		ret
+ 2503               	/* epilogue end (size=1) */
+ 2504               	/* function OS_CLR_PW3_PIN size 2 (1) */
+ 2506               	.Lscope143:
+ 2508               	.global	OS_READ_PW3_PIN
+ 2510               	OS_READ_PW3_PIN:
+ 2512               	.LM160:
+ 2513               	/* prologue: frame size=0 */
+ 2514               	/* prologue end (size=0) */
+ 2515 03d6 83B3      		in r24,51-0x20
+ 2516 03d8 9927      		clr r25
+ 2517 03da 43E0      		ldi r20,3
+ 2518 03dc 9695      	1:	lsr r25
+ 2519 03de 8795      		ror r24
+ 2520 03e0 4A95      		dec r20
+ 2521 03e2 E1F7      		brne 1b
+ 2522 03e4 8170      		andi r24,lo8(1)
+ 2523 03e6 9070      		andi r25,hi8(1)
+ 2524               	/* epilogue: frame size=0 */
+ 2525 03e8 0895      		ret
+ 2526               	/* epilogue end (size=1) */
+ 2527               	/* function OS_READ_PW3_PIN size 10 (9) */
+ 2529               	.Lscope144:
+ 2531               	.global	OS_MAKE_PW3_OUTPUT
+ 2533               	OS_MAKE_PW3_OUTPUT:
+ 2535               	.LM161:
+ 2536               	/* prologue: frame size=0 */
+ 2537               	/* prologue end (size=0) */
+ 2538 03ea A39A      		sbi 52-0x20,3
+ 2539               	/* epilogue: frame size=0 */
+ 2540 03ec 0895      		ret
+ 2541               	/* epilogue end (size=1) */
+ 2542               	/* function OS_MAKE_PW3_OUTPUT size 2 (1) */
+ 2544               	.Lscope145:
+ 2546               	.global	OS_MAKE_PW3_INPUT
+ 2548               	OS_MAKE_PW3_INPUT:
+ 2550               	.LM162:
+ 2551               	/* prologue: frame size=0 */
+ 2552               	/* prologue end (size=0) */
+ 2553 03ee A398      		cbi 52-0x20,3
+ 2554               	/* epilogue: frame size=0 */
+ 2555 03f0 0895      		ret
+ 2556               	/* epilogue end (size=1) */
+ 2557               	/* function OS_MAKE_PW3_INPUT size 2 (1) */
+ 2559               	.Lscope146:
+ 2561               	.global	OS_SET_PW4_PIN
+ 2563               	OS_SET_PW4_PIN:
+  69:avrhardware.c **** #include "avrhardware.h"
+ 2565               	.LM163:
+ 2566               	/* prologue: frame size=0 */
+ 2567               	/* prologue end (size=0) */
+ 2568 03f2 AC9A      		sbi 53-0x20,4
+ 2569               	/* epilogue: frame size=0 */
+ 2570 03f4 0895      		ret
+ 2571               	/* epilogue end (size=1) */
+ 2572               	/* function OS_SET_PW4_PIN size 2 (1) */
+ 2574               	.Lscope147:
+ 2576               	.global	OS_CLR_PW4_PIN
+ 2578               	OS_CLR_PW4_PIN:
+ 2580               	.LM164:
+ 2581               	/* prologue: frame size=0 */
+ 2582               	/* prologue end (size=0) */
+ 2583 03f6 AC98      		cbi 53-0x20,4
+ 2584               	/* epilogue: frame size=0 */
+ 2585 03f8 0895      		ret
+ 2586               	/* epilogue end (size=1) */
+ 2587               	/* function OS_CLR_PW4_PIN size 2 (1) */
+ 2589               	.Lscope148:
+ 2591               	.global	OS_READ_PW4_PIN
+ 2593               	OS_READ_PW4_PIN:
+ 2595               	.LM165:
+ 2596               	/* prologue: frame size=0 */
+ 2597               	/* prologue end (size=0) */
+ 2598 03fa 83B3      		in r24,51-0x20
+ 2599 03fc 9927      		clr r25
+ 2600 03fe 54E0      		ldi r21,4
+ 2601 0400 9695      	1:	lsr r25
+ 2602 0402 8795      		ror r24
+ 2603 0404 5A95      		dec r21
+ 2604 0406 E1F7      		brne 1b
+ 2605 0408 8170      		andi r24,lo8(1)
+ 2606 040a 9070      		andi r25,hi8(1)
+ 2607               	/* epilogue: frame size=0 */
+ 2608 040c 0895      		ret
+ 2609               	/* epilogue end (size=1) */
+ 2610               	/* function OS_READ_PW4_PIN size 10 (9) */
+ 2612               	.Lscope149:
+ 2614               	.global	OS_MAKE_PW4_OUTPUT
+ 2616               	OS_MAKE_PW4_OUTPUT:
+ 2618               	.LM166:
+ 2619               	/* prologue: frame size=0 */
+ 2620               	/* prologue end (size=0) */
+ 2621 040e A49A      		sbi 52-0x20,4
+ 2622               	/* epilogue: frame size=0 */
+ 2623 0410 0895      		ret
+ 2624               	/* epilogue end (size=1) */
+ 2625               	/* function OS_MAKE_PW4_OUTPUT size 2 (1) */
+ 2627               	.Lscope150:
+ 2629               	.global	OS_MAKE_PW4_INPUT
+ 2631               	OS_MAKE_PW4_INPUT:
+ 2633               	.LM167:
+ 2634               	/* prologue: frame size=0 */
+ 2635               	/* prologue end (size=0) */
+ 2636 0412 A498      		cbi 52-0x20,4
+ 2637               	/* epilogue: frame size=0 */
+ 2638 0414 0895      		ret
+ 2639               	/* epilogue end (size=1) */
+ 2640               	/* function OS_MAKE_PW4_INPUT size 2 (1) */
+ 2642               	.Lscope151:
+ 2644               	.global	OS_SET_PW5_PIN
+ 2646               	OS_SET_PW5_PIN:
+  70:avrhardware.c **** #include "avrhardware.h"
+ 2648               	.LM168:
+ 2649               	/* prologue: frame size=0 */
+ 2650               	/* prologue end (size=0) */
+ 2651 0416 AD9A      		sbi 53-0x20,5
+ 2652               	/* epilogue: frame size=0 */
+ 2653 0418 0895      		ret
+ 2654               	/* epilogue end (size=1) */
+ 2655               	/* function OS_SET_PW5_PIN size 2 (1) */
+ 2657               	.Lscope152:
+ 2659               	.global	OS_CLR_PW5_PIN
+ 2661               	OS_CLR_PW5_PIN:
+ 2663               	.LM169:
+ 2664               	/* prologue: frame size=0 */
+ 2665               	/* prologue end (size=0) */
+ 2666 041a AD98      		cbi 53-0x20,5
+ 2667               	/* epilogue: frame size=0 */
+ 2668 041c 0895      		ret
+ 2669               	/* epilogue end (size=1) */
+ 2670               	/* function OS_CLR_PW5_PIN size 2 (1) */
+ 2672               	.Lscope153:
+ 2674               	.global	OS_READ_PW5_PIN
+ 2676               	OS_READ_PW5_PIN:
+ 2678               	.LM170:
+ 2679               	/* prologue: frame size=0 */
+ 2680               	/* prologue end (size=0) */
+ 2681 041e 83B3      		in r24,51-0x20
+ 2682 0420 9927      		clr r25
+ 2683 0422 65E0      		ldi r22,5
+ 2684 0424 9695      	1:	lsr r25
+ 2685 0426 8795      		ror r24
+ 2686 0428 6A95      		dec r22
+ 2687 042a E1F7      		brne 1b
+ 2688 042c 8170      		andi r24,lo8(1)
+ 2689 042e 9070      		andi r25,hi8(1)
+ 2690               	/* epilogue: frame size=0 */
+ 2691 0430 0895      		ret
+ 2692               	/* epilogue end (size=1) */
+ 2693               	/* function OS_READ_PW5_PIN size 10 (9) */
+ 2695               	.Lscope154:
+ 2697               	.global	OS_MAKE_PW5_OUTPUT
+ 2699               	OS_MAKE_PW5_OUTPUT:
+ 2701               	.LM171:
+ 2702               	/* prologue: frame size=0 */
+ 2703               	/* prologue end (size=0) */
+ 2704 0432 A59A      		sbi 52-0x20,5
+ 2705               	/* epilogue: frame size=0 */
+ 2706 0434 0895      		ret
+ 2707               	/* epilogue end (size=1) */
+ 2708               	/* function OS_MAKE_PW5_OUTPUT size 2 (1) */
+ 2710               	.Lscope155:
+ 2712               	.global	OS_MAKE_PW5_INPUT
+ 2714               	OS_MAKE_PW5_INPUT:
+ 2716               	.LM172:
+ 2717               	/* prologue: frame size=0 */
+ 2718               	/* prologue end (size=0) */
+ 2719 0436 A598      		cbi 52-0x20,5
+ 2720               	/* epilogue: frame size=0 */
+ 2721 0438 0895      		ret
+ 2722               	/* epilogue end (size=1) */
+ 2723               	/* function OS_MAKE_PW5_INPUT size 2 (1) */
+ 2725               	.Lscope156:
+ 2727               	.global	OS_SET_PW6_PIN
+ 2729               	OS_SET_PW6_PIN:
+  71:avrhardware.c **** #include "avrhardware.h"
+ 2731               	.LM173:
+ 2732               	/* prologue: frame size=0 */
+ 2733               	/* prologue end (size=0) */
+ 2734 043a AE9A      		sbi 53-0x20,6
+ 2735               	/* epilogue: frame size=0 */
+ 2736 043c 0895      		ret
+ 2737               	/* epilogue end (size=1) */
+ 2738               	/* function OS_SET_PW6_PIN size 2 (1) */
+ 2740               	.Lscope157:
+ 2742               	.global	OS_CLR_PW6_PIN
+ 2744               	OS_CLR_PW6_PIN:
+ 2746               	.LM174:
+ 2747               	/* prologue: frame size=0 */
+ 2748               	/* prologue end (size=0) */
+ 2749 043e AE98      		cbi 53-0x20,6
+ 2750               	/* epilogue: frame size=0 */
+ 2751 0440 0895      		ret
+ 2752               	/* epilogue end (size=1) */
+ 2753               	/* function OS_CLR_PW6_PIN size 2 (1) */
+ 2755               	.Lscope158:
+ 2757               	.global	OS_READ_PW6_PIN
+ 2759               	OS_READ_PW6_PIN:
+ 2761               	.LM175:
+ 2762               	/* prologue: frame size=0 */
+ 2763               	/* prologue end (size=0) */
+ 2764 0442 83B3      		in r24,51-0x20
+ 2765 0444 9927      		clr r25
+ 2766 0446 76E0      		ldi r23,6
+ 2767 0448 9695      	1:	lsr r25
+ 2768 044a 8795      		ror r24
+ 2769 044c 7A95      		dec r23
+ 2770 044e E1F7      		brne 1b
+ 2771 0450 8170      		andi r24,lo8(1)
+ 2772 0452 9070      		andi r25,hi8(1)
+ 2773               	/* epilogue: frame size=0 */
+ 2774 0454 0895      		ret
+ 2775               	/* epilogue end (size=1) */
+ 2776               	/* function OS_READ_PW6_PIN size 10 (9) */
+ 2778               	.Lscope159:
+ 2780               	.global	OS_MAKE_PW6_OUTPUT
+ 2782               	OS_MAKE_PW6_OUTPUT:
+ 2784               	.LM176:
+ 2785               	/* prologue: frame size=0 */
+ 2786               	/* prologue end (size=0) */
+ 2787 0456 A69A      		sbi 52-0x20,6
+ 2788               	/* epilogue: frame size=0 */
+ 2789 0458 0895      		ret
+ 2790               	/* epilogue end (size=1) */
+ 2791               	/* function OS_MAKE_PW6_OUTPUT size 2 (1) */
+ 2793               	.Lscope160:
+ 2795               	.global	OS_MAKE_PW6_INPUT
+ 2797               	OS_MAKE_PW6_INPUT:
+ 2799               	.LM177:
+ 2800               	/* prologue: frame size=0 */
+ 2801               	/* prologue end (size=0) */
+ 2802 045a A698      		cbi 52-0x20,6
+ 2803               	/* epilogue: frame size=0 */
+ 2804 045c 0895      		ret
+ 2805               	/* epilogue end (size=1) */
+ 2806               	/* function OS_MAKE_PW6_INPUT size 2 (1) */
+ 2808               	.Lscope161:
+ 2810               	.global	OS_SET_PW7_PIN
+ 2812               	OS_SET_PW7_PIN:
+  72:avrhardware.c **** #include "avrhardware.h"
+ 2814               	.LM178:
+ 2815               	/* prologue: frame size=0 */
+ 2816               	/* prologue end (size=0) */
+ 2817 045e AF9A      		sbi 53-0x20,7
+ 2818               	/* epilogue: frame size=0 */
+ 2819 0460 0895      		ret
+ 2820               	/* epilogue end (size=1) */
+ 2821               	/* function OS_SET_PW7_PIN size 2 (1) */
+ 2823               	.Lscope162:
+ 2825               	.global	OS_CLR_PW7_PIN
+ 2827               	OS_CLR_PW7_PIN:
+ 2829               	.LM179:
+ 2830               	/* prologue: frame size=0 */
+ 2831               	/* prologue end (size=0) */
+ 2832 0462 AF98      		cbi 53-0x20,7
+ 2833               	/* epilogue: frame size=0 */
+ 2834 0464 0895      		ret
+ 2835               	/* epilogue end (size=1) */
+ 2836               	/* function OS_CLR_PW7_PIN size 2 (1) */
+ 2838               	.Lscope163:
+ 2840               	.global	OS_READ_PW7_PIN
+ 2842               	OS_READ_PW7_PIN:
+ 2844               	.LM180:
+ 2845               	/* prologue: frame size=0 */
+ 2846               	/* prologue end (size=0) */
+ 2847 0466 80E0      		ldi r24,lo8(0)
+ 2848 0468 90E0      		ldi r25,hi8(0)
+ 2849 046a 9F9B      		sbis 51-0x20,7
+ 2850 046c 02C0      		rjmp .L175
+ 2852               	.LM181:
+ 2853 046e 81E0      		ldi r24,lo8(1)
+ 2854 0470 90E0      		ldi r25,hi8(1)
+ 2855               	.L175:
+ 2856 0472 0895      		ret
+ 2857               	/* epilogue: frame size=0 */
+ 2858 0474 0895      		ret
+ 2859               	/* epilogue end (size=1) */
+ 2860               	/* function OS_READ_PW7_PIN size 8 (7) */
+ 2862               	.Lscope164:
+ 2864               	.global	OS_MAKE_PW7_OUTPUT
+ 2866               	OS_MAKE_PW7_OUTPUT:
+ 2868               	.LM182:
+ 2869               	/* prologue: frame size=0 */
+ 2870               	/* prologue end (size=0) */
+ 2871 0476 A79A      		sbi 52-0x20,7
+ 2872               	/* epilogue: frame size=0 */
+ 2873 0478 0895      		ret
+ 2874               	/* epilogue end (size=1) */
+ 2875               	/* function OS_MAKE_PW7_OUTPUT size 2 (1) */
+ 2877               	.Lscope165:
+ 2879               	.global	OS_MAKE_PW7_INPUT
+ 2881               	OS_MAKE_PW7_INPUT:
+ 2883               	.LM183:
+ 2884               	/* prologue: frame size=0 */
+ 2885               	/* prologue end (size=0) */
+ 2886 047a A798      		cbi 52-0x20,7
+ 2887               	/* epilogue: frame size=0 */
+ 2888 047c 0895      		ret
+ 2889               	/* epilogue end (size=1) */
+ 2890               	/* function OS_MAKE_PW7_INPUT size 2 (1) */
+ 2892               	.Lscope166:
+ 2894               	.global	OS_SET_I2C_BUS1_SCL_PIN
+ 2896               	OS_SET_I2C_BUS1_SCL_PIN:
+  73:avrhardware.c **** #include "avrhardware.h"
+  74:avrhardware.c **** #include "project.h"
+  75:avrhardware.c **** inline void  OS_wait_250ns() {
+ 2898               	.LM184:
+ 2899               	/* prologue: frame size=0 */
+ 2900               	/* prologue end (size=0) */
+ 2901 047e 909A      		sbi 50-0x20,0
+ 2902               	/* epilogue: frame size=0 */
+ 2903 0480 0895      		ret
+ 2904               	/* epilogue end (size=1) */
+ 2905               	/* function OS_SET_I2C_BUS1_SCL_PIN size 2 (1) */
+ 2907               	.Lscope167:
+ 2909               	.global	OS_CLR_I2C_BUS1_SCL_PIN
+ 2911               	OS_CLR_I2C_BUS1_SCL_PIN:
+ 2913               	.LM185:
+ 2914               	/* prologue: frame size=0 */
+ 2915               	/* prologue end (size=0) */
+ 2916 0482 9098      		cbi 50-0x20,0
+ 2917               	/* epilogue: frame size=0 */
+ 2918 0484 0895      		ret
+ 2919               	/* epilogue end (size=1) */
+ 2920               	/* function OS_CLR_I2C_BUS1_SCL_PIN size 2 (1) */
+ 2922               	.Lscope168:
+ 2924               	.global	OS_READ_I2C_BUS1_SCL_PIN
+ 2926               	OS_READ_I2C_BUS1_SCL_PIN:
+ 2928               	.LM186:
+ 2929               	/* prologue: frame size=0 */
+ 2930               	/* prologue end (size=0) */
+ 2931 0486 80B3      		in r24,48-0x20
+ 2932 0488 9927      		clr r25
+ 2933 048a 8170      		andi r24,lo8(1)
+ 2934 048c 9070      		andi r25,hi8(1)
+ 2935               	/* epilogue: frame size=0 */
+ 2936 048e 0895      		ret
+ 2937               	/* epilogue end (size=1) */
+ 2938               	/* function OS_READ_I2C_BUS1_SCL_PIN size 5 (4) */
+ 2940               	.Lscope169:
+ 2942               	.global	OS_MAKE_I2C_BUS1_SCL_OUTPUT
+ 2944               	OS_MAKE_I2C_BUS1_SCL_OUTPUT:
+ 2946               	.LM187:
+ 2947               	/* prologue: frame size=0 */
+ 2948               	/* prologue end (size=0) */
+ 2949 0490 889A      		sbi 49-0x20,0
+ 2950               	/* epilogue: frame size=0 */
+ 2951 0492 0895      		ret
+ 2952               	/* epilogue end (size=1) */
+ 2953               	/* function OS_MAKE_I2C_BUS1_SCL_OUTPUT size 2 (1) */
+ 2955               	.Lscope170:
+ 2957               	.global	OS_MAKE_I2C_BUS1_SCL_INPUT
+ 2959               	OS_MAKE_I2C_BUS1_SCL_INPUT:
+ 2961               	.LM188:
+ 2962               	/* prologue: frame size=0 */
+ 2963               	/* prologue end (size=0) */
+ 2964 0494 8898      		cbi 49-0x20,0
+ 2965               	/* epilogue: frame size=0 */
+ 2966 0496 0895      		ret
+ 2967               	/* epilogue end (size=1) */
+ 2968               	/* function OS_MAKE_I2C_BUS1_SCL_INPUT size 2 (1) */
+ 2970               	.Lscope171:
+ 2972               	.global	OS_SET_I2C_BUS1_SDA_PIN
+ 2974               	OS_SET_I2C_BUS1_SDA_PIN:
+  76:avrhardware.c **** #include "avrhardware.h"
+ 2976               	.LM189:
+ 2977               	/* prologue: frame size=0 */
+ 2978               	/* prologue end (size=0) */
+ 2979 0498 919A      		sbi 50-0x20,1
+ 2980               	/* epilogue: frame size=0 */
+ 2981 049a 0895      		ret
+ 2982               	/* epilogue end (size=1) */
+ 2983               	/* function OS_SET_I2C_BUS1_SDA_PIN size 2 (1) */
+ 2985               	.Lscope172:
+ 2987               	.global	OS_CLR_I2C_BUS1_SDA_PIN
+ 2989               	OS_CLR_I2C_BUS1_SDA_PIN:
+ 2991               	.LM190:
+ 2992               	/* prologue: frame size=0 */
+ 2993               	/* prologue end (size=0) */
+ 2994 049c 9198      		cbi 50-0x20,1
+ 2995               	/* epilogue: frame size=0 */
+ 2996 049e 0895      		ret
+ 2997               	/* epilogue end (size=1) */
+ 2998               	/* function OS_CLR_I2C_BUS1_SDA_PIN size 2 (1) */
+ 3000               	.Lscope173:
+ 3002               	.global	OS_READ_I2C_BUS1_SDA_PIN
+ 3004               	OS_READ_I2C_BUS1_SDA_PIN:
+ 3006               	.LM191:
+ 3007               	/* prologue: frame size=0 */
+ 3008               	/* prologue end (size=0) */
+ 3009 04a0 80B3      		in r24,48-0x20
+ 3010 04a2 9927      		clr r25
+ 3011 04a4 9695      		lsr r25
+ 3012 04a6 8795      		ror r24
+ 3013 04a8 8170      		andi r24,lo8(1)
+ 3014 04aa 9070      		andi r25,hi8(1)
+ 3015               	/* epilogue: frame size=0 */
+ 3016 04ac 0895      		ret
+ 3017               	/* epilogue end (size=1) */
+ 3018               	/* function OS_READ_I2C_BUS1_SDA_PIN size 7 (6) */
+ 3020               	.Lscope174:
+ 3022               	.global	OS_MAKE_I2C_BUS1_SDA_OUTPUT
+ 3024               	OS_MAKE_I2C_BUS1_SDA_OUTPUT:
+ 3026               	.LM192:
+ 3027               	/* prologue: frame size=0 */
+ 3028               	/* prologue end (size=0) */
+ 3029 04ae 899A      		sbi 49-0x20,1
+ 3030               	/* epilogue: frame size=0 */
+ 3031 04b0 0895      		ret
+ 3032               	/* epilogue end (size=1) */
+ 3033               	/* function OS_MAKE_I2C_BUS1_SDA_OUTPUT size 2 (1) */
+ 3035               	.Lscope175:
+ 3037               	.global	OS_MAKE_I2C_BUS1_SDA_INPUT
+ 3039               	OS_MAKE_I2C_BUS1_SDA_INPUT:
+ 3041               	.LM193:
+ 3042               	/* prologue: frame size=0 */
+ 3043               	/* prologue end (size=0) */
+ 3044 04b2 8998      		cbi 49-0x20,1
+ 3045               	/* epilogue: frame size=0 */
+ 3046 04b4 0895      		ret
+ 3047               	/* epilogue end (size=1) */
+ 3048               	/* function OS_MAKE_I2C_BUS1_SDA_INPUT size 2 (1) */
+ 3050               	.Lscope176:
+ 3052               	.global	OS_SET_UART_RXD0_PIN
+ 3054               	OS_SET_UART_RXD0_PIN:
+  77:avrhardware.c **** #include "avrhardware.h"
+  78:avrhardware.c **** #include "project.h"
+  79:avrhardware.c **** inline void  OS_wait_250ns() {
+ 3056               	.LM194:
+ 3057               	/* prologue: frame size=0 */
+ 3058               	/* prologue end (size=0) */
+ 3059 04b6 189A      		sbi 35-0x20,0
+ 3060               	/* epilogue: frame size=0 */
+ 3061 04b8 0895      		ret
+ 3062               	/* epilogue end (size=1) */
+ 3063               	/* function OS_SET_UART_RXD0_PIN size 2 (1) */
+ 3065               	.Lscope177:
+ 3067               	.global	OS_CLR_UART_RXD0_PIN
+ 3069               	OS_CLR_UART_RXD0_PIN:
+ 3071               	.LM195:
+ 3072               	/* prologue: frame size=0 */
+ 3073               	/* prologue end (size=0) */
+ 3074 04ba 1898      		cbi 35-0x20,0
+ 3075               	/* epilogue: frame size=0 */
+ 3076 04bc 0895      		ret
+ 3077               	/* epilogue end (size=1) */
+ 3078               	/* function OS_CLR_UART_RXD0_PIN size 2 (1) */
+ 3080               	.Lscope178:
+ 3082               	.global	OS_READ_UART_RXD0_PIN
+ 3084               	OS_READ_UART_RXD0_PIN:
+ 3086               	.LM196:
+ 3087               	/* prologue: frame size=0 */
+ 3088               	/* prologue end (size=0) */
+ 3089 04be 81B1      		in r24,33-0x20
+ 3090 04c0 9927      		clr r25
+ 3091 04c2 8170      		andi r24,lo8(1)
+ 3092 04c4 9070      		andi r25,hi8(1)
+ 3093               	/* epilogue: frame size=0 */
+ 3094 04c6 0895      		ret
+ 3095               	/* epilogue end (size=1) */
+ 3096               	/* function OS_READ_UART_RXD0_PIN size 5 (4) */
+ 3098               	.Lscope179:
+ 3100               	.global	OS_MAKE_UART_RXD0_OUTPUT
+ 3102               	OS_MAKE_UART_RXD0_OUTPUT:
+ 3104               	.LM197:
+ 3105               	/* prologue: frame size=0 */
+ 3106               	/* prologue end (size=0) */
+ 3107 04c8 109A      		sbi 34-0x20,0
+ 3108               	/* epilogue: frame size=0 */
+ 3109 04ca 0895      		ret
+ 3110               	/* epilogue end (size=1) */
+ 3111               	/* function OS_MAKE_UART_RXD0_OUTPUT size 2 (1) */
+ 3113               	.Lscope180:
+ 3115               	.global	OS_MAKE_UART_RXD0_INPUT
+ 3117               	OS_MAKE_UART_RXD0_INPUT:
+ 3119               	.LM198:
+ 3120               	/* prologue: frame size=0 */
+ 3121               	/* prologue end (size=0) */
+ 3122 04cc 1098      		cbi 34-0x20,0
+ 3123               	/* epilogue: frame size=0 */
+ 3124 04ce 0895      		ret
+ 3125               	/* epilogue end (size=1) */
+ 3126               	/* function OS_MAKE_UART_RXD0_INPUT size 2 (1) */
+ 3128               	.Lscope181:
+ 3130               	.global	OS_SET_UART_TXD0_PIN
+ 3132               	OS_SET_UART_TXD0_PIN:
+  80:avrhardware.c **** #include "avrhardware.h"
+ 3134               	.LM199:
+ 3135               	/* prologue: frame size=0 */
+ 3136               	/* prologue end (size=0) */
+ 3137 04d0 199A      		sbi 35-0x20,1
+ 3138               	/* epilogue: frame size=0 */
+ 3139 04d2 0895      		ret
+ 3140               	/* epilogue end (size=1) */
+ 3141               	/* function OS_SET_UART_TXD0_PIN size 2 (1) */
+ 3143               	.Lscope182:
+ 3145               	.global	OS_CLR_UART_TXD0_PIN
+ 3147               	OS_CLR_UART_TXD0_PIN:
+ 3149               	.LM200:
+ 3150               	/* prologue: frame size=0 */
+ 3151               	/* prologue end (size=0) */
+ 3152 04d4 1998      		cbi 35-0x20,1
+ 3153               	/* epilogue: frame size=0 */
+ 3154 04d6 0895      		ret
+ 3155               	/* epilogue end (size=1) */
+ 3156               	/* function OS_CLR_UART_TXD0_PIN size 2 (1) */
+ 3158               	.Lscope183:
+ 3160               	.global	OS_READ_UART_TXD0_PIN
+ 3162               	OS_READ_UART_TXD0_PIN:
+ 3164               	.LM201:
+ 3165               	/* prologue: frame size=0 */
+ 3166               	/* prologue end (size=0) */
+ 3167 04d8 81B1      		in r24,33-0x20
+ 3168 04da 9927      		clr r25
+ 3169 04dc 9695      		lsr r25
+ 3170 04de 8795      		ror r24
+ 3171 04e0 8170      		andi r24,lo8(1)
+ 3172 04e2 9070      		andi r25,hi8(1)
+ 3173               	/* epilogue: frame size=0 */
+ 3174 04e4 0895      		ret
+ 3175               	/* epilogue end (size=1) */
+ 3176               	/* function OS_READ_UART_TXD0_PIN size 7 (6) */
+ 3178               	.Lscope184:
+ 3180               	.global	OS_MAKE_UART_TXD0_OUTPUT
+ 3182               	OS_MAKE_UART_TXD0_OUTPUT:
+ 3184               	.LM202:
+ 3185               	/* prologue: frame size=0 */
+ 3186               	/* prologue end (size=0) */
+ 3187 04e6 119A      		sbi 34-0x20,1
+ 3188               	/* epilogue: frame size=0 */
+ 3189 04e8 0895      		ret
+ 3190               	/* epilogue end (size=1) */
+ 3191               	/* function OS_MAKE_UART_TXD0_OUTPUT size 2 (1) */
+ 3193               	.Lscope185:
+ 3195               	.global	OS_MAKE_UART_TXD0_INPUT
+ 3197               	OS_MAKE_UART_TXD0_INPUT:
+ 3199               	.LM203:
+ 3200               	/* prologue: frame size=0 */
+ 3201               	/* prologue end (size=0) */
+ 3202 04ea 1198      		cbi 34-0x20,1
+ 3203               	/* epilogue: frame size=0 */
+ 3204 04ec 0895      		ret
+ 3205               	/* epilogue end (size=1) */
+ 3206               	/* function OS_MAKE_UART_TXD0_INPUT size 2 (1) */
+ 3208               	.Lscope186:
+ 3210               	.global	OS_SET_UART_XCK0_PIN
+ 3212               	OS_SET_UART_XCK0_PIN:
+  81:avrhardware.c **** #include "avrhardware.h"
+ 3214               	.LM204:
+ 3215               	/* prologue: frame size=0 */
+ 3216               	/* prologue end (size=0) */
+ 3217 04ee 1A9A      		sbi 35-0x20,2
+ 3218               	/* epilogue: frame size=0 */
+ 3219 04f0 0895      		ret
+ 3220               	/* epilogue end (size=1) */
+ 3221               	/* function OS_SET_UART_XCK0_PIN size 2 (1) */
+ 3223               	.Lscope187:
+ 3225               	.global	OS_CLR_UART_XCK0_PIN
+ 3227               	OS_CLR_UART_XCK0_PIN:
+ 3229               	.LM205:
+ 3230               	/* prologue: frame size=0 */
+ 3231               	/* prologue end (size=0) */
+ 3232 04f2 1A98      		cbi 35-0x20,2
+ 3233               	/* epilogue: frame size=0 */
+ 3234 04f4 0895      		ret
+ 3235               	/* epilogue end (size=1) */
+ 3236               	/* function OS_CLR_UART_XCK0_PIN size 2 (1) */
+ 3238               	.Lscope188:
+ 3240               	.global	OS_READ_UART_XCK0_PIN
+ 3242               	OS_READ_UART_XCK0_PIN:
+ 3244               	.LM206:
+ 3245               	/* prologue: frame size=0 */
+ 3246               	/* prologue end (size=0) */
+ 3247 04f6 81B1      		in r24,33-0x20
+ 3248 04f8 9927      		clr r25
+ 3249 04fa 9695      		lsr r25
+ 3250 04fc 8795      		ror r24
+ 3251 04fe 9695      		lsr r25
+ 3252 0500 8795      		ror r24
+ 3253 0502 8170      		andi r24,lo8(1)
+ 3254 0504 9070      		andi r25,hi8(1)
+ 3255               	/* epilogue: frame size=0 */
+ 3256 0506 0895      		ret
+ 3257               	/* epilogue end (size=1) */
+ 3258               	/* function OS_READ_UART_XCK0_PIN size 9 (8) */
+ 3260               	.Lscope189:
+ 3262               	.global	OS_MAKE_UART_XCK0_OUTPUT
+ 3264               	OS_MAKE_UART_XCK0_OUTPUT:
+ 3266               	.LM207:
+ 3267               	/* prologue: frame size=0 */
+ 3268               	/* prologue end (size=0) */
+ 3269 0508 129A      		sbi 34-0x20,2
+ 3270               	/* epilogue: frame size=0 */
+ 3271 050a 0895      		ret
+ 3272               	/* epilogue end (size=1) */
+ 3273               	/* function OS_MAKE_UART_XCK0_OUTPUT size 2 (1) */
+ 3275               	.Lscope190:
+ 3277               	.global	OS_MAKE_UART_XCK0_INPUT
+ 3279               	OS_MAKE_UART_XCK0_INPUT:
+ 3281               	.LM208:
+ 3282               	/* prologue: frame size=0 */
+ 3283               	/* prologue end (size=0) */
+ 3284 050c 1298      		cbi 34-0x20,2
+ 3285               	/* epilogue: frame size=0 */
+ 3286 050e 0895      		ret
+ 3287               	/* epilogue end (size=1) */
+ 3288               	/* function OS_MAKE_UART_XCK0_INPUT size 2 (1) */
+ 3290               	.Lscope191:
+ 3292               	.global	OS_SET_UART_RXD1_PIN
+ 3294               	OS_SET_UART_RXD1_PIN:
+  82:avrhardware.c **** #include "avrhardware.h"
+  83:avrhardware.c **** #include "project.h"
+ 3296               	.LM209:
+ 3297               	/* prologue: frame size=0 */
+ 3298               	/* prologue end (size=0) */
+ 3299 0510 929A      		sbi 50-0x20,2
+ 3300               	/* epilogue: frame size=0 */
+ 3301 0512 0895      		ret
+ 3302               	/* epilogue end (size=1) */
+ 3303               	/* function OS_SET_UART_RXD1_PIN size 2 (1) */
+ 3305               	.Lscope192:
+ 3307               	.global	OS_CLR_UART_RXD1_PIN
+ 3309               	OS_CLR_UART_RXD1_PIN:
+ 3311               	.LM210:
+ 3312               	/* prologue: frame size=0 */
+ 3313               	/* prologue end (size=0) */
+ 3314 0514 9298      		cbi 50-0x20,2
+ 3315               	/* epilogue: frame size=0 */
+ 3316 0516 0895      		ret
+ 3317               	/* epilogue end (size=1) */
+ 3318               	/* function OS_CLR_UART_RXD1_PIN size 2 (1) */
+ 3320               	.Lscope193:
+ 3322               	.global	OS_READ_UART_RXD1_PIN
+ 3324               	OS_READ_UART_RXD1_PIN:
+ 3326               	.LM211:
+ 3327               	/* prologue: frame size=0 */
+ 3328               	/* prologue end (size=0) */
+ 3329 0518 80B3      		in r24,48-0x20
+ 3330 051a 9927      		clr r25
+ 3331 051c 9695      		lsr r25
+ 3332 051e 8795      		ror r24
+ 3333 0520 9695      		lsr r25
+ 3334 0522 8795      		ror r24
+ 3335 0524 8170      		andi r24,lo8(1)
+ 3336 0526 9070      		andi r25,hi8(1)
+ 3337               	/* epilogue: frame size=0 */
+ 3338 0528 0895      		ret
+ 3339               	/* epilogue end (size=1) */
+ 3340               	/* function OS_READ_UART_RXD1_PIN size 9 (8) */
+ 3342               	.Lscope194:
+ 3344               	.global	OS_MAKE_UART_RXD1_OUTPUT
+ 3346               	OS_MAKE_UART_RXD1_OUTPUT:
+ 3348               	.LM212:
+ 3349               	/* prologue: frame size=0 */
+ 3350               	/* prologue end (size=0) */
+ 3351 052a 8A9A      		sbi 49-0x20,2
+ 3352               	/* epilogue: frame size=0 */
+ 3353 052c 0895      		ret
+ 3354               	/* epilogue end (size=1) */
+ 3355               	/* function OS_MAKE_UART_RXD1_OUTPUT size 2 (1) */
+ 3357               	.Lscope195:
+ 3359               	.global	OS_MAKE_UART_RXD1_INPUT
+ 3361               	OS_MAKE_UART_RXD1_INPUT:
+ 3363               	.LM213:
+ 3364               	/* prologue: frame size=0 */
+ 3365               	/* prologue end (size=0) */
+ 3366 052e 8A98      		cbi 49-0x20,2
+ 3367               	/* epilogue: frame size=0 */
+ 3368 0530 0895      		ret
+ 3369               	/* epilogue end (size=1) */
+ 3370               	/* function OS_MAKE_UART_RXD1_INPUT size 2 (1) */
+ 3372               	.Lscope196:
+ 3374               	.global	OS_SET_UART_TXD1_PIN
+ 3376               	OS_SET_UART_TXD1_PIN:
+  84:avrhardware.c **** #include "avrhardware.h"
+ 3378               	.LM214:
+ 3379               	/* prologue: frame size=0 */
+ 3380               	/* prologue end (size=0) */
+ 3381 0532 939A      		sbi 50-0x20,3
+ 3382               	/* epilogue: frame size=0 */
+ 3383 0534 0895      		ret
+ 3384               	/* epilogue end (size=1) */
+ 3385               	/* function OS_SET_UART_TXD1_PIN size 2 (1) */
+ 3387               	.Lscope197:
+ 3389               	.global	OS_CLR_UART_TXD1_PIN
+ 3391               	OS_CLR_UART_TXD1_PIN:
+ 3393               	.LM215:
+ 3394               	/* prologue: frame size=0 */
+ 3395               	/* prologue end (size=0) */
+ 3396 0536 9398      		cbi 50-0x20,3
+ 3397               	/* epilogue: frame size=0 */
+ 3398 0538 0895      		ret
+ 3399               	/* epilogue end (size=1) */
+ 3400               	/* function OS_CLR_UART_TXD1_PIN size 2 (1) */
+ 3402               	.Lscope198:
+ 3404               	.global	OS_READ_UART_TXD1_PIN
+ 3406               	OS_READ_UART_TXD1_PIN:
+ 3408               	.LM216:
+ 3409               	/* prologue: frame size=0 */
+ 3410               	/* prologue end (size=0) */
+ 3411 053a 80B3      		in r24,48-0x20
+ 3412 053c 9927      		clr r25
+ 3413 053e 23E0      		ldi r18,3
+ 3414 0540 9695      	1:	lsr r25
+ 3415 0542 8795      		ror r24
+ 3416 0544 2A95      		dec r18
+ 3417 0546 E1F7      		brne 1b
+ 3418 0548 8170      		andi r24,lo8(1)
+ 3419 054a 9070      		andi r25,hi8(1)
+ 3420               	/* epilogue: frame size=0 */
+ 3421 054c 0895      		ret
+ 3422               	/* epilogue end (size=1) */
+ 3423               	/* function OS_READ_UART_TXD1_PIN size 10 (9) */
+ 3425               	.Lscope199:
+ 3427               	.global	OS_MAKE_UART_TXD1_OUTPUT
+ 3429               	OS_MAKE_UART_TXD1_OUTPUT:
+ 3431               	.LM217:
+ 3432               	/* prologue: frame size=0 */
+ 3433               	/* prologue end (size=0) */
+ 3434 054e 8B9A      		sbi 49-0x20,3
+ 3435               	/* epilogue: frame size=0 */
+ 3436 0550 0895      		ret
+ 3437               	/* epilogue end (size=1) */
+ 3438               	/* function OS_MAKE_UART_TXD1_OUTPUT size 2 (1) */
+ 3440               	.Lscope200:
+ 3442               	.global	OS_MAKE_UART_TXD1_INPUT
+ 3444               	OS_MAKE_UART_TXD1_INPUT:
+ 3446               	.LM218:
+ 3447               	/* prologue: frame size=0 */
+ 3448               	/* prologue end (size=0) */
+ 3449 0552 8B98      		cbi 49-0x20,3
+ 3450               	/* epilogue: frame size=0 */
+ 3451 0554 0895      		ret
+ 3452               	/* epilogue end (size=1) */
+ 3453               	/* function OS_MAKE_UART_TXD1_INPUT size 2 (1) */
+ 3455               	.Lscope201:
+ 3457               	.global	OS_SET_UART_XCK1_PIN
+ 3459               	OS_SET_UART_XCK1_PIN:
+  85:avrhardware.c **** #include "avrhardware.h"
+ 3461               	.LM219:
+ 3462               	/* prologue: frame size=0 */
+ 3463               	/* prologue end (size=0) */
+ 3464 0556 959A      		sbi 50-0x20,5
+ 3465               	/* epilogue: frame size=0 */
+ 3466 0558 0895      		ret
+ 3467               	/* epilogue end (size=1) */
+ 3468               	/* function OS_SET_UART_XCK1_PIN size 2 (1) */
+ 3470               	.Lscope202:
+ 3472               	.global	OS_CLR_UART_XCK1_PIN
+ 3474               	OS_CLR_UART_XCK1_PIN:
+ 3476               	.LM220:
+ 3477               	/* prologue: frame size=0 */
+ 3478               	/* prologue end (size=0) */
+ 3479 055a 9598      		cbi 50-0x20,5
+ 3480               	/* epilogue: frame size=0 */
+ 3481 055c 0895      		ret
+ 3482               	/* epilogue end (size=1) */
+ 3483               	/* function OS_CLR_UART_XCK1_PIN size 2 (1) */
+ 3485               	.Lscope203:
+ 3487               	.global	OS_READ_UART_XCK1_PIN
+ 3489               	OS_READ_UART_XCK1_PIN:
+ 3491               	.LM221:
+ 3492               	/* prologue: frame size=0 */
+ 3493               	/* prologue end (size=0) */
+ 3494 055e 80B3      		in r24,48-0x20
+ 3495 0560 9927      		clr r25
+ 3496 0562 35E0      		ldi r19,5
+ 3497 0564 9695      	1:	lsr r25
+ 3498 0566 8795      		ror r24
+ 3499 0568 3A95      		dec r19
+ 3500 056a E1F7      		brne 1b
+ 3501 056c 8170      		andi r24,lo8(1)
+ 3502 056e 9070      		andi r25,hi8(1)
+ 3503               	/* epilogue: frame size=0 */
+ 3504 0570 0895      		ret
+ 3505               	/* epilogue end (size=1) */
+ 3506               	/* function OS_READ_UART_XCK1_PIN size 10 (9) */
+ 3508               	.Lscope204:
+ 3510               	.global	OS_MAKE_UART_XCK1_OUTPUT
+ 3512               	OS_MAKE_UART_XCK1_OUTPUT:
+ 3514               	.LM222:
+ 3515               	/* prologue: frame size=0 */
+ 3516               	/* prologue end (size=0) */
+ 3517 0572 8D9A      		sbi 49-0x20,5
+ 3518               	/* epilogue: frame size=0 */
+ 3519 0574 0895      		ret
+ 3520               	/* epilogue end (size=1) */
+ 3521               	/* function OS_MAKE_UART_XCK1_OUTPUT size 2 (1) */
+ 3523               	.Lscope205:
+ 3525               	.global	OS_MAKE_UART_XCK1_INPUT
+ 3527               	OS_MAKE_UART_XCK1_INPUT:
+ 3529               	.LM223:
+ 3530               	/* prologue: frame size=0 */
+ 3531               	/* prologue end (size=0) */
+ 3532 0576 8D98      		cbi 49-0x20,5
+ 3533               	/* epilogue: frame size=0 */
+ 3534 0578 0895      		ret
+ 3535               	/* epilogue end (size=1) */
+ 3536               	/* function OS_MAKE_UART_XCK1_INPUT size 2 (1) */
+ 3538               	.Lscope206:
+ 3540               	.global	OS_SET_PIN_DIRECTIONS
+ 3542               	OS_SET_PIN_DIRECTIONS:
+  86:avrhardware.c **** #include "avrhardware.h"
+  87:avrhardware.c **** #include "project.h"
+  88:avrhardware.c **** inline void  OS_wait_250ns() {
+ 3544               	.LM224:
+ 3545               	/* prologue: frame size=0 */
+ 3546               	/* prologue end (size=0) */
+  89:avrhardware.c **** #include "avrhardware.h"
+  90:avrhardware.c **** #include "project.h"
+  91:avrhardware.c **** inline void  OS_wait_250ns() {
+  92:avrhardware.c ****       asm volatile  ("nop" ::);
+  93:avrhardware.c ****       asm volatile  ("nop" ::);
+  94:avrhardware.c **** }
+  95:avrhardware.c **** 
+  96:avrhardware.c **** inline void  OS_uwait(int u_sec) {
+ 3548               	.LM225:
+ 3549 057a 0E94 0000 		call OS_MAKE_RED_LED_OUTPUT
+  97:avrhardware.c **** lude "project.h"
+ 3551               	.LM226:
+ 3552 057e 0E94 0000 		call OS_MAKE_YELLOW_LED_OUTPUT
+  98:avrhardware.c **** #include "avrhardware.h"
+ 3554               	.LM227:
+ 3555 0582 0E94 0000 		call OS_MAKE_GREEN_LED_OUTPUT
+  99:avrhardware.c **** #include "avrhardware.h"
+ 100:avrhardware.c **** #include "project.h"
+ 101:avrhardware.c **** inline void  OS_wait_250ns() {
+ 3557               	.LM228:
+ 3558 0586 0E94 0000 		call OS_MAKE_PW7_OUTPUT
+ 102:avrhardware.c **** #include "avrhardware.h"
+ 3560               	.LM229:
+ 3561 058a 0E94 0000 		call OS_MAKE_PW6_OUTPUT
+ 103:avrhardware.c **** #include "avrhardware.h"
+ 3563               	.LM230:
+ 3564 058e 0E94 0000 		call OS_MAKE_PW5_OUTPUT
+ 104:avrhardware.c **** #include "avrhardware.h"
+ 3566               	.LM231:
+ 3567 0592 0E94 0000 		call OS_MAKE_PW4_OUTPUT
+ 105:avrhardware.c **** #include "avrhardware.h"
+ 3569               	.LM232:
+ 3570 0596 0E94 0000 		call OS_MAKE_PW3_OUTPUT
+ 106:avrhardware.c **** #include "avrhardware.h"
+ 3572               	.LM233:
+ 3573 059a 0E94 0000 		call OS_MAKE_PW2_OUTPUT
+ 107:avrhardware.c **** #include "avrhardware.h"
+ 3575               	.LM234:
+ 3576 059e 0E94 0000 		call OS_MAKE_PW1_OUTPUT
+ 108:avrhardware.c **** #include "avrhardware.h"
+ 3578               	.LM235:
+ 3579 05a2 0E94 0000 		call OS_MAKE_PW0_OUTPUT
+ 109:avrhardware.c **** #include "avrhardware.h"
+ 110:avrhardware.c **** #include "project.h"
+ 111:avrhardware.c **** inline void  OS_wait_250ns() {
+ 3581               	.LM236:
+ 3582 05a6 0E94 0000 		call OS_MAKE_MISO_INPUT
+ 112:avrhardware.c **** #include "avrhardware.h"
+ 3584               	.LM237:
+ 3585 05aa 0E94 0000 		call OS_MAKE_MOSI_OUTPUT
+ 113:avrhardware.c **** #include "avrhardware.h"
+ 3587               	.LM238:
+ 3588 05ae 0E94 0000 		call OS_MAKE_SPI_SCK_OUTPUT
+ 114:avrhardware.c **** #include "avrhardware.h"
+ 3590               	.LM239:
+ 3591 05b2 0E94 0000 		call OS_MAKE_CC_RSTN_OUTPUT
+ 115:avrhardware.c **** #include "avrhardware.h"
+ 3593               	.LM240:
+ 3594 05b6 0E94 0000 		call OS_MAKE_CC_VREN_OUTPUT
+ 116:avrhardware.c **** #include "avrhardware.h"
+ 3596               	.LM241:
+ 3597 05ba 0E94 0000 		call OS_MAKE_CC_CS_INPUT
+ 117:avrhardware.c **** #include "avrhardware.h"
+ 3599               	.LM242:
+ 3600 05be 0E94 0000 		call OS_MAKE_CC_FIFOP1_INPUT
+ 118:avrhardware.c **** #include "avrhardware.h"
+ 3602               	.LM243:
+ 3603 05c2 0E94 0000 		call OS_MAKE_CC_CCA_INPUT
+ 119:avrhardware.c **** #include "avrhardware.h"
+ 3605               	.LM244:
+ 3606 05c6 0E94 0000 		call OS_MAKE_CC_SFD_INPUT
+ 120:avrhardware.c **** #include "avrhardware.h"
+ 3608               	.LM245:
+ 3609 05ca 0E94 0000 		call OS_MAKE_CC_FIFO_INPUT
+ 121:avrhardware.c **** #include "avrhardware.h"
+ 122:avrhardware.c **** #include "project.h"
+ 3611               	.LM246:
+ 3612 05ce 0E94 0000 		call OS_MAKE_RADIO_CCA_INPUT
+ 123:avrhardware.c **** #include "avrhardware.h"
+ 124:avrhardware.c **** #include "project.h"
+ 125:avrhardware.c **** inline void  OS_wait_250ns() {
+ 126:avrhardware.c ****       asm volatile  ("nop" ::);
+ 3614               	.LM247:
+ 3615 05d2 0E94 0000 		call OS_MAKE_SERIAL_ID_INPUT
+ 127:avrhardware.c **** #include "avrhardware.h"
+ 3617               	.LM248:
+ 3618 05d6 0E94 0000 		call OS_CLR_SERIAL_ID_PIN
+ 128:avrhardware.c **** #include "avrhardware.h"
+ 129:avrhardware.c **** #include "project.h"
+ 3620               	.LM249:
+ 3621 05da 0E94 0000 		call OS_MAKE_FLASH_SELECT_OUTPUT
+ 130:avrhardware.c **** #include "avrhardware.h"
+ 3623               	.LM250:
+ 3624 05de 0E94 0000 		call OS_MAKE_FLASH_OUT_OUTPUT
+ 131:avrhardware.c **** #include "avrhardware.h"
+ 3626               	.LM251:
+ 3627 05e2 0E94 0000 		call OS_MAKE_FLASH_CLK_OUTPUT
+ 132:avrhardware.c **** #include "avrhardware.h"
+ 3629               	.LM252:
+ 3630 05e6 0E94 0000 		call OS_SET_FLASH_SELECT_PIN
+ 133:avrhardware.c **** #include "avrhardware.h"
+ 134:avrhardware.c **** #include "project.h"
+ 3632               	.LM253:
+ 3633 05ea 0E94 0000 		call OS_SET_RED_LED_PIN
+ 135:avrhardware.c **** #include "avrhardware.h"
+ 3635               	.LM254:
+ 3636 05ee 0E94 0000 		call OS_SET_YELLOW_LED_PIN
+ 136:avrhardware.c **** #include "avrhardware.h"
+ 3638               	.LM255:
+ 3639 05f2 0E94 0000 		call OS_SET_GREEN_LED_PIN
+ 3640               	/* epilogue: frame size=0 */
+ 3641 05f6 0895      		ret
+ 3642               	/* epilogue end (size=1) */
+ 3643               	/* function OS_SET_PIN_DIRECTIONS size 63 (62) */
+ 3645               	.Lscope207:
+ 3647               	.global	is_host_lsb
+ 3649               	is_host_lsb:
+ 137:avrhardware.c **** #include "avrhardware.h"
+ 138:avrhardware.c **** #include "project.h"
+ 139:avrhardware.c **** inline void  OS_wait_250ns() {
+ 140:avrhardware.c ****       asm volatile  ("nop" ::);
+ 141:avrhardware.c ****       asm volatile  ("nop" ::);
+ 142:avrhardware.c **** }
+ 3651               	.LM256:
+ 3652               	/* prologue: frame size=2 */
+ 3653 05f8 CF93      		push r28
+ 3654 05fa DF93      		push r29
+ 3655 05fc CDB7      		in r28,__SP_L__
+ 3656 05fe DEB7      		in r29,__SP_H__
+ 3657 0600 2297      		sbiw r28,2
+ 3658 0602 0FB6      		in __tmp_reg__,__SREG__
+ 3659 0604 F894      		cli
+ 3660 0606 DEBF      		out __SP_H__,r29
+ 3661 0608 0FBE      		out __SREG__,__tmp_reg__
+ 3662 060a CDBF      		out __SP_L__,r28
+ 3663               	/* prologue end (size=10) */
+ 143:avrhardware.c **** #include "avrhardware.h"
+ 3665               	.LM257:
+ 3666 060c 81E0      		ldi r24,lo8(1)
+ 3667 060e 8983      		std Y+1,r24
+ 3668 0610 1A82      		std Y+2,__zero_reg__
+ 144:avrhardware.c **** #include "avrhardware.h"
+ 145:avrhardware.c **** #include "project.h"
+ 3670               	.LM258:
+ 3671 0612 80E0      		ldi r24,lo8(0)
+ 3672 0614 90E0      		ldi r25,hi8(0)
+ 3673 0616 2981      		ldd r18,Y+1
+ 3674 0618 3A81      		ldd r19,Y+2
+ 3675 061a 2130      		cpi r18,1
+ 3676 061c 3105      		cpc r19,__zero_reg__
+ 3677 061e 09F4      		brne .L220
+ 3679               	.LM259:
+ 3680 0620 C901      		movw r24,r18
+ 3681               	.L220:
+ 3682               	/* epilogue: frame size=2 */
+ 3683 0622 2296      		adiw r28,2
+ 3684 0624 0FB6      		in __tmp_reg__,__SREG__
+ 3685 0626 F894      		cli
+ 3686 0628 DEBF      		out __SP_H__,r29
+ 3687 062a 0FBE      		out __SREG__,__tmp_reg__
+ 3688 062c CDBF      		out __SP_L__,r28
+ 3689 062e DF91      		pop r29
+ 3690 0630 CF91      		pop r28
+ 3691 0632 0895      		ret
+ 3692               	/* epilogue end (size=9) */
+ 3693               	/* function is_host_lsb size 30 (11) */
+ 3698               	.Lscope208:
+ 3701               	.global	toLSB16
+ 3703               	toLSB16:
+ 146:avrhardware.c **** #include "avrhardware.h"
+ 147:avrhardware.c **** #include "project.h"
+ 148:avrhardware.c **** inline void  OS_wait_250ns() {
+ 149:avrhardware.c ****       asm volatile  ("nop" ::);
+ 3705               	.LM260:
+ 3706               	/* prologue: frame size=2 */
+ 3707 0634 CF93      		push r28
+ 3708 0636 DF93      		push r29
+ 3709 0638 CDB7      		in r28,__SP_L__
+ 3710 063a DEB7      		in r29,__SP_H__
+ 3711 063c 2297      		sbiw r28,2
+ 3712 063e 0FB6      		in __tmp_reg__,__SREG__
+ 3713 0640 F894      		cli
+ 3714 0642 DEBF      		out __SP_H__,r29
+ 3715 0644 0FBE      		out __SREG__,__tmp_reg__
+ 3716 0646 CDBF      		out __SP_L__,r28
+ 3717               	/* prologue end (size=10) */
+ 3718 0648 AC01      		movw r20,r24
+ 3719               	.LBB2:
+ 3720               	.LBB3:
+ 3722               	.LM261:
+ 3723 064a 81E0      		ldi r24,lo8(1)
+ 3724 064c 8983      		std Y+1,r24
+ 3725 064e 1A82      		std Y+2,__zero_reg__
+ 3726 0650 8981      		ldd r24,Y+1
+ 3727 0652 9A81      		ldd r25,Y+2
+ 3728 0654 0197      		sbiw r24,1
+ 3729 0656 11F4      		brne .L222
+ 3730               	.LBE3:
+ 3731               	.LBE2:
+ 3733               	.LM262:
+ 3734 0658 9A01      		movw r18,r20
+ 3735 065a 02C0      		rjmp .L223
+ 3736               	.L222:
+ 3737 065c 252F      		mov r18,r21
+ 3738 065e 342F      		mov r19,r20
+ 3739               	.L223:
+ 150:avrhardware.c **** #include "avrhardware.h"
+ 151:avrhardware.c **** #include "project.h"
+ 3741               	.LM263:
+ 3742 0660 C901      		movw r24,r18
+ 3743               	/* epilogue: frame size=2 */
+ 3744 0662 2296      		adiw r28,2
+ 3745 0664 0FB6      		in __tmp_reg__,__SREG__
+ 3746 0666 F894      		cli
+ 3747 0668 DEBF      		out __SP_H__,r29
+ 3748 066a 0FBE      		out __SREG__,__tmp_reg__
+ 3749 066c CDBF      		out __SP_L__,r28
+ 3750 066e DF91      		pop r29
+ 3751 0670 CF91      		pop r28
+ 3752 0672 0895      		ret
+ 3753               	/* epilogue end (size=9) */
+ 3754               	/* function toLSB16 size 33 (14) */
+ 3762               	.Lscope209:
+ 3765               	.global	fromLSB16
+ 3767               	fromLSB16:
+ 152:avrhardware.c **** #include "avrhardware.h"
+ 153:avrhardware.c **** #include "project.h"
+ 154:avrhardware.c **** inline void  OS_wait_250ns() {
+ 155:avrhardware.c ****       asm volatile  ("nop" ::);
+ 3769               	.LM264:
+ 3770               	/* prologue: frame size=2 */
+ 3771 0674 CF93      		push r28
+ 3772 0676 DF93      		push r29
+ 3773 0678 CDB7      		in r28,__SP_L__
+ 3774 067a DEB7      		in r29,__SP_H__
+ 3775 067c 2297      		sbiw r28,2
+ 3776 067e 0FB6      		in __tmp_reg__,__SREG__
+ 3777 0680 F894      		cli
+ 3778 0682 DEBF      		out __SP_H__,r29
+ 3779 0684 0FBE      		out __SREG__,__tmp_reg__
+ 3780 0686 CDBF      		out __SP_L__,r28
+ 3781               	/* prologue end (size=10) */
+ 3782 0688 AC01      		movw r20,r24
+ 3783               	.LBB4:
+ 3784               	.LBB5:
+ 3786               	.LM265:
+ 3787 068a 81E0      		ldi r24,lo8(1)
+ 3788 068c 8983      		std Y+1,r24
+ 3789 068e 1A82      		std Y+2,__zero_reg__
+ 3790 0690 8981      		ldd r24,Y+1
+ 3791 0692 9A81      		ldd r25,Y+2
+ 3792 0694 0197      		sbiw r24,1
+ 3793 0696 11F4      		brne .L228
+ 3794               	.LBE5:
+ 3795               	.LBE4:
+ 3797               	.LM266:
+ 3798 0698 9A01      		movw r18,r20
+ 3799 069a 02C0      		rjmp .L229
+ 3800               	.L228:
+ 3801 069c 252F      		mov r18,r21
+ 3802 069e 342F      		mov r19,r20
+ 3803               	.L229:
+ 156:avrhardware.c **** #include "avrhardware.h"
+ 157:avrhardware.c **** #include "project.h"
+ 3805               	.LM267:
+ 3806 06a0 C901      		movw r24,r18
+ 3807               	/* epilogue: frame size=2 */
+ 3808 06a2 2296      		adiw r28,2
+ 3809 06a4 0FB6      		in __tmp_reg__,__SREG__
+ 3810 06a6 F894      		cli
+ 3811 06a8 DEBF      		out __SP_H__,r29
+ 3812 06aa 0FBE      		out __SREG__,__tmp_reg__
+ 3813 06ac CDBF      		out __SP_L__,r28
+ 3814 06ae DF91      		pop r29
+ 3815 06b0 CF91      		pop r28
+ 3816 06b2 0895      		ret
+ 3817               	/* epilogue end (size=9) */
+ 3818               	/* function fromLSB16 size 33 (14) */
+ 3826               	.Lscope210:
+ 3830               	.global	rcombine
+ 3832               	rcombine:
+ 158:avrhardware.c **** #include "avrhardware.h"
+ 159:avrhardware.c **** #include "project.h"
+ 160:avrhardware.c **** inline void  OS_wait_250ns() {
+ 161:avrhardware.c ****       asm volatile  ("nop" ::);
+ 3834               	.LM268:
+ 3835               	/* prologue: frame size=0 */
+ 3836               	/* prologue end (size=0) */
+ 162:avrhardware.c **** #include "avrhardware.h"
+ 3838               	.LM269:
+ 3839 06b4 8823      		tst r24
+ 3840 06b6 19F0      		breq .L234
+ 3842               	.LM270:
+ 3843 06b8 862F      		mov r24,r22
+ 3844 06ba 9927      		clr r25
+ 3845 06bc 0895      		ret
+ 3846               	.L234:
+ 3847 06be 80E0      		ldi r24,lo8(0)
+ 3848 06c0 90E0      		ldi r25,hi8(0)
+ 163:avrhardware.c **** #include "avrhardware.h"
+ 3850               	.LM271:
+ 3851 06c2 0895      		ret
+ 3852               	/* epilogue: frame size=0 */
+ 3853 06c4 0895      		ret
+ 3854               	/* epilogue end (size=1) */
+ 3855               	/* function rcombine size 9 (8) */
+ 3857               	.Lscope211:
+ 3863               	.global	rcombine4
+ 3865               	rcombine4:
+ 164:avrhardware.c **** #include "avrhardware.h"
+ 165:avrhardware.c **** #include "project.h"
+ 166:avrhardware.c **** inline void  OS_wait_250ns() {
+ 3867               	.LM272:
+ 3868               	/* prologue: frame size=0 */
+ 3869               	/* prologue end (size=0) */
+ 3870 06c6 982F      		mov r25,r24
+ 3871               	.LBB6:
+ 3872               	.LBB7:
+ 3873               	.LBB8:
+ 3874               	.LBB9:
+ 3876               	.LM273:
+ 3877 06c8 4423      		tst r20
+ 3878 06ca 11F0      		breq .L237
+ 3880               	.LM274:
+ 3881 06cc 3327      		clr r19
+ 3882 06ce 02C0      		rjmp .L239
+ 3883               	.L237:
+ 3884 06d0 20E0      		ldi r18,lo8(0)
+ 3885 06d2 30E0      		ldi r19,hi8(0)
+ 3886               	.L239:
+ 3887               	.LBE9:
+ 3888               	.LBE8:
+ 3889               	.LBB10:
+ 3890 06d4 6623      		tst r22
+ 3891 06d6 11F0      		breq .L240
+ 3892 06d8 3327      		clr r19
+ 3893 06da 02C0      		rjmp .L242
+ 3894               	.L240:
+ 3895 06dc 20E0      		ldi r18,lo8(0)
+ 3896 06de 30E0      		ldi r19,hi8(0)
+ 3897               	.L242:
+ 3898               	.LBE10:
+ 3899               	.LBE7:
+ 3900               	.LBB11:
+ 3901 06e0 9923      		tst r25
+ 3902 06e2 11F0      		breq .L243
+ 3903 06e4 3327      		clr r19
+ 3904 06e6 02C0      		rjmp .L245
+ 3905               	.L243:
+ 3906 06e8 20E0      		ldi r18,lo8(0)
+ 3907 06ea 30E0      		ldi r19,hi8(0)
+ 3908               	.L245:
+ 3909               	.LBE11:
+ 3910               	.LBE6:
+ 3912               	.LM275:
+ 3913 06ec 822F      		mov r24,r18
+ 167:avrhardware.c **** #include "avrhardware.h"
+ 168:avrhardware.c **** #include "project.h"
+ 3915               	.LM276:
+ 3916 06ee 9927      		clr r25
+ 3917               	/* epilogue: frame size=0 */
+ 3918 06f0 0895      		ret
+ 3919               	/* epilogue end (size=1) */
+ 3920               	/* function rcombine4 size 22 (21) */
+ 3928               	.Lscope212:
+ 3929               		.text
+ 3931               	Letext:
+ 3932               	/* File "avrhardware.c": code  901 = 0x0385 ( 635), prologues  30, epilogues 236 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 avrhardware.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:106    .text:00000000 OS_wait_250ns
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:129    .text:00000006 OS_uwait
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:181    .text:00000022 OS_SET_RED_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:196    .text:00000026 OS_CLR_RED_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:211    .text:0000002a OS_READ_RED_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:233    .text:0000003c OS_MAKE_RED_LED_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:248    .text:00000040 OS_MAKE_RED_LED_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:263    .text:00000044 OS_SET_GREEN_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:278    .text:00000048 OS_CLR_GREEN_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:293    .text:0000004c OS_READ_GREEN_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:313    .text:0000005a OS_MAKE_GREEN_LED_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:328    .text:0000005e OS_MAKE_GREEN_LED_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:343    .text:00000062 OS_SET_YELLOW_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:358    .text:00000066 OS_CLR_YELLOW_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:373    .text:0000006a OS_READ_YELLOW_LED_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:391    .text:00000074 OS_MAKE_YELLOW_LED_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:406    .text:00000078 OS_MAKE_YELLOW_LED_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:421    .text:0000007c OS_SET_SERIAL_ID_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:436    .text:00000080 OS_CLR_SERIAL_ID_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:451    .text:00000084 OS_READ_SERIAL_ID_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:474    .text:00000098 OS_MAKE_SERIAL_ID_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:489    .text:0000009c OS_MAKE_SERIAL_ID_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:504    .text:000000a0 OS_SET_BAT_MON_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:519    .text:000000a4 OS_CLR_BAT_MON_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:534    .text:000000a8 OS_READ_BAT_MON_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:557    .text:000000bc OS_MAKE_BAT_MON_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:572    .text:000000c0 OS_MAKE_BAT_MON_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:587    .text:000000c4 OS_SET_THERM_PWR_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:602    .text:000000c8 OS_CLR_THERM_PWR_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:617    .text:000000cc OS_READ_THERM_PWR_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:641    .text:000000dc OS_MAKE_THERM_PWR_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:656    .text:000000e0 OS_MAKE_THERM_PWR_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:671    .text:000000e4 OS_SET_CC_RSTN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:686    .text:000000e8 OS_CLR_CC_RSTN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:701    .text:000000ec OS_READ_CC_RSTN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:724    .text:00000100 OS_MAKE_CC_RSTN_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:739    .text:00000104 OS_MAKE_CC_RSTN_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:754    .text:00000108 OS_SET_CC_VREN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:769    .text:0000010c OS_CLR_CC_VREN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:784    .text:00000110 OS_READ_CC_VREN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:807    .text:00000124 OS_MAKE_CC_VREN_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:822    .text:00000128 OS_MAKE_CC_VREN_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:837    .text:0000012c OS_SET_CC_FIFOP1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:852    .text:00000130 OS_CLR_CC_FIFOP1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:867    .text:00000134 OS_READ_CC_FIFOP1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:890    .text:00000148 OS_MAKE_CC_FIFOP1_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:905    .text:0000014c OS_MAKE_CC_FIFOP1_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:920    .text:00000150 OS_SET_CC_CCA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:935    .text:00000154 OS_CLR_CC_CCA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:950    .text:00000158 OS_READ_CC_CCA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:973    .text:0000016c OS_MAKE_CC_CCA_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:988    .text:00000170 OS_MAKE_CC_CCA_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1003   .text:00000174 OS_SET_CC_SFD_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1018   .text:00000178 OS_CLR_CC_SFD_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1033   .text:0000017c OS_READ_CC_SFD_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1056   .text:00000190 OS_MAKE_CC_SFD_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1071   .text:00000194 OS_MAKE_CC_SFD_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1086   .text:00000198 OS_SET_CC_CS_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1101   .text:0000019c OS_CLR_CC_CS_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1116   .text:000001a0 OS_READ_CC_CS_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1134   .text:000001aa OS_MAKE_CC_CS_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1149   .text:000001ae OS_MAKE_CC_CS_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1164   .text:000001b2 OS_SET_CC_FIFO_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1179   .text:000001b6 OS_CLR_CC_FIFO_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1194   .text:000001ba OS_READ_CC_FIFO_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1218   .text:000001ca OS_MAKE_CC_FIFO_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1233   .text:000001ce OS_MAKE_CC_FIFO_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1248   .text:000001d2 OS_SET_RADIO_CCA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1263   .text:000001d6 OS_CLR_RADIO_CCA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1278   .text:000001da OS_READ_RADIO_CCA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1301   .text:000001ee OS_MAKE_RADIO_CCA_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1316   .text:000001f2 OS_MAKE_RADIO_CCA_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1331   .text:000001f6 OS_SET_FLASH_SELECT_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1346   .text:000001fa OS_CLR_FLASH_SELECT_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1361   .text:000001fe OS_READ_FLASH_SELECT_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1384   .text:00000212 OS_MAKE_FLASH_SELECT_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1399   .text:00000216 OS_MAKE_FLASH_SELECT_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1414   .text:0000021a OS_SET_FLASH_CLK_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1429   .text:0000021e OS_CLR_FLASH_CLK_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1444   .text:00000222 OS_READ_FLASH_CLK_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1467   .text:00000236 OS_MAKE_FLASH_CLK_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1482   .text:0000023a OS_MAKE_FLASH_CLK_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1497   .text:0000023e OS_SET_FLASH_OUT_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1512   .text:00000242 OS_CLR_FLASH_OUT_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1527   .text:00000246 OS_READ_FLASH_OUT_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1550   .text:0000025a OS_MAKE_FLASH_OUT_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1565   .text:0000025e OS_MAKE_FLASH_OUT_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1580   .text:00000262 OS_SET_FLASH_IN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1595   .text:00000266 OS_CLR_FLASH_IN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1610   .text:0000026a OS_READ_FLASH_IN_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1632   .text:0000027c OS_MAKE_FLASH_IN_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1647   .text:00000280 OS_MAKE_FLASH_IN_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1662   .text:00000284 OS_SET_INT0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1677   .text:00000288 OS_CLR_INT0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1692   .text:0000028c OS_READ_INT0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1715   .text:000002a0 OS_MAKE_INT0_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1730   .text:000002a4 OS_MAKE_INT0_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1745   .text:000002a8 OS_SET_INT1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1760   .text:000002ac OS_CLR_INT1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1775   .text:000002b0 OS_READ_INT1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1798   .text:000002c4 OS_MAKE_INT1_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1813   .text:000002c8 OS_MAKE_INT1_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1828   .text:000002cc OS_SET_INT2_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1843   .text:000002d0 OS_CLR_INT2_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1858   .text:000002d4 OS_READ_INT2_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1881   .text:000002e8 OS_MAKE_INT2_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1896   .text:000002ec OS_MAKE_INT2_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1911   .text:000002f0 OS_SET_INT3_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1926   .text:000002f4 OS_CLR_INT3_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1941   .text:000002f8 OS_READ_INT3_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1965   .text:00000308 OS_MAKE_INT3_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1980   .text:0000030c OS_MAKE_INT3_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:1995   .text:00000310 OS_SET_MOSI_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2010   .text:00000314 OS_CLR_MOSI_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2025   .text:00000318 OS_READ_MOSI_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2047   .text:0000032a OS_MAKE_MOSI_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2062   .text:0000032e OS_MAKE_MOSI_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2077   .text:00000332 OS_SET_MISO_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2092   .text:00000336 OS_CLR_MISO_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2107   .text:0000033a OS_READ_MISO_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2130   .text:0000034e OS_MAKE_MISO_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2145   .text:00000352 OS_MAKE_MISO_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2160   .text:00000356 OS_SET_SPI_SCK_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2175   .text:0000035a OS_CLR_SPI_SCK_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2190   .text:0000035e OS_READ_SPI_SCK_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2210   .text:0000036c OS_MAKE_SPI_SCK_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2225   .text:00000370 OS_MAKE_SPI_SCK_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2240   .text:00000374 OS_SET_PW0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2255   .text:00000378 OS_CLR_PW0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2270   .text:0000037c OS_READ_PW0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2288   .text:00000386 OS_MAKE_PW0_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2303   .text:0000038a OS_MAKE_PW0_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2318   .text:0000038e OS_SET_PW1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2333   .text:00000392 OS_CLR_PW1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2348   .text:00000396 OS_READ_PW1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2368   .text:000003a4 OS_MAKE_PW1_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2383   .text:000003a8 OS_MAKE_PW1_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2398   .text:000003ac OS_SET_PW2_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2413   .text:000003b0 OS_CLR_PW2_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2428   .text:000003b4 OS_READ_PW2_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2450   .text:000003c6 OS_MAKE_PW2_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2465   .text:000003ca OS_MAKE_PW2_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2480   .text:000003ce OS_SET_PW3_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2495   .text:000003d2 OS_CLR_PW3_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2510   .text:000003d6 OS_READ_PW3_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2533   .text:000003ea OS_MAKE_PW3_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2548   .text:000003ee OS_MAKE_PW3_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2563   .text:000003f2 OS_SET_PW4_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2578   .text:000003f6 OS_CLR_PW4_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2593   .text:000003fa OS_READ_PW4_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2616   .text:0000040e OS_MAKE_PW4_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2631   .text:00000412 OS_MAKE_PW4_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2646   .text:00000416 OS_SET_PW5_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2661   .text:0000041a OS_CLR_PW5_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2676   .text:0000041e OS_READ_PW5_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2699   .text:00000432 OS_MAKE_PW5_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2714   .text:00000436 OS_MAKE_PW5_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2729   .text:0000043a OS_SET_PW6_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2744   .text:0000043e OS_CLR_PW6_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2759   .text:00000442 OS_READ_PW6_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2782   .text:00000456 OS_MAKE_PW6_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2797   .text:0000045a OS_MAKE_PW6_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2812   .text:0000045e OS_SET_PW7_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2827   .text:00000462 OS_CLR_PW7_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2842   .text:00000466 OS_READ_PW7_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2866   .text:00000476 OS_MAKE_PW7_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2881   .text:0000047a OS_MAKE_PW7_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2896   .text:0000047e OS_SET_I2C_BUS1_SCL_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2911   .text:00000482 OS_CLR_I2C_BUS1_SCL_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2926   .text:00000486 OS_READ_I2C_BUS1_SCL_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2944   .text:00000490 OS_MAKE_I2C_BUS1_SCL_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2959   .text:00000494 OS_MAKE_I2C_BUS1_SCL_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2974   .text:00000498 OS_SET_I2C_BUS1_SDA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:2989   .text:0000049c OS_CLR_I2C_BUS1_SDA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3004   .text:000004a0 OS_READ_I2C_BUS1_SDA_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3024   .text:000004ae OS_MAKE_I2C_BUS1_SDA_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3039   .text:000004b2 OS_MAKE_I2C_BUS1_SDA_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3054   .text:000004b6 OS_SET_UART_RXD0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3069   .text:000004ba OS_CLR_UART_RXD0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3084   .text:000004be OS_READ_UART_RXD0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3102   .text:000004c8 OS_MAKE_UART_RXD0_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3117   .text:000004cc OS_MAKE_UART_RXD0_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3132   .text:000004d0 OS_SET_UART_TXD0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3147   .text:000004d4 OS_CLR_UART_TXD0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3162   .text:000004d8 OS_READ_UART_TXD0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3182   .text:000004e6 OS_MAKE_UART_TXD0_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3197   .text:000004ea OS_MAKE_UART_TXD0_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3212   .text:000004ee OS_SET_UART_XCK0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3227   .text:000004f2 OS_CLR_UART_XCK0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3242   .text:000004f6 OS_READ_UART_XCK0_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3264   .text:00000508 OS_MAKE_UART_XCK0_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3279   .text:0000050c OS_MAKE_UART_XCK0_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3294   .text:00000510 OS_SET_UART_RXD1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3309   .text:00000514 OS_CLR_UART_RXD1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3324   .text:00000518 OS_READ_UART_RXD1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3346   .text:0000052a OS_MAKE_UART_RXD1_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3361   .text:0000052e OS_MAKE_UART_RXD1_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3376   .text:00000532 OS_SET_UART_TXD1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3391   .text:00000536 OS_CLR_UART_TXD1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3406   .text:0000053a OS_READ_UART_TXD1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3429   .text:0000054e OS_MAKE_UART_TXD1_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3444   .text:00000552 OS_MAKE_UART_TXD1_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3459   .text:00000556 OS_SET_UART_XCK1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3474   .text:0000055a OS_CLR_UART_XCK1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3489   .text:0000055e OS_READ_UART_XCK1_PIN
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3512   .text:00000572 OS_MAKE_UART_XCK1_OUTPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3527   .text:00000576 OS_MAKE_UART_XCK1_INPUT
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3542   .text:0000057a OS_SET_PIN_DIRECTIONS
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3649   .text:000005f8 is_host_lsb
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3703   .text:00000634 toLSB16
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3767   .text:00000674 fromLSB16
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3832   .text:000006b4 rcombine
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3865   .text:000006c6 rcombine4
+C:\Users\sunhejie\AppData\Local\Temp/ccUhbaaa.s:3931   .text:000006f2 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

@@ -1,0 +1,476 @@
+   1               		.file	"os.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  96               	.global	os_atomic_enable_interrupt
+  98               	os_atomic_enable_interrupt:
+   1:os.c          **** #include "os.h"
+   2:os.c          **** 
+   3:os.c          **** //-----------------原子操作-函数---------------------------------------
+   4:os.c          **** 
+   5:os.c          ****   inline void os_atomic_enable_interrupt(void)
+   6:os.c          **** 
+   7:os.c          **** {
+ 100               	.LM1:
+ 101               	/* prologue: frame size=0 */
+ 102               	/* prologue end (size=0) */
+   8:os.c          ****    __asm volatile ("sei");
+ 104               	.LM2:
+ 105               	/* #APP */
+ 106 0000 7894      		sei
+ 107               	/* #NOAPP */
+ 108               	/* epilogue: frame size=0 */
+ 109 0002 0895      		ret
+ 110               	/* epilogue end (size=1) */
+ 111               	/* function os_atomic_enable_interrupt size 3 (2) */
+ 113               	.Lscope0:
+ 116               	.global	os_atomic_end
+ 118               	os_atomic_end:
+   9:os.c          ****    
+  10:os.c          ****  }
+  11:os.c          **** 
+  12:os.c          ****   inline void  os_atomic_end(os_atomic_t oldSreg)
+  13:os.c          **** {
+ 120               	.LM3:
+ 121               	/* prologue: frame size=0 */
+ 122               	/* prologue end (size=0) */
+  14:os.c          ****   * (volatile unsigned char *)(unsigned int )& * (volatile unsigned char *)(0x3F + 0x20) = oldSreg;
+ 124               	.LM4:
+ 125 0004 8FBF      		out 95-0x20,r24
+ 126               	/* epilogue: frame size=0 */
+ 127 0006 0895      		ret
+ 128               	/* epilogue end (size=1) */
+ 129               	/* function os_atomic_end size 2 (1) */
+ 131               	.Lscope1:
+ 133               	.global	os_atomic_start
+ 135               	os_atomic_start:
+  15:os.c          **** }
+  16:os.c          **** 
+  17:os.c          **** 
+  18:os.c          ****  inline os_atomic_t  os_atomic_start(void )
+  19:os.c          **** {
+ 137               	.LM5:
+ 138               	/* prologue: frame size=0 */
+ 139               	/* prologue end (size=0) */
+  20:os.c          ****   os_atomic_t  result = * (volatile unsigned char *)(unsigned int )& * (volatile unsigned char *)(0
+ 141               	.LM6:
+ 142 0008 8FB7      		in r24,95-0x20
+  21:os.c          ****    __asm volatile ("cli");
+ 144               	.LM7:
+ 145               	/* #APP */
+ 146 000a F894      		cli
+  22:os.c          ****   return result;
+  23:os.c          **** }
+ 148               	.LM8:
+ 149               	/* #NOAPP */
+ 150 000c 9927      		clr r25
+ 151               	/* epilogue: frame size=0 */
+ 152 000e 0895      		ret
+ 153               	/* epilogue end (size=1) */
+ 154               	/* function os_atomic_start size 5 (4) */
+ 159               	.Lscope2:
+ 161               	.global	OS_wait
+ 163               	OS_wait:
+  24:os.c          **** 
+  25:os.c          **** 
+  26:os.c          **** //-----------------系统休眠函数--------------------------------------
+  27:os.c          ****  inline void OS_wait(void)
+  28:os.c          **** {
+ 165               	.LM9:
+ 166               	/* prologue: frame size=0 */
+ 167               	/* prologue end (size=0) */
+  29:os.c          ****    __asm volatile ("nop");
+ 169               	.LM10:
+ 170               	/* #APP */
+ 171 0010 0000      		nop
+  30:os.c          ****    __asm volatile ("nop");}
+ 173               	.LM11:
+ 174 0012 0000      		nop
+ 175               	/* #NOAPP */
+ 176               	/* epilogue: frame size=0 */
+ 177 0014 0895      		ret
+ 178               	/* epilogue end (size=1) */
+ 179               	/* function OS_wait size 5 (4) */
+ 181               	.Lscope3:
+ 183               	.global	OS_sleep
+ 185               	OS_sleep:
+  31:os.c          **** 
+  32:os.c          ****  inline void OS_sleep(void)
+  33:os.c          **** {
+ 187               	.LM12:
+ 188               	/* prologue: frame size=0 */
+ 189               	/* prologue end (size=0) */
+  34:os.c          **** 
+  35:os.c          ****   * (volatile unsigned char *)(unsigned int )& * (volatile unsigned char *)(0x35 + 0x20) |= 1 << 5;
+ 191               	.LM13:
+ 192 0016 85B7      		in r24,85-0x20
+ 193 0018 8062      		ori r24,lo8(32)
+ 194 001a 85BF      		out 85-0x20,r24
+  36:os.c          ****   
+  37:os.c          ****    __asm volatile ("sleep");}
+ 196               	.LM14:
+ 197               	/* #APP */
+ 198 001c 8895      		sleep
+ 199               	/* #NOAPP */
+ 200               	/* epilogue: frame size=0 */
+ 201 001e 0895      		ret
+ 202               	/* epilogue end (size=1) */
+ 203               	/* function OS_sleep size 6 (5) */
+ 205               	.Lscope4:
+ 207               	.global	OS_sched_init
+ 209               	OS_sched_init:
+  38:os.c          ****    
+  39:os.c          **** //-----------------任务调度初始化----------------------------------------
+  40:os.c          **** 
+  41:os.c          ****  inline void OS_sched_init(void )
+  42:os.c          **** {
+ 211               	.LM15:
+ 212               	/* prologue: frame size=0 */
+ 213               	/* prologue end (size=0) */
+  43:os.c          ****   OS_sched_free = 0;
+ 215               	.LM16:
+ 216 0020 1092 0000 		sts OS_sched_free,__zero_reg__
+  44:os.c          ****   OS_sched_full = 0;
+ 218               	.LM17:
+ 219 0024 1092 0000 		sts OS_sched_full,__zero_reg__
+ 220               	/* epilogue: frame size=0 */
+ 221 0028 0895      		ret
+ 222               	/* epilogue end (size=1) */
+ 223               	/* function OS_sched_init size 5 (4) */
+ 225               	.Lscope5:
+ 228               	.global	OS_post
+ 230               	OS_post:
+  45:os.c          **** }
+  46:os.c          **** 
+  47:os.c          **** //-----------------任务提交函数----------------------------------------
+  48:os.c          **** 
+  49:os.c          **** bool  OS_post(void (*tp)(void))
+  50:os.c          **** {
+ 232               	.LM18:
+ 233               	/* prologue: frame size=0 */
+ 234               	/* prologue end (size=0) */
+ 235 002a BC01      		movw r22,r24
+ 236               	.LBB2:
+ 237               	.LBB3:
+ 239               	.LM19:
+ 240 002c 8FB7      		in r24,95-0x20
+ 242               	.LM20:
+ 243               	/* #APP */
+ 244 002e F894      		cli
+ 245               	/* #NOAPP */
+ 246 0030 482F      		mov r20,r24
+ 247 0032 5527      		clr r21
+ 248               	.LBE3:
+ 249               	.LBE2:
+  51:os.c          ****   os_atomic_t fInterruptFlags;
+  52:os.c          ****   uint8_t tmp;
+  53:os.c          ****   fInterruptFlags = os_atomic_start();
+  54:os.c          ****   tmp = OS_sched_free;
+ 251               	.LM21:
+ 252 0034 2091 0000 		lds r18,OS_sched_free
+  55:os.c          ****   if (OS_queue[tmp].tp == (void *)0) {
+ 254               	.LM22:
+ 255 0038 E22F      		mov r30,r18
+ 256 003a FF27      		clr r31
+ 257 003c EE0F      		add r30,r30
+ 258 003e FF1F      		adc r31,r31
+ 259 0040 E050      		subi r30,lo8(-(OS_queue))
+ 260 0042 F040      		sbci r31,hi8(-(OS_queue))
+ 261 0044 8081      		ld r24,Z
+ 262 0046 9181      		ldd r25,Z+1
+ 263 0048 892B      		or r24,r25
+ 264 004a 51F4      		brne .L9
+  56:os.c          ****       OS_sched_free = (tmp + 1) & OS_TASK_BITMASK;
+ 266               	.LM23:
+ 267 004c 2F5F      		subi r18,lo8(-(1))
+ 268 004e 2770      		andi r18,lo8(7)
+ 269 0050 2093 0000 		sts OS_sched_free,r18
+  57:os.c          ****       OS_queue[tmp].tp = tp;
+ 271               	.LM24:
+ 272 0054 6083      		st Z,r22
+ 273 0056 7183      		std Z+1,r23
+ 274               	.LBB4:
+ 275               	.LBB5:
+ 277               	.LM25:
+ 278 0058 4FBF      		out 95-0x20,r20
+ 279               	.LBE5:
+ 280               	.LBE4:
+  58:os.c          ****       
+  59:os.c          ****       os_atomic_end(fInterruptFlags);
+  60:os.c          **** 
+  61:os.c          ****       return TRUE;
+ 282               	.LM26:
+ 283 005a 81E0      		ldi r24,lo8(1)
+ 284 005c 90E0      		ldi r25,hi8(1)
+ 285 005e 0895      		ret
+ 286               	.L9:
+ 287               	.LBB6:
+ 288               	.LBB7:
+ 290               	.LM27:
+ 291 0060 4FBF      		out 95-0x20,r20
+ 292               	.LBE7:
+ 293               	.LBE6:
+  62:os.c          ****     }
+  63:os.c          ****   else {
+  64:os.c          ****       os_atomic_end(fInterruptFlags);
+  65:os.c          **** 
+  66:os.c          ****       return FALSE;
+ 295               	.LM28:
+ 296 0062 80E0      		ldi r24,lo8(0)
+ 297 0064 90E0      		ldi r25,hi8(0)
+  67:os.c          ****     }
+  68:os.c          **** }
+ 299               	.LM29:
+ 300 0066 0895      		ret
+ 301               	/* epilogue: frame size=0 */
+ 302 0068 0895      		ret
+ 303               	/* epilogue end (size=1) */
+ 304               	/* function OS_post size 33 (32) */
+ 315               	.Lscope6:
+ 316               		.data
+ 317               	.LC0:
+ 318 0000 2573 00   		.string	"%s"
+ 319               		.text
+ 322               	.global	error
+ 324               	error:
+  69:os.c          **** //--------------------错误信息输出函数-------------------------------
+  70:os.c          **** inline void  error(char * info)
+  71:os.c          **** {
+ 326               	.LM30:
+ 327               	/* prologue: frame size=0 */
+ 328               	/* prologue end (size=0) */
+  72:os.c          ****       printf("%s",info);
+ 330               	.LM31:
+ 331 006a 9F93      		push r25
+ 332 006c 8F93      		push r24
+ 333 006e 80E0      		ldi r24,lo8(.LC0)
+ 334 0070 90E0      		ldi r25,hi8(.LC0)
+ 335 0072 9F93      		push r25
+ 336 0074 8F93      		push r24
+ 337 0076 0E94 0000 		call printf
+ 338 007a 0F90      		pop __tmp_reg__
+ 339 007c 0F90      		pop __tmp_reg__
+ 340 007e 0F90      		pop __tmp_reg__
+ 341 0080 0F90      		pop __tmp_reg__
+ 342               	/* epilogue: frame size=0 */
+ 343 0082 0895      		ret
+ 344               	/* epilogue end (size=1) */
+ 345               	/* function error size 13 (12) */
+ 347               	.Lscope7:
+ 349               	.global	OS_run_next_task
+ 351               	OS_run_next_task:
+  73:os.c          **** }
+  74:os.c          **** //---------------任务运行函数1------------------------------------------
+  75:os.c          **** 
+  76:os.c          ****  inline bool OS_run_next_task(void)
+  77:os.c          **** {
+ 353               	.LM32:
+ 354               	/* prologue: frame size=0 */
+ 355               	/* prologue end (size=0) */
+ 356               	.LBB8:
+ 357               	.LBB9:
+ 359               	.LM33:
+ 360 0084 8FB7      		in r24,95-0x20
+ 362               	.LM34:
+ 363               	/* #APP */
+ 364 0086 F894      		cli
+ 365               	/* #NOAPP */
+ 366 0088 482F      		mov r20,r24
+ 367 008a 5527      		clr r21
+ 368               	.LBE9:
+ 369               	.LBE8:
+  78:os.c          ****   os_atomic_t fInterruptFlags;
+  79:os.c          ****   uint8_t old_full;
+  80:os.c          ****   void (*func)(void );
+  81:os.c          **** 
+  82:os.c          ****   fInterruptFlags = os_atomic_start();
+  83:os.c          ****   old_full = OS_sched_full;
+ 371               	.LM35:
+ 372 008c 9091 0000 		lds r25,OS_sched_full
+  84:os.c          ****   func = OS_queue[old_full].tp;
+ 374               	.LM36:
+ 375 0090 E92F      		mov r30,r25
+ 376 0092 FF27      		clr r31
+ 377 0094 EE0F      		add r30,r30
+ 378 0096 FF1F      		adc r31,r31
+ 379 0098 E050      		subi r30,lo8(-(OS_queue))
+ 380 009a F040      		sbci r31,hi8(-(OS_queue))
+ 381 009c 2081      		ld r18,Z
+ 382 009e 3181      		ldd r19,Z+1
+  85:os.c          ****   if (func == (void *)0) 
+ 384               	.LM37:
+ 385 00a0 2115      		cp r18,__zero_reg__
+ 386 00a2 3105      		cpc r19,__zero_reg__
+ 387 00a4 19F4      		brne .L16
+ 388               	.LBB10:
+ 389               	.LBB11:
+ 391               	.LM38:
+ 392 00a6 4FBF      		out 95-0x20,r20
+ 393               	.LBE11:
+ 394               	.LBE10:
+  86:os.c          ****     {
+  87:os.c          ****       os_atomic_end(fInterruptFlags);
+  88:os.c          ****       return 0;
+ 396               	.LM39:
+ 397 00a8 F901      		movw r30,r18
+ 398 00aa 0BC0      		rjmp .L14
+ 399               	.L16:
+  89:os.c          ****     }
+  90:os.c          **** 
+  91:os.c          ****   OS_queue[old_full].tp = (void *)0;
+ 401               	.LM40:
+ 402 00ac 1082      		st Z,__zero_reg__
+ 403 00ae 1182      		std Z+1,__zero_reg__
+  92:os.c          ****   OS_sched_full = (old_full + 1) & OS_TASK_BITMASK;
+ 405               	.LM41:
+ 406 00b0 9F5F      		subi r25,lo8(-(1))
+ 407 00b2 9770      		andi r25,lo8(7)
+ 408 00b4 9093 0000 		sts OS_sched_full,r25
+ 409               	.LBB12:
+ 410               	.LBB13:
+ 412               	.LM42:
+ 413 00b8 4FBF      		out 95-0x20,r20
+ 414               	.LBE13:
+ 415               	.LBE12:
+  93:os.c          ****   os_atomic_end(fInterruptFlags);
+  94:os.c          ****   
+  95:os.c          ****  
+  96:os.c          ****             func();
+ 417               	.LM43:
+ 418 00ba F901      		movw r30,r18
+ 419 00bc 0995      		icall
+  97:os.c          ****   
+  98:os.c          ****   
+  99:os.c          ****   return 1;
+ 421               	.LM44:
+ 422 00be E1E0      		ldi r30,lo8(1)
+ 423 00c0 F0E0      		ldi r31,hi8(1)
+ 424               	.L14:
+ 100:os.c          **** }
+ 426               	.LM45:
+ 427 00c2 CF01      		movw r24,r30
+ 428               	/* epilogue: frame size=0 */
+ 429 00c4 0895      		ret
+ 430               	/* epilogue end (size=1) */
+ 431               	/* function OS_run_next_task size 34 (33) */
+ 443               	.Lscope8:
+ 445               	.global	OS_run_task
+ 447               	OS_run_task:
+ 101:os.c          **** 
+ 102:os.c          **** //--------------任务运行函数2-------------------------------------------
+ 103:os.c          ****  inline void OS_run_task(void)
+ 104:os.c          **** {
+ 449               	.LM46:
+ 450               	/* prologue: frame size=0 */
+ 451               	/* prologue end (size=0) */
+ 452               	.LBB14:
+ 453               	.LBB15:
+ 454               	.LBB16:
+ 455               	.LBB17:
+ 457               	.LM47:
+ 458 00c6 8FB7      		in r24,95-0x20
+ 460               	.LM48:
+ 461               	/* #APP */
+ 462 00c8 F894      		cli
+ 463               	/* #NOAPP */
+ 464 00ca 482F      		mov r20,r24
+ 465 00cc 5527      		clr r21
+ 466               	.LBE17:
+ 467               	.LBE16:
+ 469               	.LM49:
+ 470 00ce 9091 0000 		lds r25,OS_sched_full
+ 472               	.LM50:
+ 473 00d2 E92F      		mov r30,r25
+ 474 00d4 FF27      		clr r31
+ 475 00d6 EE0F      		add r30,r30
+ 476 00d8 FF1F      		adc r31,r31
+ 477 00da E050      		subi r30,lo8(-(OS_queue))
+ 478 00dc F040      		sbci r31,hi8(-(OS_queue))
+ 479 00de 2081      		ld r18,Z
+ 480 00e0 3181      		ldd r19,Z+1
+ 482               	.LM51:
+ 483 00e2 2115      		cp r18,__zero_reg__
+ 484 00e4 3105      		cpc r19,__zero_reg__
+ 485 00e6 11F4      		brne .L21
+ 486               	.LBB18:
+ 487               	.LBB19:
+ 489               	.LM52:
+ 490 00e8 4FBF      		out 95-0x20,r20
+ 491               	.LBE19:
+ 492               	.LBE18:
+ 494               	.LM53:
+ 495 00ea 09C0      		rjmp .L23
+ 496               	.L21:
+ 498               	.LM54:
+ 499 00ec 1082      		st Z,__zero_reg__
+ 500 00ee 1182      		std Z+1,__zero_reg__
+ 502               	.LM55:
+ 503 00f0 9F5F      		subi r25,lo8(-(1))
+ 504 00f2 9770      		andi r25,lo8(7)
+ 505 00f4 9093 0000 		sts OS_sched_full,r25
+ 506               	.LBB20:
+ 507               	.LBB21:
+ 509               	.LM56:
+ 510 00f8 4FBF      		out 95-0x20,r20
+ 511               	.LBE21:
+ 512               	.LBE20:
+ 514               	.LM57:
+ 515 00fa F901      		movw r30,r18
+ 516 00fc 0995      		icall
+ 517               	.L23:
+ 518               	.LBE15:
+ 519               	.LBE14:
+ 520               	.LBB22:
+ 521               	.LBB23:
+ 523               	.LM58:
+ 524               	/* #APP */
+ 525 00fe 0000      		nop
+ 527               	.LM59:
+ 528 0100 0000      		nop
+ 529               	/* #NOAPP */
+ 530               	.LBE23:
+ 531               	.LBE22:
+ 532               	/* epilogue: frame size=0 */
+ 533 0102 0895      		ret
+ 534               	/* epilogue end (size=1) */
+ 535               	/* function OS_run_task size 34 (33) */
+ 551               	.Lscope9:
+ 552               		.comm OS_queue,16,1
+ 553               		.comm OS_sched_full,1,1
+ 554               		.comm OS_sched_free,1,1
+ 558               		.text
+ 560               	Letext:
+ 561               	/* File "os.c": code  140 = 0x008c ( 130), prologues   0, epilogues  10 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 os.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:98     .text:00000000 os_atomic_enable_interrupt
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:118    .text:00000004 os_atomic_end
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:135    .text:00000008 os_atomic_start
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:163    .text:00000010 OS_wait
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:185    .text:00000016 OS_sleep
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:209    .text:00000020 OS_sched_init
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000001 OS_sched_full
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:230    .text:0000002a OS_post
+                            *COM*:00000010 OS_queue
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:324    .text:0000006a error
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:351    .text:00000084 OS_run_next_task
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:447    .text:000000c6 OS_run_task
+C:\Users\sunhejie\AppData\Local\Temp/ccOGbaaa.s:560    .text:00000104 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+printf

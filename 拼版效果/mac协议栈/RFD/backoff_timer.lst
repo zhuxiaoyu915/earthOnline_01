@@ -1,0 +1,355 @@
+   1               		.file	"backoff_timer.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	timer2_intDisable
+ 221               	timer2_intDisable:
+   1:backoff_timer.c **** 
+   2:backoff_timer.c **** #include "backoff_timer.h"
+   3:backoff_timer.c **** 
+   4:backoff_timer.c **** //----------------------------------------------------------------
+   5:backoff_timer.c **** //timer2 setup is added by zhouqiang in 2005.12.03
+   6:backoff_timer.c **** //----------------------------------------------------------------
+   7:backoff_timer.c **** 
+   8:backoff_timer.c **** //-------------------------------------------------------------------------------
+   9:backoff_timer.c **** inline   void timer2_intDisable(void)
+  10:backoff_timer.c **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+  11:backoff_timer.c ****   		  TIMSK &= ~(1 << 7);
+ 227               	.LM2:
+ 228 0000 87B7      		in r24,87-0x20
+ 229 0002 8F77      		andi r24,lo8(127)
+ 230 0004 87BF      		out 87-0x20,r24
+ 231               	/* epilogue: frame size=0 */
+ 232 0006 0895      		ret
+ 233               	/* epilogue end (size=1) */
+ 234               	/* function timer2_intDisable size 4 (3) */
+ 236               	.Lscope0:
+ 240               	.global	timer2_setIntervalAndScale
+ 242               	timer2_setIntervalAndScale:
+  12:backoff_timer.c **** }
+  13:backoff_timer.c **** 
+  14:backoff_timer.c **** uint8_t  timer2_setIntervalAndScale(uint8_t interval, uint8_t scale)
+  15:backoff_timer.c **** {
+ 244               	.LM3:
+ 245               	/* prologue: frame size=0 */
+ 246 0008 1F93      		push r17
+ 247 000a CF93      		push r28
+ 248               	/* prologue end (size=2) */
+ 249 000c 182F      		mov r17,r24
+ 250 000e C62F      		mov r28,r22
+  16:backoff_timer.c **** 
+  17:backoff_timer.c **** 		  if (scale > 7) 
+ 252               	.LM4:
+ 253 0010 6830      		cpi r22,lo8(8)
+ 254 0012 88F4      		brsh .L2
+  18:backoff_timer.c **** 		  	{
+  19:backoff_timer.c **** 		    		return FAIL;
+  20:backoff_timer.c **** 		    	}
+  21:backoff_timer.c **** 		  scale |= 0x8;
+ 256               	.LM5:
+ 257 0014 C860      		ori r28,lo8(8)
+ 258               	.LBB2:
+  22:backoff_timer.c **** 		  { os_atomic_t _nesc_atomic = os_atomic_start();
+ 260               	.LM6:
+ 261 0016 0E94 0000 		call os_atomic_start
+  23:backoff_timer.c **** 			    {
+  24:backoff_timer.c **** 				   	      TIMSK &= ~(1 << 7);
+ 263               	.LM7:
+ 264 001a 97B7      		in r25,87-0x20
+ 265 001c 9F77      		andi r25,lo8(127)
+ 266 001e 97BF      		out 87-0x20,r25
+  25:backoff_timer.c **** 				   	      TIMSK &= ~(1 << 6);
+ 268               	.LM8:
+ 269 0020 97B7      		in r25,87-0x20
+ 270 0022 9F7B      		andi r25,lo8(-65)
+ 271 0024 97BF      		out 87-0x20,r25
+  26:backoff_timer.c **** 				   	      TCCR2 = scale;
+ 273               	.LM9:
+ 274 0026 C5BD      		out 69-0x20,r28
+  27:backoff_timer.c **** 				   	      TCNT2 = 0;
+ 276               	.LM10:
+ 277 0028 14BC      		out 68-0x20,__zero_reg__
+  28:backoff_timer.c **** 				   	      OCR2 = interval;
+ 279               	.LM11:
+ 280 002a 13BD      		out 67-0x20,r17
+  29:backoff_timer.c **** 				   	      TIMSK |= 1 << 7;
+ 282               	.LM12:
+ 283 002c 97B7      		in r25,87-0x20
+ 284 002e 9068      		ori r25,lo8(-128)
+ 285 0030 97BF      		out 87-0x20,r25
+  30:backoff_timer.c **** 			    }
+  31:backoff_timer.c **** 		    os_atomic_end(_nesc_atomic); }
+ 287               	.LM13:
+ 288 0032 0E94 0000 		call os_atomic_end
+ 289               	.L2:
+ 290               	.LBE2:
+  32:backoff_timer.c **** 		    return SUCCESS;
+  33:backoff_timer.c **** }
+ 292               	.LM14:
+ 293 0036 80E0      		ldi r24,lo8(0)
+ 294 0038 90E0      		ldi r25,hi8(0)
+ 295               	/* epilogue: frame size=0 */
+ 296 003a CF91      		pop r28
+ 297 003c 1F91      		pop r17
+ 298 003e 0895      		ret
+ 299               	/* epilogue end (size=3) */
+ 300               	/* function timer2_setIntervalAndScale size 28 (23) */
+ 302               	.Lscope1:
+ 304               	.global	backoff_timer_stop
+ 306               	backoff_timer_stop:
+  34:backoff_timer.c **** 
+  35:backoff_timer.c **** 
+  36:backoff_timer.c **** //----------------------------------------------------------------
+  37:backoff_timer.c **** //backoff_timer setup is added by zhouqiang in 2005.12.03,timer2 is used
+  38:backoff_timer.c **** //----------------------------------------------------------------
+  39:backoff_timer.c **** 
+  40:backoff_timer.c **** uint8_t backoff_timer_stop(void)
+  41:backoff_timer.c **** {
+ 308               	.LM15:
+ 309               	/* prologue: frame size=0 */
+ 310               	/* prologue end (size=0) */
+ 311               	.LBB3:
+  42:backoff_timer.c **** 	{ os_atomic_t _nesc_atomic = os_atomic_start();
+ 313               	.LM16:
+ 314 0040 0E94 0000 		call os_atomic_start
+  43:backoff_timer.c **** 
+  44:backoff_timer.c **** 	{
+  45:backoff_timer.c **** 	      backoff_timer_Set = FALSE;
+ 316               	.LM17:
+ 317 0044 1092 0000 		sts backoff_timer_Set,__zero_reg__
+ 318               	.LBB4:
+ 319               	.LBB5:
+ 321               	.LM18:
+ 322 0048 97B7      		in r25,87-0x20
+ 323 004a 9F77      		andi r25,lo8(127)
+ 324 004c 97BF      		out 87-0x20,r25
+ 325               	.LBE5:
+ 326               	.LBE4:
+  46:backoff_timer.c **** 	      timer2_intDisable();
+  47:backoff_timer.c **** 	}
+  48:backoff_timer.c **** 
+  49:backoff_timer.c **** 	      os_atomic_end(_nesc_atomic); }
+ 328               	.LM19:
+ 329 004e 0E94 0000 		call os_atomic_end
+ 330               	.LBE3:
+  50:backoff_timer.c **** 	      return SUCCESS;
+  51:backoff_timer.c **** }
+ 332               	.LM20:
+ 333 0052 80E0      		ldi r24,lo8(0)
+ 334 0054 90E0      		ldi r25,hi8(0)
+ 335               	/* epilogue: frame size=0 */
+ 336 0056 0895      		ret
+ 337               	/* epilogue end (size=1) */
+ 338               	/* function backoff_timer_stop size 12 (11) */
+ 340               	.Lscope2:
+ 342               	.global	backoff_timer_fire
+ 344               	backoff_timer_fire:
+  52:backoff_timer.c **** 
+  53:backoff_timer.c **** void  backoff_timer_fire(void)
+  54:backoff_timer.c **** 
+  55:backoff_timer.c **** {
+ 346               	.LM21:
+ 347               	/* prologue: frame size=0 */
+ 348               	/* prologue end (size=0) */
+  56:backoff_timer.c ****        
+  57:backoff_timer.c **** 	void (*temp)();
+  58:backoff_timer.c **** 	temp=backoff_call;
+ 350               	.LM22:
+ 351 0058 E091 0000 		lds r30,backoff_call
+ 352 005c F091 0000 		lds r31,(backoff_call)+1
+  59:backoff_timer.c ****        temp();
+ 354               	.LM23:
+ 355 0060 0995      		icall
+ 356               	/* epilogue: frame size=0 */
+ 357 0062 0895      		ret
+ 358               	/* epilogue end (size=1) */
+ 359               	/* function backoff_timer_fire size 6 (5) */
+ 364               	.Lscope3:
+ 366               	.global	backoff_timer_isset
+ 368               	backoff_timer_isset:
+  60:backoff_timer.c ****       			 
+  61:backoff_timer.c ****   	             
+  62:backoff_timer.c **** }
+  63:backoff_timer.c **** 
+  64:backoff_timer.c **** inline  bool backoff_timer_isset(void)
+  65:backoff_timer.c **** {
+ 370               	.LM24:
+ 371               	/* prologue: frame size=0 */
+ 372               	/* prologue end (size=0) */
+  66:backoff_timer.c **** 	return backoff_timer_Set;
+ 374               	.LM25:
+ 375 0064 8091 0000 		lds r24,backoff_timer_Set
+  67:backoff_timer.c **** }
+ 377               	.LM26:
+ 378 0068 9927      		clr r25
+ 379               	/* epilogue: frame size=0 */
+ 380 006a 0895      		ret
+ 381               	/* epilogue end (size=1) */
+ 382               	/* function backoff_timer_isset size 4 (3) */
+ 384               	.Lscope4:
+ 388               	.global	backoff_timer_setOneShot
+ 390               	backoff_timer_setOneShot:
+  68:backoff_timer.c **** 
+  69:backoff_timer.c **** 
+  70:backoff_timer.c **** void  backoff_timer_setOneShot(uint8_t _jiffy,void (*fun)(void))
+  71:backoff_timer.c **** {
+ 392               	.LM27:
+ 393               	/* prologue: frame size=0 */
+ 394 006c EF92      		push r14
+ 395 006e FF92      		push r15
+ 396 0070 1F93      		push r17
+ 397               	/* prologue end (size=3) */
+ 398 0072 182F      		mov r17,r24
+ 399 0074 7B01      		movw r14,r22
+ 400               	.LBB6:
+  72:backoff_timer.c **** 	{ os_atomic_t _nesc_atomic = os_atomic_start();
+ 402               	.LM28:
+ 403 0076 0E94 0000 		call os_atomic_start
+  73:backoff_timer.c ****        {
+  74:backoff_timer.c ****       		backoff_call = fun;
+ 405               	.LM29:
+ 406 007a F092 0000 		sts (backoff_call)+1,r15
+ 407 007e E092 0000 		sts backoff_call,r14
+  75:backoff_timer.c ****       		backoff_timer_Set = TRUE;
+ 409               	.LM30:
+ 410 0082 91E0      		ldi r25,lo8(1)
+ 411 0084 9093 0000 		sts backoff_timer_Set,r25
+  76:backoff_timer.c ****         }
+  77:backoff_timer.c **** 
+  78:backoff_timer.c ****        os_atomic_end(_nesc_atomic); }
+ 413               	.LM31:
+ 414 0088 0E94 0000 		call os_atomic_end
+ 415               	.LBE6:
+  79:backoff_timer.c **** 	       
+  80:backoff_timer.c ****       	timer2_setIntervalAndScale(_jiffy, 0x4);//presacle 256 //2 symbols
+ 417               	.LM32:
+ 418 008c 64E0      		ldi r22,lo8(4)
+ 419 008e 812F      		mov r24,r17
+ 420 0090 0E94 0000 		call timer2_setIntervalAndScale
+ 421               	/* epilogue: frame size=0 */
+ 422 0094 1F91      		pop r17
+ 423 0096 FF90      		pop r15
+ 424 0098 EF90      		pop r14
+ 425 009a 0895      		ret
+ 426               	/* epilogue end (size=4) */
+ 427               	/* function backoff_timer_setOneShot size 24 (17) */
+ 429               	.Lscope5:
+ 430               		.comm OS_queue,16,1
+ 431               		.comm OS_sched_full,1,1
+ 432               		.comm OS_sched_free,1,1
+ 433               		.comm currentTime,2,1
+ 434               		.comm head_of_systimer_queue,2,1
+ 435               		.comm timestamp_H,2,1
+ 436               		.comm mState,4,1
+ 437               		.comm setIntervalFlag,1,1
+ 438               		.comm mScale,1,1
+ 439               		.comm mInterval,1,1
+ 440               		.comm queue_head,1,1
+ 441               		.comm queue_tail,1,1
+ 442               		.comm queue_size,1,1
+ 443               		.comm queue,3,1
+ 444               		.comm mTimerList,33,1
+ 445               		.comm cc2420_bramspi,1,1
+ 446               		.comm cc2420_rambuf,2,1
+ 447               		.comm cc2420_ramlen,1,1
+ 448               		.comm cc2420_ramaddr,2,1
+ 449               		.comm cc2420fifo_bspi,1,1
+ 450               		.comm cc2420fifo_txbuf,2,1
+ 451               		.comm cc2420fifo_txlength,1,1
+ 452               		.comm cc2420_rxbuf,4,1
+ 453               		.comm cc2420_rxlength,1,1
+ 454               		.comm cc2420_rxbuf_now,2,1
+ 455               		.comm cc2420_rxlength_now,1,1
+ 456               		.comm cc2420_rxbufuse,1,1
+ 457               		.comm rfpackernum,1,1
+ 458               		.comm cc2420_rxflag,1,1
+ 459               		.comm cc2420_currentparameters,28,1
+ 460               		.comm receive_timestamp,4,1
+ 461               		.comm send_timestamp,4,1
+ 462               		.comm cc2420_stateRadio,1,1
+ 463               		.comm cc2420_LocalAddr,2,1
+ 464               		.comm ieee_address,8,1
+ 465               		.comm GTSDirectionMask,1,1
+ 466               		.comm phy_channel_state,1,1
+ 467               		.comm rxbuf_flag,1,1
+ 468               		.comm ppib,3,1
+ 469               		.comm SENSOR_DATA_VALUE,20,1
+ 470               		.comm ADC_INTERRUPT_FLAG,1,1
+ 471               		.comm backoff_timer_Set,1,1
+ 472               		.comm backoff_call,2,1
+ 516               		.text
+ 518               	Letext:
+ 519               	/* File "backoff_timer.c": code   78 = 0x004e (  62), prologues   5, epilogues  11 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 backoff_timer.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:221    .text:00000000 timer2_intDisable
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:242    .text:00000008 timer2_setIntervalAndScale
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:306    .text:00000040 backoff_timer_stop
+                            *COM*:00000001 backoff_timer_Set
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:344    .text:00000058 backoff_timer_fire
+                            *COM*:00000002 backoff_call
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:368    .text:00000064 backoff_timer_isset
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:390    .text:0000006c backoff_timer_setOneShot
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/ccuEbaaa.s:518    .text:0000009c Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+os_atomic_start
+os_atomic_end

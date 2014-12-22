@@ -1,0 +1,1386 @@
+   1               		.file	"systime.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 218               	.global	systime16L
+ 220               	systime16L:
+   1:systime.c     **** #include "systime.h"
+   2:systime.c     **** 
+   3:systime.c     **** extern  MAC_PIB  mac_pib_data;
+   4:systime.c     **** extern MAC_STATE_TYPE mac_current_state;
+   5:systime.c     **** extern bool         Is_received_beacon;
+   6:systime.c     **** extern  uint8_t     loss_sync_number;
+   7:systime.c     **** //extern  uint8_t  test_variable;
+   8:systime.c     **** extern   bool  IS_NETWORK_FORMED;
+   9:systime.c     **** union time_u
+  10:systime.c     **** {
+  11:systime.c     **** 	struct
+  12:systime.c     **** 	{
+  13:systime.c     **** 		uint16_t low;
+  14:systime.c     **** 		uint16_t high;
+  15:systime.c     **** 	};
+  16:systime.c     **** 	uint32_t full;
+  17:systime.c     **** };
+  18:systime.c     **** uint16_t systime16L(void)
+  19:systime.c     **** {
+ 222               	.LM1:
+ 223               	/* prologue: frame size=0 */
+ 224               	/* prologue end (size=0) */
+  20:systime.c     **** 	return TCNT1;
+ 226               	.LM2:
+ 227 0000 8CB5      		in r24,76-0x20
+ 228 0002 9DB5      		in r25,(76)+1-0x20
+ 229               	/* epilogue: frame size=0 */
+ 230 0004 0895      		ret
+ 231               	/* epilogue end (size=1) */
+ 232               	/* function systime16L size 3 (2) */
+ 234               	.Lscope0:
+ 236               	.global	systime16H
+ 238               	systime16H:
+  21:systime.c     **** }
+  22:systime.c     **** uint16_t systime16H(void)
+  23:systime.c     **** {
+ 240               	.LM3:
+ 241               	/* prologue: frame size=0 */
+ 242               	/* prologue end (size=0) */
+  24:systime.c     **** 	return currentTime;
+  25:systime.c     **** }
+ 244               	.LM4:
+ 245 0006 8091 0000 		lds r24,currentTime
+ 246 000a 9091 0000 		lds r25,(currentTime)+1
+ 247               	/* epilogue: frame size=0 */
+ 248 000e 0895      		ret
+ 249               	/* epilogue end (size=1) */
+ 250               	/* function systime16H size 5 (4) */
+ 252               	.Lscope1:
+ 254               	.global	systime32
+ 256               	systime32:
+  26:systime.c     **** uint32_t systime32(void)
+  27:systime.c     **** {
+ 258               	.LM5:
+ 259               	/* prologue: frame size=0 */
+ 260 0010 EF92      		push r14
+ 261 0012 FF92      		push r15
+ 262 0014 0F93      		push r16
+ 263 0016 1F93      		push r17
+ 264               	/* prologue end (size=4) */
+ 265               	.LBB2:
+  28:systime.c     ****         union time_u time;
+  29:systime.c     **** 	
+  30:systime.c     **** 	{ os_atomic_t _nesc_atomic = os_atomic_start();
+ 267               	.LM6:
+ 268 0018 0E94 0000 		call os_atomic_start
+ 269 001c 282F      		mov r18,r24
+  31:systime.c     **** 	{
+  32:systime.c     **** 		time.low = TCNT1;
+ 271               	.LM7:
+ 272 001e 8CB5      		in r24,76-0x20
+ 273 0020 9DB5      		in r25,(76)+1-0x20
+ 274 0022 7C01      		movw r14,r24
+  33:systime.c     **** 		time.high = currentTime;
+ 276               	.LM8:
+ 277 0024 0091 0000 		lds r16,currentTime
+ 278 0028 1091 0000 		lds r17,(currentTime)+1
+  34:systime.c     **** 
+  35:systime.c     **** 		
+  36:systime.c     **** 		if( bit_is_set(TIFR, TOV1) && ((int16_t)time.low) >= 0 )
+ 280               	.LM9:
+ 281 002c 06B6      		in __tmp_reg__,86-0x20
+ 282 002e 02FE      		sbrs __tmp_reg__,2
+ 283 0030 04C0      		rjmp .L4
+ 285               	.LM10:
+ 286 0032 97FD      		sbrc r25,7
+ 287 0034 02C0      		rjmp .L4
+  37:systime.c     **** 			++time.high;
+ 289               	.LM11:
+ 290 0036 0F5F      		subi r16,lo8(-(1))
+ 291 0038 1F4F      		sbci r17,hi8(-(1))
+ 292               	.L4:
+  38:systime.c     **** 	}
+  39:systime.c     **** 	os_atomic_end(_nesc_atomic); }
+ 294               	.LM12:
+ 295 003a 822F      		mov r24,r18
+ 296 003c 0E94 0000 		call os_atomic_end
+ 297               	.LBE2:
+  40:systime.c     **** 
+  41:systime.c     **** 	return time.full;
+  42:systime.c     **** }
+ 299               	.LM13:
+ 300 0040 C801      		movw r24,r16
+ 301 0042 B701      		movw r22,r14
+ 302               	/* epilogue: frame size=0 */
+ 303 0044 1F91      		pop r17
+ 304 0046 0F91      		pop r16
+ 305 0048 FF90      		pop r15
+ 306 004a EF90      		pop r14
+ 307 004c 0895      		ret
+ 308               	/* epilogue end (size=5) */
+ 309               	/* function systime32 size 31 (22) */
+ 317               	.Lscope2:
+ 319               	.global	systime_init
+ 321               	systime_init:
+  43:systime.c     **** void systime_init(void)
+  44:systime.c     **** {
+ 323               	.LM14:
+ 324               	/* prologue: frame size=0 */
+ 325               	/* prologue end (size=0) */
+  45:systime.c     **** 	uint8_t timsk;
+  46:systime.c     **** 	head_of_systimer_queue=NULL;
+ 327               	.LM15:
+ 328 004e 1092 0000 		sts (head_of_systimer_queue)+1,__zero_reg__
+ 329 0052 1092 0000 		sts head_of_systimer_queue,__zero_reg__
+  47:systime.c     **** 	currentTime=0x0000;
+ 331               	.LM16:
+ 332 0056 1092 0000 		sts (currentTime)+1,__zero_reg__
+ 333 005a 1092 0000 		sts currentTime,__zero_reg__
+  48:systime.c     **** 	TCNT1=0x0000;
+ 335               	.LM17:
+ 336 005e 1DBC      		out (76)+1-0x20,__zero_reg__
+ 337 0060 1CBC      		out 76-0x20,__zero_reg__
+  49:systime.c     **** 	TCCR1A = 0x00;
+ 339               	.LM18:
+ 340 0062 1FBC      		out 79-0x20,__zero_reg__
+  50:systime.c     **** 	TCCR1B = 0x00;
+ 342               	.LM19:
+ 343 0064 1EBC      		out 78-0x20,__zero_reg__
+ 344               	.LBB3:
+  51:systime.c     ****        
+  52:systime.c     **** 	{ os_atomic_t _nesc_atomic = os_atomic_start();
+ 346               	.LM20:
+ 347 0066 0E94 0000 		call os_atomic_start
+  53:systime.c     **** 	{
+  54:systime.c     **** 		timsk = TIMSK;
+ 349               	.LM21:
+ 350 006a 97B7      		in r25,87-0x20
+  55:systime.c     **** 	  	timsk |= (1<<TOIE1);//enable overflow interrupt
+  56:systime.c     **** 		timsk |=(1<<TICIE1);//enable input capture interrupt
+ 352               	.LM22:
+ 353 006c 9462      		ori r25,lo8(36)
+  57:systime.c     **** 		TIMSK = timsk;
+ 355               	.LM23:
+ 356 006e 97BF      		out 87-0x20,r25
+  58:systime.c     **** 		//---------------------------------------
+  59:systime.c     **** 		//  add some codes for timequeue inital
+  60:systime.c     **** 		//---------------------------------------
+  61:systime.c     **** 		
+  62:systime.c     **** 		       
+  63:systime.c     **** 	}
+  64:systime.c     **** 	 os_atomic_end(_nesc_atomic); }
+ 358               	.LM24:
+ 359 0070 0E94 0000 		call os_atomic_end
+ 360               	.LBE3:
+  65:systime.c     **** 	 //-------------------------------
+  66:systime.c     **** 	 // add some codes for timestamp initial
+  67:systime.c     **** 	 //-------------------------------
+  68:systime.c     **** 		
+  69:systime.c     **** 	TCCR1B =0xc0|0x05;//! start th timer with 1/1024 prescaler, 0.5 symbol on gainz,normal model,risin
+ 362               	.LM25:
+ 363 0074 85EC      		ldi r24,lo8(-59)
+ 364 0076 8EBD      		out 78-0x20,r24
+ 365               	/* epilogue: frame size=0 */
+ 366 0078 0895      		ret
+ 367               	/* epilogue end (size=1) */
+ 368               	/* function systime_init size 22 (21) */
+ 373               	.Lscope3:
+ 375               	.global	systime_stop
+ 377               	systime_stop:
+  70:systime.c     **** }
+  71:systime.c     **** void systime_stop(void)
+  72:systime.c     **** {
+ 379               	.LM26:
+ 380               	/* prologue: frame size=0 */
+ 381               	/* prologue end (size=0) */
+  73:systime.c     **** 	
+  74:systime.c     **** 	TCCR1B = 0x00;// stop the timer
+ 383               	.LM27:
+ 384 007a 1EBC      		out 78-0x20,__zero_reg__
+ 385               	/* epilogue: frame size=0 */
+ 386 007c 0895      		ret
+ 387               	/* epilogue end (size=1) */
+ 388               	/* function systime_stop size 2 (1) */
+ 390               	.Lscope4:
+ 392               	.global	Timer1_OCR_intDisable
+ 394               	Timer1_OCR_intDisable:
+  75:systime.c     **** }
+  76:systime.c     **** 
+  77:systime.c     **** 
+  78:systime.c     **** //---------------------------------------------------------------------------
+  79:systime.c     **** //      some timer1 drivers for timequeue added by zhouqiang in 2005.12.04
+  80:systime.c     **** //---------------------------------------------------------------------------
+  81:systime.c     **** 
+  82:systime.c     **** void Timer1_OCR_intDisable(void)//disable the ocr1 interrupt
+  83:systime.c     ****  {
+ 396               	.LM28:
+ 397               	/* prologue: frame size=0 */
+ 398               	/* prologue end (size=0) */
+ 399               	.LBB4:
+  84:systime.c     ****       { os_atomic_t _nesc_atomic = os_atomic_start();
+ 401               	.LM29:
+ 402 007e 0E94 0000 		call os_atomic_start
+  85:systime.c     ****        	{
+  86:systime.c     **** 	 		TIMSK &= 0xef;
+ 404               	.LM30:
+ 405 0082 97B7      		in r25,87-0x20
+ 406 0084 9F7E      		andi r25,lo8(-17)
+ 407 0086 97BF      		out 87-0x20,r25
+  87:systime.c     **** 		}
+  88:systime.c     ****       os_atomic_end(_nesc_atomic); }        	
+ 409               	.LM31:
+ 410 0088 0E94 0000 		call os_atomic_end
+ 411               	.LBE4:
+ 412               	/* epilogue: frame size=0 */
+ 413 008c 0895      		ret
+ 414               	/* epilogue end (size=1) */
+ 415               	/* function Timer1_OCR_intDisable size 8 (7) */
+ 417               	.Lscope5:
+ 420               	.global	Timer1_setInterval
+ 422               	Timer1_setInterval:
+  89:systime.c     ****  }
+  90:systime.c     **** 
+  91:systime.c     **** uint8_t  Timer1_setInterval(uint16_t interval)
+  92:systime.c     **** {
+ 424               	.LM32:
+ 425               	/* prologue: frame size=0 */
+ 426 008e 0F93      		push r16
+ 427 0090 1F93      		push r17
+ 428               	/* prologue end (size=2) */
+ 429 0092 8C01      		movw r16,r24
+ 430               	.LBB5:
+  93:systime.c     ****    
+  94:systime.c     **** 
+  95:systime.c     ****      { os_atomic_t _nesc_atomic = os_atomic_start();
+ 432               	.LM33:
+ 433 0094 0E94 0000 		call os_atomic_start
+  96:systime.c     ****          {
+  97:systime.c     ****                      TIFR|=1<<OCF1A;
+ 435               	.LM34:
+ 436 0098 96B7      		in r25,86-0x20
+ 437 009a 9061      		ori r25,lo8(16)
+ 438 009c 96BF      		out 86-0x20,r25
+  98:systime.c     **** 		     	OCR1A = interval;//this is the scale
+ 440               	.LM35:
+ 441 009e 1BBD      		out (74)+1-0x20,r17
+ 442 00a0 0ABD      		out 74-0x20,r16
+  99:systime.c     **** 		     	//OCR1B = 0x0000;
+ 100:systime.c     **** 		     	//OCR1C = 0x0000;
+ 101:systime.c     **** 		     	//TCNT1 = 0x0000; //this is the counter
+ 102:systime.c     **** 		     	//TCCR1A = 0x00;//Output: A: Disconnected, B: Disconnected, C: Disconnected,WGM[1..0]=00
+ 103:systime.c     **** 		     	//scale |= 0x08;//
+ 104:systime.c     **** 		     	//TCCR1B |= scale;//clk/(scale),WGM[3..2]=01/CTC
+ 105:systime.c     **** 		     	//TCCR1C = 0x00;//
+ 106:systime.c     **** 		     	TIMSK |= 0x10;//OCIE1A is enable 
+ 444               	.LM36:
+ 445 00a2 97B7      		in r25,87-0x20
+ 446 00a4 9061      		ori r25,lo8(16)
+ 447 00a6 97BF      		out 87-0x20,r25
+ 107:systime.c     ****      	
+ 108:systime.c     ****          }
+ 109:systime.c     ****          os_atomic_end(_nesc_atomic); }
+ 449               	.LM37:
+ 450 00a8 0E94 0000 		call os_atomic_end
+ 451               	.LBE5:
+ 110:systime.c     **** 		 //printf("*****the interval is %04x",interval);
+ 111:systime.c     ****          return SUCCESS;
+ 112:systime.c     **** }
+ 453               	.LM38:
+ 454 00ac 80E0      		ldi r24,lo8(0)
+ 455 00ae 90E0      		ldi r25,hi8(0)
+ 456               	/* epilogue: frame size=0 */
+ 457 00b0 1F91      		pop r17
+ 458 00b2 0F91      		pop r16
+ 459 00b4 0895      		ret
+ 460               	/* epilogue end (size=3) */
+ 461               	/* function Timer1_setInterval size 20 (15) */
+ 463               	.Lscope6:
+ 466               	.global	Timer1_sethalfsymbol
+ 468               	Timer1_sethalfsymbol:
+ 113:systime.c     **** 
+ 114:systime.c     **** 
+ 115:systime.c     **** void      Timer1_sethalfsymbol(uint16_t symbols)
+ 116:systime.c     **** {
+ 470               	.LM39:
+ 471               	/* prologue: frame size=0 */
+ 472               	/* prologue end (size=0) */
+ 117:systime.c     ****       uint16_t halfsymbols;
+ 118:systime.c     ****       halfsymbols=symbols*2;
+ 119:systime.c     ****       Timer1_setInterval(symbols);
+ 474               	.LM40:
+ 475 00b6 0E94 0000 		call Timer1_setInterval
+ 476               	/* epilogue: frame size=0 */
+ 477 00ba 0895      		ret
+ 478               	/* epilogue end (size=1) */
+ 479               	/* function Timer1_sethalfsymbol size 3 (2) */
+ 481               	.Lscope7:
+ 484               	.global	Timer1_acquireInterval
+ 486               	Timer1_acquireInterval:
+ 120:systime.c     **** }
+ 121:systime.c     **** 
+ 122:systime.c     **** //供高层调用获得下一次定时的比较寄存器应当设置的值
+ 123:systime.c     **** uint32_t 	Timer1_acquireInterval(uint32_t interval)
+ 124:systime.c     **** {
+ 488               	.LM41:
+ 489               	/* prologue: frame size=0 */
+ 490 00bc EF92      		push r14
+ 491 00be FF92      		push r15
+ 492 00c0 0F93      		push r16
+ 493 00c2 1F93      		push r17
+ 494               	/* prologue end (size=4) */
+ 495 00c4 7B01      		movw r14,r22
+ 496 00c6 8C01      		movw r16,r24
+ 125:systime.c     ****        uint32_t temp;
+ 126:systime.c     **** 	uint16_t  tcnt_1;
+ 127:systime.c     **** 	//tcnt_1=TCNT1;
+ 128:systime.c     **** 	//printf("\nthe current TCNT1 is %04x",tcnt_1);
+ 129:systime.c     **** 	//printf("\nthe current interval is %04x",interval);
+ 130:systime.c     ****        //temp=(uint32_t)interval;
+ 131:systime.c     **** 	temp=(interval<<1)+systime32();   
+ 498               	.LM42:
+ 499 00c8 EE0C      		lsl r14
+ 500 00ca FF1C      		rol r15
+ 501 00cc 001F      		rol r16
+ 502 00ce 111F      		rol r17
+ 503 00d0 0E94 0000 		call systime32
+ 504 00d4 DC01      		movw r26,r24
+ 505 00d6 CB01      		movw r24,r22
+ 506 00d8 E80E      		add r14,r24
+ 507 00da F91E      		adc r15,r25
+ 508 00dc 0A1F      		adc r16,r26
+ 509 00de 1B1F      		adc r17,r27
+ 132:systime.c     **** 	//printf("\nthe current temp is %08lx",systime32());   
+ 133:systime.c     **** 	// (temp>=65535) temp=temp-65535;
+ 134:systime.c     **** 	return (temp);
+ 135:systime.c     **** }
+ 511               	.LM43:
+ 512 00e0 C801      		movw r24,r16
+ 513 00e2 B701      		movw r22,r14
+ 514               	/* epilogue: frame size=0 */
+ 515 00e4 1F91      		pop r17
+ 516 00e6 0F91      		pop r16
+ 517 00e8 FF90      		pop r15
+ 518 00ea EF90      		pop r14
+ 519 00ec 0895      		ret
+ 520               	/* epilogue end (size=5) */
+ 521               	/* function Timer1_acquireInterval size 25 (16) */
+ 523               	.Lscope8:
+ 526               	.global	Timer1_adjustInterval
+ 528               	Timer1_adjustInterval:
+ 136:systime.c     **** 
+ 137:systime.c     **** uint8_t    Timer1_adjustInterval(uint16_t interval)
+ 138:systime.c     **** {
+ 530               	.LM44:
+ 531               	/* prologue: frame size=0 */
+ 532 00ee 0F93      		push r16
+ 533 00f0 1F93      		push r17
+ 534               	/* prologue end (size=2) */
+ 535 00f2 8C01      		movw r16,r24
+ 536               	.LBB6:
+ 139:systime.c     ****    { os_atomic_t _nesc_atomic = os_atomic_start();
+ 538               	.LM45:
+ 539 00f4 0E94 0000 		call os_atomic_start
+ 140:systime.c     ****      {
+ 141:systime.c     **** 	//if(interval<65536)
+ 142:systime.c     **** 	  	OCR1A = interval;//this is the scale
+ 541               	.LM46:
+ 542 00f8 1BBD      		out (74)+1-0x20,r17
+ 543 00fa 0ABD      		out 74-0x20,r16
+ 143:systime.c     **** 	//else
+ 144:systime.c     **** 	//  	OCR1A =interval-65535;
+ 145:systime.c     ****      }
+ 146:systime.c     ****     os_atomic_end(_nesc_atomic); }    return 1;
+ 545               	.LM47:
+ 546 00fc 0E94 0000 		call os_atomic_end
+ 547               	.LBE6:
+ 147:systime.c     **** }
+ 549               	.LM48:
+ 550 0100 81E0      		ldi r24,lo8(1)
+ 551 0102 90E0      		ldi r25,hi8(1)
+ 552               	/* epilogue: frame size=0 */
+ 553 0104 1F91      		pop r17
+ 554 0106 0F91      		pop r16
+ 555 0108 0895      		ret
+ 556               	/* epilogue end (size=3) */
+ 557               	/* function Timer1_adjustInterval size 14 (9) */
+ 559               	.Lscope9:
+ 561               	.global	Timer1_getnextInterval
+ 563               	Timer1_getnextInterval:
+ 148:systime.c     **** //供底层调用获得定时器比较寄存器应当设置的值，下一个定时任务
+ 149:systime.c     **** uint16_t  Timer1_getnextInterval(void)
+ 150:systime.c     **** {
+ 565               	.LM49:
+ 566               	/* prologue: frame size=0 */
+ 567               	/* prologue end (size=0) */
+ 151:systime.c     ****      //返回定时器下一个定时值
+ 152:systime.c     ****      //如果没有，则返回零
+ 153:systime.c     ****      systimer_queue_pointer  temp;
+ 154:systime.c     ****      temp=head_of_systimer_queue->next;
+ 569               	.LM50:
+ 570 010a E091 0000 		lds r30,head_of_systimer_queue
+ 571 010e F091 0000 		lds r31,(head_of_systimer_queue)+1
+ 572 0112 0784      		ldd __tmp_reg__,Z+15
+ 573 0114 F089      		ldd r31,Z+16
+ 574 0116 E02D      		mov r30,__tmp_reg__
+ 155:systime.c     ****      if(temp!=NULL) 
+ 576               	.LM51:
+ 577 0118 3097      		sbiw r30,0
+ 578 011a 19F0      		breq .L13
+ 156:systime.c     ****      	{//printf("temp is %04x\n",temp->ticks);
+ 157:systime.c     **** 	 return (temp->ticks);
+ 580               	.LM52:
+ 581 011c 8181      		ldd r24,Z+1
+ 582 011e 9281      		ldd r25,Z+2
+ 583 0120 0895      		ret
+ 584               	.L13:
+ 158:systime.c     ****      	}
+ 159:systime.c     ****      else
+ 160:systime.c     **** 	 return 0;
+ 586               	.LM53:
+ 587 0122 CF01      		movw r24,r30
+ 161:systime.c     **** }
+ 589               	.LM54:
+ 590 0124 0895      		ret
+ 591               	/* epilogue: frame size=0 */
+ 592 0126 0895      		ret
+ 593               	/* epilogue end (size=1) */
+ 594               	/* function Timer1_getnextInterval size 15 (14) */
+ 599               	.Lscope10:
+ 604               	.global	systimer_start_task
+ 606               	systimer_start_task:
+ 162:systime.c     **** 
+ 163:systime.c     **** //---------------------------------------------------------------------------
+ 164:systime.c     **** //   change timer1 to be systimer,time3 for other usage.  modified by zhouqiang in2005.12.04
+ 165:systime.c     **** //             add a timequeue here for tasks,such as receive or transmit a beacon 
+ 166:systime.c     **** //---------------------------------------------------------------------------
+ 167:systime.c     **** systimer_queue_pointer  systimer_start_task(systimer_queue_pointer queue_head,uint8_t  timer_reason
+ 168:systime.c     **** {
+ 608               	.LM55:
+ 609               	/* prologue: frame size=0 */
+ 610 0128 2F92      		push r2
+ 611 012a 3F92      		push r3
+ 612 012c 4F92      		push r4
+ 613 012e 5F92      		push r5
+ 614 0130 6F92      		push r6
+ 615 0132 7F92      		push r7
+ 616 0134 8F92      		push r8
+ 617 0136 9F92      		push r9
+ 618 0138 AF92      		push r10
+ 619 013a BF92      		push r11
+ 620 013c CF92      		push r12
+ 621 013e DF92      		push r13
+ 622 0140 EF92      		push r14
+ 623 0142 FF92      		push r15
+ 624 0144 0F93      		push r16
+ 625 0146 1F93      		push r17
+ 626 0148 CF93      		push r28
+ 627 014a DF93      		push r29
+ 628               	/* prologue end (size=18) */
+ 629 014c 3C01      		movw r6,r24
+ 630 014e 162F      		mov r17,r22
+ 631 0150 1901      		movw r2,r18
+ 632 0152 2A01      		movw r4,r20
+ 169:systime.c     **** 	 systimer_queue_pointer   temp;
+ 170:systime.c     **** 	 systimer_queue_pointer   p_temp1,p_temp2;
+ 171:systime.c     **** 	 uint32_t  compare_reg;
+ 172:systime.c     **** 	 uint32_t  temp_time;
+ 173:systime.c     **** 	    temp=(systimer_queue_pointer)malloc(sizeof(struct systimer_queue));
+ 634               	.LM56:
+ 635 0154 81E1      		ldi r24,lo8(17)
+ 636 0156 90E0      		ldi r25,hi8(17)
+ 637 0158 0E94 0000 		call malloc
+ 638 015c 4C01      		movw r8,r24
+ 174:systime.c     **** 	    temp->next=NULL;
+ 640               	.LM57:
+ 641 015e FC01      		movw r30,r24
+ 642 0160 1786      		std Z+15,__zero_reg__
+ 643 0162 108A      		std Z+16,__zero_reg__
+ 175:systime.c     **** 	    temp->timer_reason=timer_reason;
+ 645               	.LM58:
+ 646 0164 1083      		st Z,r17
+ 176:systime.c     ****       	 if(queue_head==NULL)	   
+ 648               	.LM59:
+ 649 0166 6114      		cp r6,__zero_reg__
+ 650 0168 7104      		cpc r7,__zero_reg__
+ 651 016a 89F5      		brne .L16
+ 177:systime.c     **** 	 	{
+ 178:systime.c     **** 	 	     compare_reg=Timer1_acquireInterval(ticks);
+ 653               	.LM60:
+ 654 016c C201      		movw r24,r4
+ 655 016e B101      		movw r22,r2
+ 656 0170 0E94 0000 		call Timer1_acquireInterval
+ 657 0174 7B01      		movw r14,r22
+ 658 0176 8C01      		movw r16,r24
+ 179:systime.c     **** 		     //printf("\n******* the compare reg is %08lx",compare_reg);	 
+ 180:systime.c     **** 		     if(compare_reg<65535)
+ 660               	.LM61:
+ 661 0178 6F3F      		cpi r22,lo8(65535)
+ 662 017a FFEF      		ldi r31,hi8(65535)
+ 663 017c 7F07      		cpc r23,r31
+ 664 017e F0E0      		ldi r31,hlo8(65535)
+ 665 0180 8F07      		cpc r24,r31
+ 666 0182 F0E0      		ldi r31,hhi8(65535)
+ 667 0184 9F07      		cpc r25,r31
+ 668 0186 10F4      		brsh .L17
+ 181:systime.c     **** 			 	Timer1_setInterval((uint16_t)compare_reg);
+ 670               	.LM62:
+ 671 0188 CB01      		movw r24,r22
+ 672 018a 0BC0      		rjmp .L30
+ 673               	.L17:
+ 182:systime.c     **** 		     else  
+ 183:systime.c     **** 		     	{
+ 184:systime.c     **** 		     	   temp_time=compare_reg&0x0000ffff;
+ 675               	.LM63:
+ 676 018c 2FEF      		ldi r18,lo8(65535)
+ 677 018e A22E      		mov r10,r18
+ 678 0190 2FEF      		ldi r18,hi8(65535)
+ 679 0192 B22E      		mov r11,r18
+ 680 0194 C12C      		mov r12,__zero_reg__
+ 681 0196 D12C      		mov r13,__zero_reg__
+ 682 0198 A622      		and r10,r22
+ 683 019a B722      		and r11,r23
+ 684 019c C822      		and r12,r24
+ 685 019e D922      		and r13,r25
+ 185:systime.c     **** 			   //printf("\n******* the real compare reg is %04x",(uint16_t)(temp_time));	   
+ 186:systime.c     **** 			   Timer1_setInterval((uint16_t)(temp_time));
+ 687               	.LM64:
+ 688 01a0 C501      		movw r24,r10
+ 689               	.L30:
+ 690 01a2 0E94 0000 		call Timer1_setInterval
+ 187:systime.c     **** 		     	}
+ 188:systime.c     **** 		     temp->ticks=(uint16_t)((compare_reg>65535)? ((uint16_t)(temp_time)):compare_reg);
+ 692               	.LM65:
+ 693 01a6 80E0      		ldi r24,lo8(65536)
+ 694 01a8 E816      		cp r14,r24
+ 695 01aa 80E0      		ldi r24,hi8(65536)
+ 696 01ac F806      		cpc r15,r24
+ 697 01ae 81E0      		ldi r24,hlo8(65536)
+ 698 01b0 0807      		cpc r16,r24
+ 699 01b2 80E0      		ldi r24,hhi8(65536)
+ 700 01b4 1807      		cpc r17,r24
+ 701 01b6 10F0      		brlo .L19
+ 702 01b8 C501      		movw r24,r10
+ 703 01ba 01C0      		rjmp .L20
+ 704               	.L19:
+ 705 01bc C701      		movw r24,r14
+ 706               	.L20:
+ 707 01be F401      		movw r30,r8
+ 708 01c0 8183      		std Z+1,r24
+ 709 01c2 9283      		std Z+2,r25
+ 189:systime.c     ****                    temp->ticksLeft=compare_reg;
+ 711               	.LM66:
+ 712 01c4 E382      		std Z+3,r14
+ 713 01c6 F482      		std Z+4,r15
+ 714 01c8 0583      		std Z+5,r16
+ 715 01ca 1683      		std Z+6,r17
+ 716 01cc 59C0      		rjmp .L31
+ 717               	.L16:
+ 190:systime.c     **** 		     //temp->high_left=compare_reg&0xc0000000;
+ 191:systime.c     **** 			 //printf("\n high left is %08lx",temp->high_left);
+ 192:systime.c     **** 		     //temp->high_ticks=compare_reg&0xc0000000;
+ 193:systime.c     ****  	    	     queue_head=temp;	
+ 194:systime.c     **** 		     //printf("\nhead ticks is %04x,ticksleft is %08lx,reason is %02x,head->reason is %02x\n",tem
+ 195:systime.c     **** 		}
+ 196:systime.c     ****         else
+ 197:systime.c     **** 		{
+ 198:systime.c     **** 	              //插入到定时队列中去，按temp->ticks的顺序
+ 199:systime.c     ****                    compare_reg=Timer1_acquireInterval(ticks);
+ 719               	.LM67:
+ 720 01ce C201      		movw r24,r4
+ 721 01d0 B101      		movw r22,r2
+ 722 01d2 0E94 0000 		call Timer1_acquireInterval
+ 723 01d6 7B01      		movw r14,r22
+ 724 01d8 8C01      		movw r16,r24
+ 200:systime.c     **** 		     
+ 201:systime.c     **** 		     //printf("\n----compare-reg is %08lx\n",compare_reg);
+ 202:systime.c     **** 		     temp_time=compare_reg&0x0000ffff;
+ 726               	.LM68:
+ 727 01da 9FEF      		ldi r25,lo8(65535)
+ 728 01dc A92E      		mov r10,r25
+ 729 01de 9FEF      		ldi r25,hi8(65535)
+ 730 01e0 B92E      		mov r11,r25
+ 731 01e2 C12C      		mov r12,__zero_reg__
+ 732 01e4 D12C      		mov r13,__zero_reg__
+ 733 01e6 AE20      		and r10,r14
+ 734 01e8 BF20      		and r11,r15
+ 735 01ea C022      		and r12,r16
+ 736 01ec D122      		and r13,r17
+ 203:systime.c     **** 		     temp->ticks=(uint16_t)((compare_reg>65535)? ((uint16_t)(temp_time)):compare_reg);
+ 738               	.LM69:
+ 739 01ee F0E0      		ldi r31,lo8(65536)
+ 740 01f0 EF16      		cp r14,r31
+ 741 01f2 F0E0      		ldi r31,hi8(65536)
+ 742 01f4 FF06      		cpc r15,r31
+ 743 01f6 F1E0      		ldi r31,hlo8(65536)
+ 744 01f8 0F07      		cpc r16,r31
+ 745 01fa F0E0      		ldi r31,hhi8(65536)
+ 746 01fc 1F07      		cpc r17,r31
+ 747 01fe 10F0      		brlo .L22
+ 748 0200 C501      		movw r24,r10
+ 749 0202 01C0      		rjmp .L23
+ 750               	.L22:
+ 751 0204 C701      		movw r24,r14
+ 752               	.L23:
+ 753 0206 F401      		movw r30,r8
+ 754 0208 8183      		std Z+1,r24
+ 755 020a 9283      		std Z+2,r25
+ 204:systime.c     ****                    temp->ticksLeft=compare_reg;
+ 757               	.LM70:
+ 758 020c E382      		std Z+3,r14
+ 759 020e F482      		std Z+4,r15
+ 760 0210 0583      		std Z+5,r16
+ 761 0212 1683      		std Z+6,r17
+ 205:systime.c     **** 		     //temp->high_left=compare_reg&0xc0000000;
+ 206:systime.c     **** 		     //temp->high_ticks=compare_reg&0xc0000000;
+ 207:systime.c     **** 	            p_temp1=queue_head;
+ 763               	.LM71:
+ 764 0214 6301      		movw r12,r6
+ 208:systime.c     ****                    p_temp2=queue_head;
+ 766               	.LM72:
+ 767 0216 E301      		movw r28,r6
+ 209:systime.c     **** 			/*while(((temp->high_left)>=(p_temp2->high_left))&&(p_temp2!=NULL))
+ 210:systime.c     **** 				{
+ 211:systime.c     **** 				    if((((temp->ticksLeft)&0x3fffffff)<=((p_temp2->ticksLeft)&0x3fffffff))&&((temp->high_left)=
+ 212:systime.c     **** 				    	{
+ 213:systime.c     **** 				    	    break;
+ 214:systime.c     **** 				    	}
+ 215:systime.c     **** 				   else*/
+ 216:systime.c     **** 			while((p_temp2!=NULL)&&((temp->ticksLeft)>=(p_temp2->ticksLeft))&&(p_temp2!=NULL))	   
+ 217:systime.c     **** 				      {
+ 218:systime.c     **** 				          p_temp1=p_temp2;
+ 219:systime.c     **** 				          p_temp2=p_temp1->next;	
+ 769               	.LM73:
+ 770 0218 6114      		cp r6,__zero_reg__
+ 771 021a 7104      		cpc r7,__zero_reg__
+ 772 021c E9F0      		breq .L25
+ 773 021e 8B81      		ldd r24,Y+3
+ 774 0220 9C81      		ldd r25,Y+4
+ 775 0222 AD81      		ldd r26,Y+5
+ 776 0224 BE81      		ldd r27,Y+6
+ 777 0226 E816      		cp r14,r24
+ 778 0228 F906      		cpc r15,r25
+ 779 022a 0A07      		cpc r16,r26
+ 780 022c 1B07      		cpc r17,r27
+ 781 022e A0F0      		brlo .L25
+ 782               	.L26:
+ 784               	.LM74:
+ 785 0230 6E01      		movw r12,r28
+ 787               	.LM75:
+ 788 0232 0F84      		ldd __tmp_reg__,Y+15
+ 789 0234 D889      		ldd r29,Y+16
+ 790 0236 C02D      		mov r28,__tmp_reg__
+ 791 0238 2097      		sbiw r28,0
+ 792 023a 71F0      		breq .L25
+ 793 023c F401      		movw r30,r8
+ 794 023e 2381      		ldd r18,Z+3
+ 795 0240 3481      		ldd r19,Z+4
+ 796 0242 4581      		ldd r20,Z+5
+ 797 0244 5681      		ldd r21,Z+6
+ 798 0246 8B81      		ldd r24,Y+3
+ 799 0248 9C81      		ldd r25,Y+4
+ 800 024a AD81      		ldd r26,Y+5
+ 801 024c BE81      		ldd r27,Y+6
+ 802 024e 2817      		cp r18,r24
+ 803 0250 3907      		cpc r19,r25
+ 804 0252 4A07      		cpc r20,r26
+ 805 0254 5B07      		cpc r21,r27
+ 806 0256 60F7      		brsh .L26
+ 807               	.L25:
+ 220:systime.c     **** 				    	}		  
+ 221:systime.c     **** 			  
+ 222:systime.c     **** 				//}
+ 223:systime.c     **** 			if(p_temp2!=queue_head)
+ 809               	.LM76:
+ 810 0258 C615      		cp r28,r6
+ 811 025a D705      		cpc r29,r7
+ 812 025c 49F0      		breq .L27
+ 224:systime.c     **** 				{
+ 225:systime.c     ****  				    Leds_redToggle();
+ 814               	.LM77:
+ 815 025e 0E94 0000 		call Leds_redToggle
+ 226:systime.c     ****  				    //printf("\nticks is %04x,ticksleft is %08lx,reason is %02x,temp->reason is %02x\n",temp->
+ 227:systime.c     **** 				    p_temp1->next=temp;
+ 817               	.LM78:
+ 818 0262 F601      		movw r30,r12
+ 819 0264 8786      		std Z+15,r8
+ 820 0266 908A      		std Z+16,r9
+ 228:systime.c     **** 			           temp->next=p_temp2;
+ 822               	.LM79:
+ 823 0268 F401      		movw r30,r8
+ 824 026a C787      		std Z+15,r28
+ 825 026c D08B      		std Z+16,r29
+ 826 026e 09C0      		rjmp .L21
+ 827               	.L27:
+ 229:systime.c     **** 				}
+ 230:systime.c     **** 			else
+ 231:systime.c     **** 				//为头节点，需要调整物理定时器
+ 232:systime.c     **** 				{
+ 233:systime.c     **** 					
+ 234:systime.c     **** 					 Timer1_adjustInterval(temp->ticks);
+ 829               	.LM80:
+ 830 0270 F401      		movw r30,r8
+ 831 0272 8181      		ldd r24,Z+1
+ 832 0274 9281      		ldd r25,Z+2
+ 833 0276 0E94 0000 		call Timer1_adjustInterval
+ 235:systime.c     **** 				    // printf("\nbecome head ticks is %04x,ticksleft is %08lx,reason is %02x,temp->reason is %0
+ 236:systime.c     **** 				     temp->next=queue_head;
+ 835               	.LM81:
+ 836 027a F401      		movw r30,r8
+ 837 027c 6786      		std Z+15,r6
+ 838 027e 708A      		std Z+16,r7
+ 839               	.L31:
+ 237:systime.c     **** 				     queue_head=temp;
+ 841               	.LM82:
+ 842 0280 3401      		movw r6,r8
+ 843               	.L21:
+ 238:systime.c     **** 				}
+ 239:systime.c     **** 		}
+ 240:systime.c     **** 	return queue_head;
+ 241:systime.c     **** }
+ 845               	.LM83:
+ 846 0282 C301      		movw r24,r6
+ 847               	/* epilogue: frame size=0 */
+ 848 0284 DF91      		pop r29
+ 849 0286 CF91      		pop r28
+ 850 0288 1F91      		pop r17
+ 851 028a 0F91      		pop r16
+ 852 028c FF90      		pop r15
+ 853 028e EF90      		pop r14
+ 854 0290 DF90      		pop r13
+ 855 0292 CF90      		pop r12
+ 856 0294 BF90      		pop r11
+ 857 0296 AF90      		pop r10
+ 858 0298 9F90      		pop r9
+ 859 029a 8F90      		pop r8
+ 860 029c 7F90      		pop r7
+ 861 029e 6F90      		pop r6
+ 862 02a0 5F90      		pop r5
+ 863 02a2 4F90      		pop r4
+ 864 02a4 3F90      		pop r3
+ 865 02a6 2F90      		pop r2
+ 866 02a8 0895      		ret
+ 867               	/* epilogue end (size=19) */
+ 868               	/* function systimer_start_task size 193 (156) */
+ 877               	.Lscope11:
+ 881               	.global	systimer_stop_task
+ 883               	systimer_stop_task:
+ 242:systime.c     **** 
+ 243:systime.c     **** systimer_queue_pointer systimer_stop_task(systimer_queue_pointer  queue_head,uint8_t timer_reason)
+ 244:systime.c     **** {
+ 885               	.LM84:
+ 886               	/* prologue: frame size=0 */
+ 887 02aa EF92      		push r14
+ 888 02ac FF92      		push r15
+ 889 02ae 0F93      		push r16
+ 890 02b0 1F93      		push r17
+ 891 02b2 CF93      		push r28
+ 892 02b4 DF93      		push r29
+ 893               	/* prologue end (size=6) */
+ 894 02b6 7C01      		movw r14,r24
+ 245:systime.c     **** 	//依据取消的framehandle,如果是队列头，则需要重新设置比较寄存器的值，否则只需把它从队列中摘掉即可。
+ 246:systime.c     ****        systimer_queue_pointer  p_temp1,p_temp2,p_temp3;
+ 247:systime.c     **** 	p_temp1=queue_head;
+ 896               	.LM85:
+ 897 02b8 FC01      		movw r30,r24
+ 248:systime.c     **** 	p_temp2=queue_head;
+ 899               	.LM86:
+ 900 02ba EC01      		movw r28,r24
+ 901               	.L43:
+ 249:systime.c     **** 	p_temp3=queue_head;
+ 250:systime.c     **** 	while((p_temp2->timer_reason!=timer_reason)&&(p_temp2!=NULL))
+ 251:systime.c     **** 		 {
+ 252:systime.c     **** 		    p_temp1=p_temp2;
+ 253:systime.c     **** 		    p_temp2=p_temp2->next;	 
+ 903               	.LM87:
+ 904 02bc 8881      		ld r24,Y
+ 905 02be 8617      		cp r24,r22
+ 906 02c0 29F0      		breq .L34
+ 908               	.LM88:
+ 909 02c2 FE01      		movw r30,r28
+ 911               	.LM89:
+ 912 02c4 0F84      		ldd __tmp_reg__,Y+15
+ 913 02c6 D889      		ldd r29,Y+16
+ 914 02c8 C02D      		mov r28,__tmp_reg__
+ 915 02ca F8CF      		rjmp .L43
+ 916               	.L34:
+ 254:systime.c     **** 		 }
+ 255:systime.c     **** 	if(p_temp2==NULL)  
+ 256:systime.c     **** 		error("cannot find an element in the timer_queue");
+ 257:systime.c     **** 	else
+ 258:systime.c     **** 		{
+ 259:systime.c     **** 		     p_temp3=p_temp2->next;
+ 918               	.LM90:
+ 919 02cc 0F85      		ldd r16,Y+15
+ 920 02ce 1889      		ldd r17,Y+16
+ 260:systime.c     **** 		     if(p_temp2==queue_head)
+ 922               	.LM91:
+ 923 02d0 CE15      		cp r28,r14
+ 924 02d2 DF05      		cpc r29,r15
+ 925 02d4 69F4      		brne .L38
+ 261:systime.c     **** 		     	{
+ 262:systime.c     **** 	                   if(p_temp2->next==NULL)
+ 927               	.LM92:
+ 928 02d6 0115      		cp r16,__zero_reg__
+ 929 02d8 1105      		cpc r17,__zero_reg__
+ 930 02da 19F4      		brne .L39
+ 263:systime.c     **** 	                   	{
+ 264:systime.c     **** 	                   	 //printf("\n***timer 1_OCR  intrrput is diabled\n");
+ 265:systime.c     **** 	                   	 Timer1_OCR_intDisable();
+ 932               	.LM93:
+ 933 02dc 0E94 0000 		call Timer1_OCR_intDisable
+ 934 02e0 05C0      		rjmp .L40
+ 935               	.L39:
+ 266:systime.c     **** 	                   	}
+ 267:systime.c     **** 			     else
+ 268:systime.c     **** 			     	{
+ 269:systime.c     **** 			     	     //重新设置定时器
+ 270:systime.c     **** 			            Timer1_adjustInterval(p_temp3->ticks);
+ 937               	.LM94:
+ 938 02e2 F801      		movw r30,r16
+ 939 02e4 8181      		ldd r24,Z+1
+ 940 02e6 9281      		ldd r25,Z+2
+ 941 02e8 0E94 0000 		call Timer1_adjustInterval
+ 942               	.L40:
+ 271:systime.c     **** 			     	}
+ 272:systime.c     **** 			     //取下head节点,释放空间
+ 273:systime.c     **** 			     queue_head=p_temp3;
+ 944               	.LM95:
+ 945 02ec 7801      		movw r14,r16
+ 946 02ee 02C0      		rjmp .L44
+ 947               	.L38:
+ 274:systime.c     **** 			     free(p_temp2); 
+ 275:systime.c     **** 		     	}
+ 276:systime.c     **** 		     else
+ 277:systime.c     **** 		     	{
+ 278:systime.c     **** 		     	      p_temp1->next=p_temp3;
+ 949               	.LM96:
+ 950 02f0 0787      		std Z+15,r16
+ 951 02f2 108B      		std Z+16,r17
+ 952               	.L44:
+ 279:systime.c     **** 		     	      free(p_temp2);
+ 954               	.LM97:
+ 955 02f4 CE01      		movw r24,r28
+ 956 02f6 0E94 0000 		call free
+ 280:systime.c     **** 		     	}
+ 281:systime.c     **** 		}
+ 282:systime.c     **** 	return queue_head;
+ 283:systime.c     **** }
+ 958               	.LM98:
+ 959 02fa C701      		movw r24,r14
+ 960               	/* epilogue: frame size=0 */
+ 961 02fc DF91      		pop r29
+ 962 02fe CF91      		pop r28
+ 963 0300 1F91      		pop r17
+ 964 0302 0F91      		pop r16
+ 965 0304 FF90      		pop r15
+ 966 0306 EF90      		pop r14
+ 967 0308 0895      		ret
+ 968               	/* epilogue end (size=7) */
+ 969               	/* function systimer_stop_task size 48 (35) */
+ 976               	.Lscope12:
+ 977               		.data
+ 978               	.LC1:
+ 979 0000 0A2A 2A2A 		.string	"\n***system awake***"
+ 979      7379 7374 
+ 979      656D 2061 
+ 979      7761 6B65 
+ 979      2A2A 2A00 
+ 980               	.LC2:
+ 981 0014 0A2A 2A2A 		.string	"\n***system sleeping***"
+ 981      7379 7374 
+ 981      656D 2073 
+ 981      6C65 6570 
+ 981      696E 672A 
+ 982               	.LC3:
+ 983 002b 0A6C 6F73 		.string	"\nloss syn"
+ 983      7320 7379 
+ 983      6E00 
+ 984               	.LC4:
+ 985 0035 7772 6F6E 		.string	"wrong systime reason!\n"
+ 985      6720 7379 
+ 985      7374 696D 
+ 985      6520 7265 
+ 985      6173 6F6E 
+ 986               		.text
+ 989               	.global	systimer_task_fire
+ 991               	systimer_task_fire:
+ 284:systime.c     **** 
+ 285:systime.c     **** extern MAC_STATE_TYPE  mac_current_state_saved;
+ 286:systime.c     **** 
+ 287:systime.c     **** void   systimer_task_fire(char timer_reason)
+ 288:systime.c     **** {
+ 993               	.LM99:
+ 994               	/* prologue: frame size=0 */
+ 995               	/* prologue end (size=0) */
+ 289:systime.c     **** 	switch(timer_reason)
+ 997               	.LM100:
+ 998 030a 9927      		clr r25
+ 999 030c 8230      		cpi r24,2
+ 1000 030e 9105      		cpc r25,__zero_reg__
+ 1001 0310 71F1      		breq .L50
+ 1003               	.LM101:
+ 1004 0312 8330      		cpi r24,3
+ 1005 0314 9105      		cpc r25,__zero_reg__
+ 1006 0316 2CF4      		brge .L59
+ 1007 0318 0097      		sbiw r24,0
+ 1008 031a 51F0      		breq .L47
+ 1009 031c 0197      		sbiw r24,1
+ 1010 031e A9F0      		breq .L48
+ 1011 0320 64C0      		rjmp .L58
+ 1012               	.L59:
+ 1013 0322 8330      		cpi r24,3
+ 1014 0324 9105      		cpc r25,__zero_reg__
+ 1015 0326 09F4      		brne .+2
+ 1016 0328 5BC0      		rjmp .L57
+ 1017 032a 0497      		sbiw r24,4
+ 1018 032c F1F1      		breq .L52
+ 1019 032e 5DC0      		rjmp .L58
+ 1020               	.L47:
+ 290:systime.c     **** 		{
+ 291:systime.c     **** 			case(BEACON_SEND):
+ 292:systime.c     **** 				//call beacon_send
+ 293:systime.c     **** 				Leds_yellowOn();
+ 1022               	.LM102:
+ 1023 0330 0E94 0000 		call Leds_yellowOn
+ 294:systime.c     **** 				Leds_greenOn();
+ 1025               	.LM103:
+ 1026 0334 0E94 0000 		call Leds_greenOn
+ 295:systime.c     **** 				//Leds_redOn();
+ 296:systime.c     **** 				phy_channel_state=TRANSMITTING_FRAME;
+ 1028               	.LM104:
+ 1029 0338 82E0      		ldi r24,lo8(2)
+ 1030 033a 8093 0000 		sts phy_channel_state,r24
+ 297:systime.c     **** 				
+ 298:systime.c     **** 				//mlmeStartRequest(mac_pib_data.macPANId, ppib.phyCurrentChanel, mac_pib_data.macBeaconOrder, m
+ 299:systime.c     **** 				beacon_frame_send(TRUE);
+ 1032               	.LM105:
+ 1033 033e 81E0      		ldi r24,lo8(1)
+ 1034 0340 0E94 0000 		call beacon_frame_send
+ 300:systime.c     **** 				printf("\n***system awake***\n");
+ 1036               	.LM106:
+ 1037 0344 80E0      		ldi r24,lo8(.LC1)
+ 1038 0346 90E0      		ldi r25,hi8(.LC1)
+ 1039 0348 2DC0      		rjmp .L60
+ 1040               	.L48:
+ 301:systime.c     **** 				break;
+ 302:systime.c     **** 			case(RECEIVE_BEACON):
+ 303:systime.c     **** 				//wait for beacon receive
+ 304:systime.c     **** 				//Leds_redOff();
+ 305:systime.c     **** 				//printf("\nsystimer interrupt");
+ 306:systime.c     **** 				if(!IS_COORDINATOR)
+ 307:systime.c     **** 					{
+ 308:systime.c     **** 					     Leds_yellowOn();
+ 1042               	.LM107:
+ 1043 034a 0E94 0000 		call Leds_yellowOn
+ 309:systime.c     **** 				            Leds_greenOn();
+ 1045               	.LM108:
+ 1046 034e 0E94 0000 		call Leds_greenOn
+ 310:systime.c     **** 				            Leds_redOn();
+ 1048               	.LM109:
+ 1049 0352 0E94 0000 		call Leds_redOn
+ 311:systime.c     **** 					     //if(mac_current_state_saved==MAC_STATE_ASSOC_WAIT_FOR_RESPONSE)		
+ 312:systime.c     **** 					     //	 	mac_current_state=MAC_STATE_ASSOC_WAIT_FOR_RESPONSE;
+ 313:systime.c     **** 					     //else	 
+ 314:systime.c     **** 					     mac_current_state=MAC_STATE_IDLE;
+ 1051               	.LM110:
+ 1052 0356 80E1      		ldi r24,lo8(16)
+ 1053 0358 8093 0000 		sts mac_current_state,r24
+ 315:systime.c     **** 					     phy_channel_state=WAITING_FOR_BEACON;
+ 1055               	.LM111:
+ 1056 035c 84E0      		ldi r24,lo8(4)
+ 1057 035e 8093 0000 		sts phy_channel_state,r24
+ 316:systime.c     **** 					     PLME_SET_TRX_STATE_request(RX_ON);
+ 1059               	.LM112:
+ 1060 0362 86E0      		ldi r24,lo8(6)
+ 1061 0364 0E94 0000 		call PLME_SET_TRX_STATE_request
+ 317:systime.c     **** 					     Is_received_beacon=FALSE;
+ 1063               	.LM113:
+ 1064 0368 1092 0000 		sts Is_received_beacon,__zero_reg__
+ 318:systime.c     **** 					     //printf("\n***system waking***\n");	 
+ 319:systime.c     **** 					}
+ 320:systime.c     **** 				
+ 321:systime.c     **** 				//Leds_greenToggle();
+ 322:systime.c     **** 				
+ 323:systime.c     **** 				//head_of_systimer_queue=systimer_start_task(head_of_systimer_queue,RECEIVE_BEACON, 500) ;
+ 324:systime.c     **** 				//mlmeStartRequest(mac_pib_data.macPANId, ppib.phyCurrentChanel, mac_pib_data.macBeaconOrder, m
+ 325:systime.c     **** 				
+ 326:systime.c     **** 				break;
+ 1066               	.LM114:
+ 1067 036c 0895      		ret
+ 1068               	.L50:
+ 327:systime.c     **** 			case(CAP_OVER):
+ 328:systime.c     **** 				//inactive the system
+ 329:systime.c     **** 				phy_channel_state=INACTIVE_PERIOD;
+ 1070               	.LM115:
+ 1071 036e 85E0      		ldi r24,lo8(5)
+ 1072 0370 8093 0000 		sts phy_channel_state,r24
+ 330:systime.c     **** 				//对于采用间接通信的response帧可能要跨超帧操作
+ 331:systime.c     **** 				mac_current_state_saved=mac_current_state;
+ 1074               	.LM116:
+ 1075 0374 8091 0000 		lds r24,mac_current_state
+ 1076 0378 8093 0000 		sts mac_current_state_saved,r24
+ 332:systime.c     **** 				mac_current_state=MAC_STATE_INACTIVE;
+ 1078               	.LM117:
+ 1079 037c 81E1      		ldi r24,lo8(17)
+ 1080 037e 8093 0000 		sts mac_current_state,r24
+ 333:systime.c     **** 				PLME_SET_TRX_STATE_request(FORCE_TRX_OFF);
+ 1082               	.LM118:
+ 1083 0382 83E0      		ldi r24,lo8(3)
+ 1084 0384 0E94 0000 		call PLME_SET_TRX_STATE_request
+ 334:systime.c     **** 				//Is_received_beacon=FALSE;
+ 335:systime.c     **** 				Leds_greenOff();
+ 1086               	.LM119:
+ 1087 0388 0E94 0000 		call Leds_greenOff
+ 336:systime.c     **** 				Leds_yellowOff();
+ 1089               	.LM120:
+ 1090 038c 0E94 0000 		call Leds_yellowOff
+ 337:systime.c     **** 				//Leds_redOff();
+ 338:systime.c     **** 				if((Is_received_beacon==FALSE)&&(!IS_COORDINATOR))
+ 1092               	.LM121:
+ 1093 0390 8091 0000 		lds r24,Is_received_beacon
+ 1094 0394 8823      		tst r24
+ 1095 0396 21F4      		brne .L51
+ 339:systime.c     **** 					{
+ 340:systime.c     **** 					   OS_post(synrequest_task);
+ 1097               	.LM122:
+ 1098 0398 80E0      		ldi r24,lo8(pm(synrequest_task))
+ 1099 039a 90E0      		ldi r25,hi8(pm(synrequest_task))
+ 1100 039c 0E94 0000 		call OS_post
+ 1101               	.L51:
+ 341:systime.c     **** 					   //mac_current_state=MAC_STATE_SYNING;
+ 342:systime.c     **** 					   //mac_current_state_saved=MAC_STATE_SYNING;
+ 343:systime.c     **** 					}
+ 344:systime.c     **** 				printf("\n***system sleeping***\n");
+ 1103               	.LM123:
+ 1104 03a0 80E0      		ldi r24,lo8(.LC2)
+ 1105 03a2 90E0      		ldi r25,hi8(.LC2)
+ 1106               	.L60:
+ 1107 03a4 0E94 0000 		call puts
+ 345:systime.c     **** 				break;
+ 1109               	.LM124:
+ 1110 03a8 0895      		ret
+ 1111               	.L52:
+ 346:systime.c     **** 			case(SYN_WAITTING_FOR_BEACON):
+ 347:systime.c     **** 				printf("\nloss syn\n");
+ 1113               	.LM125:
+ 1114 03aa 80E0      		ldi r24,lo8(.LC3)
+ 1115 03ac 90E0      		ldi r25,hi8(.LC3)
+ 1116 03ae 0E94 0000 		call puts
+ 348:systime.c     ****                             if(!IS_NETWORK_FORMED)
+ 1118               	.LM126:
+ 1119 03b2 8091 0000 		lds r24,IS_NETWORK_FORMED
+ 1120 03b6 8823      		tst r24
+ 1121 03b8 19F4      		brne .L53
+ 349:systime.c     **** 					mac_current_state=MAC_STATE_UNSTARTED;
+ 1123               	.LM127:
+ 1124 03ba 8093 0000 		sts mac_current_state,r24
+ 1125 03be 0895      		ret
+ 1126               	.L53:
+ 350:systime.c     **** 				else  			
+ 351:systime.c     **** 				{
+ 352:systime.c     **** 				       loss_sync_number++;
+ 1128               	.LM128:
+ 1129 03c0 8091 0000 		lds r24,loss_sync_number
+ 1130 03c4 8F5F      		subi r24,lo8(-(1))
+ 1131 03c6 8093 0000 		sts loss_sync_number,r24
+ 353:systime.c     **** 					if(loss_sync_number==10)
+ 1133               	.LM129:
+ 1134 03ca 8A30      		cpi r24,lo8(10)
+ 1135 03cc 19F4      		brne .L55
+ 354:systime.c     **** 						{
+ 355:systime.c     **** 						  //printf("\ncannot syn to the network\n");	
+ 356:systime.c     **** 						    //向网络层报告同步失效信息	
+ 357:systime.c     **** 						    //mlmeSyncLossIndication(MAC_ENUM lossReason);
+ 358:systime.c     **** 				                  loss_sync_number=0;
+ 1137               	.LM130:
+ 1138 03ce 1092 0000 		sts loss_sync_number,__zero_reg__
+ 1139 03d2 0895      		ret
+ 1140               	.L55:
+ 359:systime.c     **** 						}
+ 360:systime.c     **** 					else	
+ 361:systime.c     **** 					mlmeSyncRequest(ppib.phyCurrentChanel,TRUE);   
+ 1142               	.LM131:
+ 1143 03d4 61E0      		ldi r22,lo8(1)
+ 1144 03d6 8091 0000 		lds r24,ppib
+ 1145 03da 0E94 0000 		call mlmeSyncRequest
+ 362:systime.c     **** 				}
+ 363:systime.c     **** 			        /*
+ 364:systime.c     **** 				loss_sync_number++;
+ 365:systime.c     **** 				if(loss_sync_number==10)
+ 366:systime.c     **** 				   //--------------------------------------
+ 367:systime.c     **** 				   //-------------加代码---------------
+ 368:systime.c     **** 					{
+ 369:systime.c     **** 				 //printf("\ncannot syn to the network\n");	
+ 370:systime.c     **** 				   loss_sync_number=0;
+ 371:systime.c     **** 					}
+ 372:systime.c     **** 				else
+ 373:systime.c     **** 					{
+ 374:systime.c     **** 				   //OS_post(synrequest_task);
+ 375:systime.c     **** 				   mac_current_state=MAC_STATE_ENERGY_SCAN_FINISHED;
+ 376:systime.c     **** 				   //mlmeScanRequest(ACTIVE_PASSIVE_SCAN, 0x00000008, 6);
+ 377:systime.c     **** 				   Is_received_beacon=FALSE;
+ 378:systime.c     **** 				   //mac_current_state=MAC_STATE_SYNING;
+ 379:systime.c     **** 					}*/
+ 380:systime.c     **** 				break;
+ 1147               	.LM132:
+ 1148 03de 0895      		ret
+ 1149               	.L57:
+ 381:systime.c     **** 			case(CSMA_TIMING):
+ 382:systime.c     **** 				//test_variable++;
+ 383:systime.c     **** 				
+ 384:systime.c     **** 				OS_post(CSMA_CA_DOING);
+ 1151               	.LM133:
+ 1152 03e0 80E0      		ldi r24,lo8(pm(CSMA_CA_DOING))
+ 1153 03e2 90E0      		ldi r25,hi8(pm(CSMA_CA_DOING))
+ 1154 03e4 0E94 0000 		call OS_post
+ 385:systime.c     **** 				break;
+ 1156               	.LM134:
+ 1157 03e8 0895      		ret
+ 1158               	.L58:
+ 386:systime.c     **** 			default:
+ 387:systime.c     **** 				//Leds_greenToggle();
+ 388:systime.c     **** 				error("wrong systime reason!\n");
+ 1160               	.LM135:
+ 1161 03ea 80E0      		ldi r24,lo8(.LC4)
+ 1162 03ec 90E0      		ldi r25,hi8(.LC4)
+ 1163 03ee 0E94 0000 		call error
+ 1164 03f2 0895      		ret
+ 1165               	/* epilogue: frame size=0 */
+ 1166 03f4 0895      		ret
+ 1167               	/* epilogue end (size=1) */
+ 1168               	/* function systimer_task_fire size 120 (119) */
+ 1170               	.Lscope13:
+ 1172               	.global	get_timestamp16H
+ 1174               	get_timestamp16H:
+ 389:systime.c     **** 		}
+ 390:systime.c     **** 	
+ 391:systime.c     **** }
+ 392:systime.c     **** 
+ 393:systime.c     **** 
+ 394:systime.c     **** //---------------------------------------------------------------------------
+ 395:systime.c     **** //   need some codes for  timestamp,added by zhouqiang in 2005.12.04
+ 396:systime.c     **** //---------------------------------------------------------------------------
+ 397:systime.c     **** uint16_t get_timestamp16H(void)
+ 398:systime.c     **** {
+ 1176               	.LM136:
+ 1177               	/* prologue: frame size=0 */
+ 1178               	/* prologue end (size=0) */
+ 399:systime.c     **** 	return timestamp_H;
+ 1180               	.LM137:
+ 1181 03f6 8091 0000 		lds r24,timestamp_H
+ 1182 03fa 9091 0000 		lds r25,(timestamp_H)+1
+ 1183               	/* epilogue: frame size=0 */
+ 1184 03fe 0895      		ret
+ 1185               	/* epilogue end (size=1) */
+ 1186               	/* function get_timestamp16H size 5 (4) */
+ 1188               	.Lscope14:
+ 1190               	.global	get_timestamp16L
+ 1192               	get_timestamp16L:
+ 400:systime.c     **** }
+ 401:systime.c     **** uint16_t get_timestamp16L(void)
+ 402:systime.c     **** {
+ 1194               	.LM138:
+ 1195               	/* prologue: frame size=0 */
+ 1196               	/* prologue end (size=0) */
+ 403:systime.c     **** 	return ICR1;
+ 1198               	.LM139:
+ 1199 0400 86B5      		in r24,70-0x20
+ 1200 0402 97B5      		in r25,(70)+1-0x20
+ 1201               	/* epilogue: frame size=0 */
+ 1202 0404 0895      		ret
+ 1203               	/* epilogue end (size=1) */
+ 1204               	/* function get_timestamp16L size 3 (2) */
+ 1206               	.Lscope15:
+ 1208               	.global	get_timestamp32
+ 1210               	get_timestamp32:
+ 404:systime.c     **** }
+ 405:systime.c     **** uint32_t get_timestamp32(void)
+ 406:systime.c     **** {
+ 1212               	.LM140:
+ 1213               	/* prologue: frame size=0 */
+ 1214 0406 EF92      		push r14
+ 1215 0408 FF92      		push r15
+ 1216 040a 0F93      		push r16
+ 1217 040c 1F93      		push r17
+ 1218               	/* prologue end (size=4) */
+ 1219               	.LBB7:
+ 407:systime.c     **** 	register union time_u time;
+ 408:systime.c     **** 	{ os_atomic_t _nesc_atomic = os_atomic_start();
+ 1221               	.LM141:
+ 1222 040e 0E94 0000 		call os_atomic_start
+ 409:systime.c     **** 	{
+ 410:systime.c     **** 		time.low =  ICR1;
+ 1224               	.LM142:
+ 1225 0412 26B5      		in r18,70-0x20
+ 1226 0414 37B5      		in r19,(70)+1-0x20
+ 1227 0416 7901      		movw r14,r18
+ 411:systime.c     **** 		time.high = timestamp_H;
+ 1229               	.LM143:
+ 1230 0418 2091 0000 		lds r18,timestamp_H
+ 1231 041c 3091 0000 		lds r19,(timestamp_H)+1
+ 1232 0420 8901      		movw r16,r18
+ 412:systime.c     **** 	}
+ 413:systime.c     **** 	os_atomic_end(_nesc_atomic); }
+ 1234               	.LM144:
+ 1235 0422 0E94 0000 		call os_atomic_end
+ 1236               	.LBE7:
+ 414:systime.c     **** 
+ 415:systime.c     **** 	return time.full;
+ 416:systime.c     **** }
+ 1238               	.LM145:
+ 1239 0426 C801      		movw r24,r16
+ 1240 0428 B701      		movw r22,r14
+ 1241               	/* epilogue: frame size=0 */
+ 1242 042a 1F91      		pop r17
+ 1243 042c 0F91      		pop r16
+ 1244 042e FF90      		pop r15
+ 1245 0430 EF90      		pop r14
+ 1246 0432 0895      		ret
+ 1247               	/* epilogue end (size=5) */
+ 1248               	/* function get_timestamp32 size 23 (14) */
+ 1253               	.Lscope16:
+ 1254               		.comm OS_queue,16,1
+ 1255               		.comm OS_sched_full,1,1
+ 1256               		.comm OS_sched_free,1,1
+ 1257               		.comm mState,4,1
+ 1258               		.comm setIntervalFlag,1,1
+ 1259               		.comm mScale,1,1
+ 1260               		.comm mInterval,1,1
+ 1261               		.comm queue_head,1,1
+ 1262               		.comm queue_tail,1,1
+ 1263               		.comm queue_size,1,1
+ 1264               		.comm queue,3,1
+ 1265               		.comm mTimerList,33,1
+ 1266               		.comm cc2420_bramspi,1,1
+ 1267               		.comm cc2420_rambuf,2,1
+ 1268               		.comm cc2420_ramlen,1,1
+ 1269               		.comm cc2420_ramaddr,2,1
+ 1270               		.comm cc2420fifo_bspi,1,1
+ 1271               		.comm cc2420fifo_txbuf,2,1
+ 1272               		.comm cc2420fifo_txlength,1,1
+ 1273               		.comm cc2420_rxbuf,4,1
+ 1274               		.comm cc2420_rxlength,1,1
+ 1275               		.comm cc2420_rxbuf_now,2,1
+ 1276               		.comm cc2420_rxlength_now,1,1
+ 1277               		.comm cc2420_rxbufuse,1,1
+ 1278               		.comm rfpackernum,1,1
+ 1279               		.comm cc2420_rxflag,1,1
+ 1280               		.comm cc2420_currentparameters,28,1
+ 1281               		.comm receive_timestamp,4,1
+ 1282               		.comm send_timestamp,4,1
+ 1283               		.comm cc2420_stateRadio,1,1
+ 1284               		.comm cc2420_LocalAddr,2,1
+ 1285               		.comm ieee_address,8,1
+ 1286               		.comm backoff_timer_Set,1,1
+ 1287               		.comm backoff_call,2,1
+ 1288               		.comm GTSDirectionMask,1,1
+ 1289               		.comm phy_channel_state,1,1
+ 1290               		.comm rxbuf_flag,1,1
+ 1291               		.comm ppib,3,1
+ 1292               		.comm SENSOR_DATA_VALUE,20,1
+ 1293               		.comm ADC_INTERRUPT_FLAG,1,1
+ 1294               		.comm currentTime,2,1
+ 1295               		.comm head_of_systimer_queue,2,1
+ 1296               		.comm timestamp_H,2,1
+ 1340               		.text
+ 1342               	Letext:
+ 1343               	/* File "systime.c": code  540 = 0x021c ( 443), prologues  40, epilogues  57 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 systime.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:220    .text:00000000 systime16L
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:238    .text:00000006 systime16H
+                            *COM*:00000002 currentTime
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:256    .text:00000010 systime32
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:321    .text:0000004e systime_init
+                            *COM*:00000002 head_of_systimer_queue
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:377    .text:0000007a systime_stop
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:394    .text:0000007e Timer1_OCR_intDisable
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:422    .text:0000008e Timer1_setInterval
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:468    .text:000000b6 Timer1_sethalfsymbol
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:486    .text:000000bc Timer1_acquireInterval
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:528    .text:000000ee Timer1_adjustInterval
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:563    .text:0000010a Timer1_getnextInterval
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:606    .text:00000128 systimer_start_task
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:883    .text:000002aa systimer_stop_task
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:991    .text:0000030a systimer_task_fire
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000003 ppib
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:1174   .text:000003f6 get_timestamp16H
+                            *COM*:00000002 timestamp_H
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:1192   .text:00000400 get_timestamp16L
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:1210   .text:00000406 get_timestamp32
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 cc2420_bramspi
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000002 cc2420fifo_txbuf
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000001 cc2420_rxbufuse
+                            *COM*:00000001 rfpackernum
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:0000001c cc2420_currentparameters
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+C:\Users\sunhejie\AppData\Local\Temp/cc25aaaa.s:1342   .text:00000434 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+os_atomic_start
+os_atomic_end
+malloc
+Leds_redToggle
+free
+Leds_yellowOn
+Leds_greenOn
+beacon_frame_send
+Leds_redOn
+mac_current_state
+PLME_SET_TRX_STATE_request
+Is_received_beacon
+mac_current_state_saved
+Leds_greenOff
+Leds_yellowOff
+synrequest_task
+OS_post
+puts
+IS_NETWORK_FORMED
+loss_sync_number
+mlmeSyncRequest
+CSMA_CA_DOING
+error

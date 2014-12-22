@@ -1,0 +1,2387 @@
+   1               		.file	"cc2420.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+ 219               	.global	cc2420_pin_init
+ 221               	cc2420_pin_init:
+   1:cc2420.c      **** #include "cc2420.h"
+   2:cc2420.c      **** 
+   3:cc2420.c      **** //------------------------------HPL----------------------------------------------------------------
+   4:cc2420.c      **** inline  uint8_t cc2420_pin_init(void)
+   5:cc2420.c      **** {
+ 223               	.LM1:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+   6:cc2420.c      **** 
+   7:cc2420.c      ****   cc2420_bramspi = TRUE;
+ 227               	.LM2:
+ 228 0000 81E0      		ldi r24,lo8(1)
+ 229 0002 8093 0000 		sts cc2420_bramspi,r24
+   8:cc2420.c      ****   OS_MAKE_MISO_INPUT();
+ 231               	.LM3:
+ 232 0006 0E94 0000 		call OS_MAKE_MISO_INPUT
+   9:cc2420.c      ****   OS_MAKE_MOSI_OUTPUT();
+ 234               	.LM4:
+ 235 000a 0E94 0000 		call OS_MAKE_MOSI_OUTPUT
+  10:cc2420.c      ****   OS_MAKE_SPI_SCK_OUTPUT();
+ 237               	.LM5:
+ 238 000e 0E94 0000 		call OS_MAKE_SPI_SCK_OUTPUT
+  11:cc2420.c      ****   OS_MAKE_CC_RSTN_OUTPUT();
+ 240               	.LM6:
+ 241 0012 0E94 0000 		call OS_MAKE_CC_RSTN_OUTPUT
+  12:cc2420.c      ****   OS_MAKE_CC_VREN_OUTPUT();
+ 243               	.LM7:
+ 244 0016 0E94 0000 		call OS_MAKE_CC_VREN_OUTPUT
+  13:cc2420.c      ****   OS_MAKE_CC_CS_OUTPUT();
+ 246               	.LM8:
+ 247 001a 0E94 0000 		call OS_MAKE_CC_CS_OUTPUT
+  14:cc2420.c      ****   OS_MAKE_CC_FIFOP1_INPUT();
+ 249               	.LM9:
+ 250 001e 0E94 0000 		call OS_MAKE_CC_FIFOP1_INPUT
+  15:cc2420.c      ****   OS_MAKE_CC_CCA_INPUT();
+ 252               	.LM10:
+ 253 0022 0E94 0000 		call OS_MAKE_CC_CCA_INPUT
+  16:cc2420.c      ****   OS_MAKE_CC_SFD_INPUT();
+ 255               	.LM11:
+ 256 0026 0E94 0000 		call OS_MAKE_CC_SFD_INPUT
+  17:cc2420.c      ****   OS_MAKE_CC_FIFO_INPUT();
+ 258               	.LM12:
+ 259 002a 0E94 0000 		call OS_MAKE_CC_FIFO_INPUT
+  18:cc2420.c      ****   
+  19:cc2420.c      ****     return SUCCESS;
+  20:cc2420.c      **** }
+ 261               	.LM13:
+ 262 002e 80E0      		ldi r24,lo8(0)
+ 263 0030 90E0      		ldi r25,hi8(0)
+ 264               	/* epilogue: frame size=0 */
+ 265 0032 0895      		ret
+ 266               	/* epilogue end (size=1) */
+ 267               	/* function cc2420_pin_init size 26 (25) */
+ 269               	.Lscope0:
+ 271               	.global	cc2420_reginit
+ 273               	cc2420_reginit:
+  21:cc2420.c      **** 
+  22:cc2420.c      **** inline static  uint8_t SPI_init(void)
+  23:cc2420.c      **** {
+  24:cc2420.c      ****    { os_atomic_t _nesc_atomic = os_atomic_start();
+  25:cc2420.c      ****     {
+  26:cc2420.c      ****       OS_MAKE_SPI_SCK_OUTPUT();
+  27:cc2420.c      ****       OS_MAKE_MISO_INPUT();
+  28:cc2420.c      ****       OS_MAKE_MOSI_OUTPUT();
+  29:cc2420.c      ****       SPSR |= 1 << 0;//SPI STATE 
+  30:cc2420.c      ****       SPCR |= 1 << 4;
+  31:cc2420.c      ****       SPCR &= ~(1 << 3);
+  32:cc2420.c      ****       SPCR &= ~(1 << 2);
+  33:cc2420.c      ****       SPCR &= ~(1 << 1);
+  34:cc2420.c      ****       SPCR &= ~(1 << 0);
+  35:cc2420.c      ****       SPCR |= 1 << 6;
+  36:cc2420.c      ****     }
+  37:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+  38:cc2420.c      **** 	return SUCCESS;
+  39:cc2420.c      **** }
+  40:cc2420.c      **** 
+  41:cc2420.c      **** inline  uint8_t cc2420_reginit(void)
+  42:cc2420.c      **** {
+ 275               	.LM14:
+ 276               	/* prologue: frame size=0 */
+ 277               	/* prologue end (size=0) */
+  43:cc2420.c      ****   
+  44:cc2420.c      ****   // Set default parameters
+  45:cc2420.c      ****   cc2420_currentparameters[CP_MAIN] = 0xf800;
+ 279               	.LM15:
+ 280 0034 80E0      		ldi r24,lo8(-2048)
+ 281 0036 98EF      		ldi r25,hi8(-2048)
+ 282 0038 9093 0000 		sts (cc2420_currentparameters)+1,r25
+ 283 003c 8093 0000 		sts cc2420_currentparameters,r24
+  46:cc2420.c      ****   cc2420_currentparameters[CP_MDMCTRL0] = ((0 << cc2420_MDMCTRL0_PANCRD) |(0 << cc2420_MDMCTRL0_ADR
+ 285               	.LM16:
+ 286 0040 82EE      		ldi r24,lo8(738)
+ 287 0042 92E0      		ldi r25,hi8(738)
+ 288 0044 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 289 0048 8093 0000 		sts cc2420_currentparameters+2,r24
+  47:cc2420.c      ****        (2 << cc2420_MDMCTRL0_CCAHIST) | (3 << cc2420_MDMCTRL0_CCAMODE)  | //cca mode is 3
+  48:cc2420.c      ****        (1 << cc2420_MDMCTRL0_AUTOCRC) | (2 << cc2420_MDMCTRL0_PREAMBL)); //auto crc is set 
+  49:cc2420.c      **** 
+  50:cc2420.c      ****   cc2420_currentparameters[CP_MDMCTRL1] = 20 << cc2420_MDMCTRL1_CORRTHRESH;//default
+ 291               	.LM17:
+ 292 004c 80E0      		ldi r24,lo8(1280)
+ 293 004e 95E0      		ldi r25,hi8(1280)
+ 294 0050 9093 0000 		sts (cc2420_currentparameters+4)+1,r25
+ 295 0054 8093 0000 		sts cc2420_currentparameters+4,r24
+  51:cc2420.c      ****   cc2420_currentparameters[CP_RSSI] =     0xE080;//default 
+ 297               	.LM18:
+ 298 0058 80E8      		ldi r24,lo8(-8064)
+ 299 005a 90EE      		ldi r25,hi8(-8064)
+ 300 005c 9093 0000 		sts (cc2420_currentparameters+6)+1,r25
+ 301 0060 8093 0000 		sts cc2420_currentparameters+6,r24
+  52:cc2420.c      ****   cc2420_currentparameters[CP_SYNCWORD] = 0xA70F;
+ 303               	.LM19:
+ 304 0064 8FE0      		ldi r24,lo8(-22769)
+ 305 0066 97EA      		ldi r25,hi8(-22769)
+ 306 0068 9093 0000 		sts (cc2420_currentparameters+8)+1,r25
+ 307 006c 8093 0000 		sts cc2420_currentparameters+8,r24
+  53:cc2420.c      ****   cc2420_currentparameters[CP_TXCTRL] = ((1 << cc2420_TXCTRL_BUFCUR) | //default is 2-1.16ma,now is
+ 309               	.LM20:
+ 310 0070 8FEF      		ldi r24,lo8(24831)
+ 311 0072 90E6      		ldi r25,hi8(24831)
+ 312 0074 9093 0000 		sts (cc2420_currentparameters+10)+1,r25
+ 313 0078 8093 0000 		sts cc2420_currentparameters+10,r24
+  54:cc2420.c      ****        (1 << cc2420_TXCTRL_TURNARND) | (3 << cc2420_TXCTRL_PACUR) | //default ,turnaround time is 1
+  55:cc2420.c      ****        (1 << cc2420_TXCTRL_PADIFF) | (0x1f << cc2420_TXCTRL_PAPWR));//default
+  56:cc2420.c      ****  cc2420_currentparameters[CP_RXCTRL0] = ((1 << cc2420_RXCTRL0_BUFCUR) | //default is 980ua
+ 315               	.LM21:
+ 316 007c 85EE      		ldi r24,lo8(4837)
+ 317 007e 92E1      		ldi r25,hi8(4837)
+ 318 0080 9093 0000 		sts (cc2420_currentparameters+12)+1,r25
+ 319 0084 8093 0000 		sts cc2420_currentparameters+12,r24
+  57:cc2420.c      ****        (2 << cc2420_RXCTRL0_MLNAG) | (3 << cc2420_RXCTRL0_LOLNAG) | 
+  58:cc2420.c      ****        (2 << cc2420_RXCTRL0_HICUR) | (1 << cc2420_RXCTRL0_MCUR) | 
+  59:cc2420.c      ****        (1 << cc2420_RXCTRL0_LOCUR));//default
+  60:cc2420.c      ****  cc2420_currentparameters[CP_RXCTRL1]  = ((1 << cc2420_RXCTRL1_LOLOGAIN)   | (1 << cc2420_RXCTRL1_H
+ 321               	.LM22:
+ 322 0088 86E5      		ldi r24,lo8(2646)
+ 323 008a 9AE0      		ldi r25,hi8(2646)
+ 324 008c 9093 0000 		sts (cc2420_currentparameters+14)+1,r25
+ 325 0090 8093 0000 		sts cc2420_currentparameters+14,r24
+  61:cc2420.c      **** 	                                   (1 << cc2420_RXCTRL1_LNACAP)     | (1 << cc2420_RXCTRL1_RMIXT  
+  62:cc2420.c      **** 									   (1 << cc2420_RXCTRL1_RMIXV)      | (2 << cc2420_RXCTRL1_RMIXCUR  ) );//default
+  63:cc2420.c      **** 							    
+  64:cc2420.c      ****  cc2420_currentparameters[CP_FSCTRL]   = ((1 << cc2420_FSCTRL_LOCK)        | ((357+5*(cc2420_DEF_CH
+ 327               	.LM23:
+ 328 0094 8DE3      		ldi r24,lo8(16701)
+ 329 0096 91E4      		ldi r25,hi8(16701)
+ 330 0098 9093 0000 		sts (cc2420_currentparameters+16)+1,r25
+ 331 009c 8093 0000 		sts cc2420_currentparameters+16,r24
+  65:cc2420.c      ****  cc2420_currentparameters[CP_SECCTRL0] = ((0 << cc2420_SECCTRL0_PROTECT) |(1 << cc2420_SECCTRL0_CBC
+ 333               	.LM24:
+ 334 00a0 84EC      		ldi r24,lo8(452)
+ 335 00a2 91E0      		ldi r25,hi8(452)
+ 336 00a4 9093 0000 		sts (cc2420_currentparameters+18)+1,r25
+ 337 00a8 8093 0000 		sts cc2420_currentparameters+18,r24
+  66:cc2420.c      **** 	                                   (1 << cc2420_SECCTRL0_SAKEYSEL)  | (1 << cc2420_SECCTRL0_TXKEYS
+  67:cc2420.c      **** 									   (1 << cc2420_SECCTRL0_SECM ) );//disable the security
+  68:cc2420.c      ****  cc2420_currentparameters[CP_SECCTRL1] = 0;
+ 339               	.LM25:
+ 340 00ac 1092 0000 		sts (cc2420_currentparameters+20)+1,__zero_reg__
+ 341 00b0 1092 0000 		sts cc2420_currentparameters+20,__zero_reg__
+  69:cc2420.c      ****  cc2420_currentparameters[CP_BATTMON]  = 0;//battery monitor is disable 
+ 343               	.LM26:
+ 344 00b4 1092 0000 		sts (cc2420_currentparameters+22)+1,__zero_reg__
+ 345 00b8 1092 0000 		sts cc2420_currentparameters+22,__zero_reg__
+  70:cc2420.c      ****     //cc2420_currentparameters[CP_IOCFG0]   = (((TOSH_DATA_LENGTH + 2) << cc2420_IOCFG0_FIFOTHR) | 
+  71:cc2420.c      **** 	//set fifop threshold to greater than size of  msg, fifop goes active at end of msg
+  72:cc2420.c      ****  cc2420_currentparameters[CP_IOCFG0]   = (((127) << cc2420_IOCFG0_FIFOTHR) | (1 <<cc2420_IOCFG0_FIF
+ 347               	.LM27:
+ 348 00bc 8FE7      		ldi r24,lo8(639)
+ 349 00be 92E0      		ldi r25,hi8(639)
+ 350 00c0 9093 0000 		sts (cc2420_currentparameters+24)+1,r25
+ 351 00c4 8093 0000 		sts cc2420_currentparameters+24,r24
+  73:cc2420.c      ****  cc2420_currentparameters[CP_IOCFG1]   =  0;
+ 353               	.LM28:
+ 354 00c8 1092 0000 		sts (cc2420_currentparameters+26)+1,__zero_reg__
+ 355 00cc 1092 0000 		sts cc2420_currentparameters+26,__zero_reg__
+  74:cc2420.c      ****   return SUCCESS;
+  75:cc2420.c      **** 
+  76:cc2420.c      **** }
+ 357               	.LM29:
+ 358 00d0 80E0      		ldi r24,lo8(0)
+ 359 00d2 90E0      		ldi r25,hi8(0)
+ 360               	/* epilogue: frame size=0 */
+ 361 00d4 0895      		ret
+ 362               	/* epilogue end (size=1) */
+ 363               	/* function cc2420_reginit size 81 (80) */
+ 365               	.Lscope1:
+ 367               	.global	cc2420_enablefifop
+ 369               	cc2420_enablefifop:
+  77:cc2420.c      **** 
+  78:cc2420.c      **** //---------------------------------------------------------设置cc2420寄存器的值
+  79:cc2420.c      **** bool cc2420_setreg(void)
+  80:cc2420.c      **** 
+  81:cc2420.c      **** {
+  82:cc2420.c      ****   uint16_t data;
+  83:cc2420.c      ****   
+  84:cc2420.c      ****   cc2420_writereg(cc2420_MAIN, cc2420_currentparameters[CP_MAIN]);
+  85:cc2420.c      ****   cc2420_writereg(cc2420_MDMCTRL0, cc2420_currentparameters[CP_MDMCTRL0]);
+  86:cc2420.c      ****   data = cc2420_readreg(cc2420_MDMCTRL0);
+  87:cc2420.c      ****   if (data != cc2420_currentparameters[CP_MDMCTRL0]) {
+  88:cc2420.c      ****   //printf("reginit is unsuccess\n");
+  89:cc2420.c      ****     return FALSE;
+  90:cc2420.c      ****     }
+  91:cc2420.c      ****   cc2420_writereg(cc2420_MDMCTRL1, cc2420_currentparameters[CP_MDMCTRL1]);
+  92:cc2420.c      ****   cc2420_writereg(cc2420_RSSI, cc2420_currentparameters[CP_RSSI]);
+  93:cc2420.c      ****   cc2420_writereg(cc2420_SYNCWORD, cc2420_currentparameters[CP_SYNCWORD]);
+  94:cc2420.c      ****   cc2420_writereg(cc2420_TXCTRL, cc2420_currentparameters[CP_TXCTRL]);
+  95:cc2420.c      ****   cc2420_writereg(cc2420_RXCTRL0, cc2420_currentparameters[CP_RXCTRL0]);
+  96:cc2420.c      ****   cc2420_writereg(cc2420_RXCTRL1, cc2420_currentparameters[CP_RXCTRL1]);
+  97:cc2420.c      ****   cc2420_writereg(cc2420_FSCTRL, cc2420_currentparameters[CP_FSCTRL]);
+  98:cc2420.c      **** 
+  99:cc2420.c      ****   cc2420_writereg(cc2420_SECCTRL0, cc2420_currentparameters[CP_SECCTRL0]);
+ 100:cc2420.c      ****   cc2420_writereg(cc2420_SECCTRL1, cc2420_currentparameters[CP_SECCTRL1]);
+ 101:cc2420.c      ****   cc2420_writereg(cc2420_IOCFG0, cc2420_currentparameters[CP_IOCFG0]);
+ 102:cc2420.c      ****   cc2420_writereg(cc2420_IOCFG1, cc2420_currentparameters[CP_IOCFG1]);
+ 103:cc2420.c      **** 
+ 104:cc2420.c      ****   cc2420_sendcmd(cc2420_SFLUSHTX);
+ 105:cc2420.c      ****   cc2420_sendcmd(cc2420_SFLUSHRX);
+ 106:cc2420.c      ****  //printf("reginit is success\n");
+ 107:cc2420.c      ****   return TRUE;
+ 108:cc2420.c      **** }
+ 109:cc2420.c      **** 
+ 110:cc2420.c      **** //----------------------------------------------------------------FIFOP中断处理中转
+ 111:cc2420.c      **** inline uint8_t cc2420_fifopintr(void){
+ 112:cc2420.c      ****     
+ 113:cc2420.c      ****  
+ 114:cc2420.c      ****    if (!OS_READ_CC_FIFO_PIN()) {
+ 115:cc2420.c      ****       //printf("收到一个包,但芯片缓存 溢出\n");
+ 116:cc2420.c      ****       cc2420_readreg(0x3F);
+ 117:cc2420.c      ****       rfpackernum=0;
+ 118:cc2420.c      ****       cc2420_sendcmd(0x08);
+ 119:cc2420.c      ****       cc2420_sendcmd(0x08);
+ 120:cc2420.c      ****       return SUCCESS;
+ 121:cc2420.c      ****     }
+ 122:cc2420.c      ****     rfpackernum++;
+ 123:cc2420.c      ****     receive_timestamp=get_timestamp32();
+ 124:cc2420.c      ****     //printf("===succeed received a physical packet====\n");
+ 125:cc2420.c      ****     if (cc2420_rxbufuse>1) 
+ 126:cc2420.c      **** 		{
+ 127:cc2420.c      **** 		    //printf("\nno available ram buffer\n");
+ 128:cc2420.c      **** 		      return SUCCESS;
+ 129:cc2420.c      **** 		
+ 130:cc2420.c      ****     	       }
+ 131:cc2420.c      ****     else 
+ 132:cc2420.c      **** 		{
+ 133:cc2420.c      ****               cc2420_rxbufuse++;
+ 134:cc2420.c      **** 		cc2420_readrxfifo();
+ 135:cc2420.c      ****     	      }
+ 136:cc2420.c      ****     return SUCCESS;
+ 137:cc2420.c      ****  }
+ 138:cc2420.c      **** //---------------------------------------------------------打开对fifop的中断支持,下降延触发
+ 139:cc2420.c      **** inline  uint8_t cc2420_enablefifop(void)
+ 140:cc2420.c      **** {
+ 371               	.LM30:
+ 372               	/* prologue: frame size=0 */
+ 373               	/* prologue end (size=0) */
+ 141:cc2420.c      ****   EICRB &= ~(1 << 4);
+ 375               	.LM31:
+ 376 00d6 8AB7      		in r24,90-0x20
+ 377 00d8 8F7E      		andi r24,lo8(-17)
+ 378 00da 8ABF      		out 90-0x20,r24
+ 142:cc2420.c      ****   EICRB |= 1 << 5;
+ 380               	.LM32:
+ 381 00dc 8AB7      		in r24,90-0x20
+ 382 00de 8062      		ori r24,lo8(32)
+ 383 00e0 8ABF      		out 90-0x20,r24
+ 143:cc2420.c      ****   EIMSK |= 1 << 6;
+ 385               	.LM33:
+ 386 00e2 89B7      		in r24,89-0x20
+ 387 00e4 8064      		ori r24,lo8(64)
+ 388 00e6 89BF      		out 89-0x20,r24
+ 144:cc2420.c      ****   return SUCCESS;
+ 145:cc2420.c      **** }
+ 390               	.LM34:
+ 391 00e8 80E0      		ldi r24,lo8(0)
+ 392 00ea 90E0      		ldi r25,hi8(0)
+ 393               	/* epilogue: frame size=0 */
+ 394 00ec 0895      		ret
+ 395               	/* epilogue end (size=1) */
+ 396               	/* function cc2420_enablefifop size 12 (11) */
+ 398               	.Lscope2:
+ 401               	.global	cc2420_readreg
+ 403               	cc2420_readreg:
+ 146:cc2420.c      **** 
+ 147:cc2420.c      **** //---------------------------------------------------------向cc2420发送一个命令
+ 148:cc2420.c      **** uint8_t cc2420_sendcmd(uint8_t addr)
+ 149:cc2420.c      **** {
+ 150:cc2420.c      ****    uint8_t status;
+ 151:cc2420.c      **** 
+ 152:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 153:cc2420.c      **** 
+ 154:cc2420.c      ****     {
+ 155:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 156:cc2420.c      ****       SPDR = addr;//这是单片机内部spi数据寄存器的地址
+ 157:cc2420.c      ****       while (!(SPSR & 0x80)) {//这是单片机内部spi状态寄存器的地址
+ 158:cc2420.c      ****         }
+ 159:cc2420.c      ****       ;
+ 160:cc2420.c      ****       status = SPDR;
+ 161:cc2420.c      ****     }
+ 162:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+ 163:cc2420.c      ****     OS_SET_CC_CS_PIN();
+ 164:cc2420.c      ****   return status;
+ 165:cc2420.c      **** }
+ 166:cc2420.c      **** //---------------------------------------------------------向cc2420指定的地址写数据
+ 167:cc2420.c      **** uint8_t cc2420_writereg(uint8_t addr, uint16_t data)
+ 168:cc2420.c      **** {
+ 169:cc2420.c      ****   uint8_t status;
+ 170:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 171:cc2420.c      ****     {
+ 172:cc2420.c      ****       cc2420_bramspi = FALSE;
+ 173:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 174:cc2420.c      ****       SPDR = addr;
+ 175:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 176:cc2420.c      ****         }
+ 177:cc2420.c      ****       ;
+ 178:cc2420.c      ****       status = SPDR;
+ 179:cc2420.c      ****       if (addr > 0x0E) {
+ 180:cc2420.c      ****           SPDR = data >> 8;
+ 181:cc2420.c      ****           while (!(SPSR & 0x80)) {
+ 182:cc2420.c      ****             }
+ 183:cc2420.c      ****           ;
+ 184:cc2420.c      ****           SPDR = data & 0xff;
+ 185:cc2420.c      ****           while (!(SPSR & 0x80)) {
+ 186:cc2420.c      ****             }
+ 187:cc2420.c      ****           ;
+ 188:cc2420.c      ****         }
+ 189:cc2420.c      ****       cc2420_bramspi = TRUE;
+ 190:cc2420.c      ****     }
+ 191:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+ 192:cc2420.c      ****   OS_SET_CC_CS_PIN();
+ 193:cc2420.c      ****   return status;
+ 194:cc2420.c      **** }
+ 195:cc2420.c      **** 
+ 196:cc2420.c      **** //---------------------------------------------------------------从cc2420指定的地址读数据
+ 197:cc2420.c      **** uint16_t cc2420_readreg(uint8_t addr)
+ 198:cc2420.c      **** {
+ 405               	.LM35:
+ 406               	/* prologue: frame size=0 */
+ 407 00ee 0F93      		push r16
+ 408 00f0 1F93      		push r17
+ 409 00f2 CF93      		push r28
+ 410 00f4 DF93      		push r29
+ 411               	/* prologue end (size=4) */
+ 412 00f6 182F      		mov r17,r24
+ 413               	.LBB2:
+ 199:cc2420.c      ****   uint16_t data = 0;
+ 200:cc2420.c      ****   uint8_t status;
+ 201:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 415               	.LM36:
+ 416 00f8 0E94 0000 		call os_atomic_start
+ 417 00fc 082F      		mov r16,r24
+ 202:cc2420.c      ****     {
+ 203:cc2420.c      ****       cc2420_bramspi = FALSE;
+ 419               	.LM37:
+ 420 00fe 1092 0000 		sts cc2420_bramspi,__zero_reg__
+ 204:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 422               	.LM38:
+ 423 0102 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 205:cc2420.c      ****       SPDR = addr | 0x40;
+ 425               	.LM39:
+ 426 0106 1064      		ori r17,lo8(64)
+ 427 0108 1FB9      		out 47-0x20,r17
+ 428               	.L5:
+ 206:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 430               	.LM40:
+ 431 010a 779B      		sbis 46-0x20,7
+ 432 010c FECF      		rjmp .L5
+ 207:cc2420.c      ****         }
+ 208:cc2420.c      ****       ;
+ 209:cc2420.c      ****       status = SPDR;
+ 434               	.LM41:
+ 435 010e 8FB1      		in r24,47-0x20
+ 210:cc2420.c      ****       SPDR = 0;
+ 437               	.LM42:
+ 438 0110 1FB8      		out 47-0x20,__zero_reg__
+ 439               	.L8:
+ 211:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 441               	.LM43:
+ 442 0112 779B      		sbis 46-0x20,7
+ 443 0114 FECF      		rjmp .L8
+ 212:cc2420.c      ****         }
+ 213:cc2420.c      ****       ;
+ 214:cc2420.c      ****       data = SPDR;
+ 445               	.LM44:
+ 446 0116 8FB1      		in r24,47-0x20
+ 447 0118 C82F      		mov r28,r24
+ 448 011a DD27      		clr r29
+ 215:cc2420.c      ****       SPDR = 0;
+ 450               	.LM45:
+ 451 011c 1FB8      		out 47-0x20,__zero_reg__
+ 452               	.L11:
+ 216:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 454               	.LM46:
+ 455 011e 779B      		sbis 46-0x20,7
+ 456 0120 FECF      		rjmp .L11
+ 217:cc2420.c      ****         }
+ 218:cc2420.c      ****       ;
+ 219:cc2420.c      ****       data = (data << 8) | SPDR;
+ 458               	.LM47:
+ 459 0122 DC2F      		mov r29,r28
+ 460 0124 CC27      		clr r28
+ 461 0126 8FB1      		in r24,47-0x20
+ 462 0128 9927      		clr r25
+ 463 012a C82B      		or r28,r24
+ 464 012c D92B      		or r29,r25
+ 220:cc2420.c      ****       OS_SET_CC_CS_PIN();
+ 466               	.LM48:
+ 467 012e 0E94 0000 		call OS_SET_CC_CS_PIN
+ 221:cc2420.c      ****       cc2420_bramspi = TRUE;
+ 469               	.LM49:
+ 470 0132 81E0      		ldi r24,lo8(1)
+ 471 0134 8093 0000 		sts cc2420_bramspi,r24
+ 222:cc2420.c      ****     }
+ 223:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+ 473               	.LM50:
+ 474 0138 802F      		mov r24,r16
+ 475 013a 0E94 0000 		call os_atomic_end
+ 476               	.LBE2:
+ 224:cc2420.c      ****   return data;
+ 225:cc2420.c      **** }
+ 478               	.LM51:
+ 479 013e CE01      		movw r24,r28
+ 480               	/* epilogue: frame size=0 */
+ 481 0140 DF91      		pop r29
+ 482 0142 CF91      		pop r28
+ 483 0144 1F91      		pop r17
+ 484 0146 0F91      		pop r16
+ 485 0148 0895      		ret
+ 486               	/* epilogue end (size=5) */
+ 487               	/* function cc2420_readreg size 46 (37) */
+ 496               	.Lscope3:
+ 500               	.global	cc2420_writereg
+ 502               	cc2420_writereg:
+ 504               	.LM52:
+ 505               	/* prologue: frame size=0 */
+ 506 014a FF92      		push r15
+ 507 014c 0F93      		push r16
+ 508 014e 1F93      		push r17
+ 509 0150 CF93      		push r28
+ 510 0152 DF93      		push r29
+ 511               	/* prologue end (size=5) */
+ 512 0154 182F      		mov r17,r24
+ 513 0156 EB01      		movw r28,r22
+ 514               	.LBB3:
+ 516               	.LM53:
+ 517 0158 0E94 0000 		call os_atomic_start
+ 518 015c F82E      		mov r15,r24
+ 520               	.LM54:
+ 521 015e 1092 0000 		sts cc2420_bramspi,__zero_reg__
+ 523               	.LM55:
+ 524 0162 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 526               	.LM56:
+ 527 0166 1FB9      		out 47-0x20,r17
+ 528               	.L15:
+ 530               	.LM57:
+ 531 0168 779B      		sbis 46-0x20,7
+ 532 016a FECF      		rjmp .L15
+ 534               	.LM58:
+ 535 016c 0FB1      		in r16,47-0x20
+ 537               	.LM59:
+ 538 016e 1F30      		cpi r17,lo8(15)
+ 539 0170 40F0      		brlo .L18
+ 541               	.LM60:
+ 542 0172 8D2F      		mov r24,r29
+ 543 0174 9927      		clr r25
+ 544 0176 8FB9      		out 47-0x20,r24
+ 545               	.L19:
+ 547               	.LM61:
+ 548 0178 779B      		sbis 46-0x20,7
+ 549 017a FECF      		rjmp .L19
+ 551               	.LM62:
+ 552 017c CFB9      		out 47-0x20,r28
+ 553               	.L22:
+ 555               	.LM63:
+ 556 017e 779B      		sbis 46-0x20,7
+ 557 0180 FECF      		rjmp .L22
+ 558               	.L18:
+ 560               	.LM64:
+ 561 0182 81E0      		ldi r24,lo8(1)
+ 562 0184 8093 0000 		sts cc2420_bramspi,r24
+ 564               	.LM65:
+ 565 0188 8F2D      		mov r24,r15
+ 566 018a 0E94 0000 		call os_atomic_end
+ 567               	.LBE3:
+ 569               	.LM66:
+ 570 018e 0E94 0000 		call OS_SET_CC_CS_PIN
+ 572               	.LM67:
+ 573 0192 802F      		mov r24,r16
+ 574 0194 9927      		clr r25
+ 575               	/* epilogue: frame size=0 */
+ 576 0196 DF91      		pop r29
+ 577 0198 CF91      		pop r28
+ 578 019a 1F91      		pop r17
+ 579 019c 0F91      		pop r16
+ 580 019e FF90      		pop r15
+ 581 01a0 0895      		ret
+ 582               	/* epilogue end (size=6) */
+ 583               	/* function cc2420_writereg size 44 (33) */
+ 591               	.Lscope4:
+ 594               	.global	cc2420_sendcmd
+ 596               	cc2420_sendcmd:
+ 598               	.LM68:
+ 599               	/* prologue: frame size=0 */
+ 600 01a2 1F93      		push r17
+ 601 01a4 CF93      		push r28
+ 602               	/* prologue end (size=2) */
+ 603 01a6 182F      		mov r17,r24
+ 604               	.LBB4:
+ 606               	.LM69:
+ 607 01a8 0E94 0000 		call os_atomic_start
+ 608 01ac C82F      		mov r28,r24
+ 610               	.LM70:
+ 611 01ae 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 613               	.LM71:
+ 614 01b2 1FB9      		out 47-0x20,r17
+ 615               	.L26:
+ 617               	.LM72:
+ 618 01b4 779B      		sbis 46-0x20,7
+ 619 01b6 FECF      		rjmp .L26
+ 621               	.LM73:
+ 622 01b8 1FB1      		in r17,47-0x20
+ 624               	.LM74:
+ 625 01ba 8C2F      		mov r24,r28
+ 626 01bc 0E94 0000 		call os_atomic_end
+ 627               	.LBE4:
+ 629               	.LM75:
+ 630 01c0 0E94 0000 		call OS_SET_CC_CS_PIN
+ 632               	.LM76:
+ 633 01c4 812F      		mov r24,r17
+ 634 01c6 9927      		clr r25
+ 635               	/* epilogue: frame size=0 */
+ 636 01c8 CF91      		pop r28
+ 637 01ca 1F91      		pop r17
+ 638 01cc 0895      		ret
+ 639               	/* epilogue end (size=3) */
+ 640               	/* function cc2420_sendcmd size 22 (17) */
+ 648               	.Lscope5:
+ 650               	.global	cc2420_setreg
+ 652               	cc2420_setreg:
+ 654               	.LM77:
+ 655               	/* prologue: frame size=0 */
+ 656               	/* prologue end (size=0) */
+ 658               	.LM78:
+ 659 01ce 6091 0000 		lds r22,cc2420_currentparameters
+ 660 01d2 7091 0000 		lds r23,(cc2420_currentparameters)+1
+ 661 01d6 80E1      		ldi r24,lo8(16)
+ 662 01d8 0E94 0000 		call cc2420_writereg
+ 664               	.LM79:
+ 665 01dc 6091 0000 		lds r22,cc2420_currentparameters+2
+ 666 01e0 7091 0000 		lds r23,(cc2420_currentparameters+2)+1
+ 667 01e4 81E1      		ldi r24,lo8(17)
+ 668 01e6 0E94 0000 		call cc2420_writereg
+ 670               	.LM80:
+ 671 01ea 81E1      		ldi r24,lo8(17)
+ 672 01ec 0E94 0000 		call cc2420_readreg
+ 674               	.LM81:
+ 675 01f0 2091 0000 		lds r18,cc2420_currentparameters+2
+ 676 01f4 3091 0000 		lds r19,(cc2420_currentparameters+2)+1
+ 677 01f8 8217      		cp r24,r18
+ 678 01fa 9307      		cpc r25,r19
+ 679 01fc 19F0      		breq .L30
+ 681               	.LM82:
+ 682 01fe 80E0      		ldi r24,lo8(0)
+ 683 0200 90E0      		ldi r25,hi8(0)
+ 684 0202 0895      		ret
+ 685               	.L30:
+ 687               	.LM83:
+ 688 0204 6091 0000 		lds r22,cc2420_currentparameters+4
+ 689 0208 7091 0000 		lds r23,(cc2420_currentparameters+4)+1
+ 690 020c 82E1      		ldi r24,lo8(18)
+ 691 020e 0E94 0000 		call cc2420_writereg
+ 693               	.LM84:
+ 694 0212 6091 0000 		lds r22,cc2420_currentparameters+6
+ 695 0216 7091 0000 		lds r23,(cc2420_currentparameters+6)+1
+ 696 021a 83E1      		ldi r24,lo8(19)
+ 697 021c 0E94 0000 		call cc2420_writereg
+ 699               	.LM85:
+ 700 0220 6091 0000 		lds r22,cc2420_currentparameters+8
+ 701 0224 7091 0000 		lds r23,(cc2420_currentparameters+8)+1
+ 702 0228 84E1      		ldi r24,lo8(20)
+ 703 022a 0E94 0000 		call cc2420_writereg
+ 705               	.LM86:
+ 706 022e 6091 0000 		lds r22,cc2420_currentparameters+10
+ 707 0232 7091 0000 		lds r23,(cc2420_currentparameters+10)+1
+ 708 0236 85E1      		ldi r24,lo8(21)
+ 709 0238 0E94 0000 		call cc2420_writereg
+ 711               	.LM87:
+ 712 023c 6091 0000 		lds r22,cc2420_currentparameters+12
+ 713 0240 7091 0000 		lds r23,(cc2420_currentparameters+12)+1
+ 714 0244 86E1      		ldi r24,lo8(22)
+ 715 0246 0E94 0000 		call cc2420_writereg
+ 717               	.LM88:
+ 718 024a 6091 0000 		lds r22,cc2420_currentparameters+14
+ 719 024e 7091 0000 		lds r23,(cc2420_currentparameters+14)+1
+ 720 0252 87E1      		ldi r24,lo8(23)
+ 721 0254 0E94 0000 		call cc2420_writereg
+ 723               	.LM89:
+ 724 0258 6091 0000 		lds r22,cc2420_currentparameters+16
+ 725 025c 7091 0000 		lds r23,(cc2420_currentparameters+16)+1
+ 726 0260 88E1      		ldi r24,lo8(24)
+ 727 0262 0E94 0000 		call cc2420_writereg
+ 729               	.LM90:
+ 730 0266 6091 0000 		lds r22,cc2420_currentparameters+18
+ 731 026a 7091 0000 		lds r23,(cc2420_currentparameters+18)+1
+ 732 026e 89E1      		ldi r24,lo8(25)
+ 733 0270 0E94 0000 		call cc2420_writereg
+ 735               	.LM91:
+ 736 0274 6091 0000 		lds r22,cc2420_currentparameters+20
+ 737 0278 7091 0000 		lds r23,(cc2420_currentparameters+20)+1
+ 738 027c 8AE1      		ldi r24,lo8(26)
+ 739 027e 0E94 0000 		call cc2420_writereg
+ 741               	.LM92:
+ 742 0282 6091 0000 		lds r22,cc2420_currentparameters+24
+ 743 0286 7091 0000 		lds r23,(cc2420_currentparameters+24)+1
+ 744 028a 8CE1      		ldi r24,lo8(28)
+ 745 028c 0E94 0000 		call cc2420_writereg
+ 747               	.LM93:
+ 748 0290 6091 0000 		lds r22,cc2420_currentparameters+26
+ 749 0294 7091 0000 		lds r23,(cc2420_currentparameters+26)+1
+ 750 0298 8DE1      		ldi r24,lo8(29)
+ 751 029a 0E94 0000 		call cc2420_writereg
+ 753               	.LM94:
+ 754 029e 89E0      		ldi r24,lo8(9)
+ 755 02a0 0E94 0000 		call cc2420_sendcmd
+ 757               	.LM95:
+ 758 02a4 88E0      		ldi r24,lo8(8)
+ 759 02a6 0E94 0000 		call cc2420_sendcmd
+ 761               	.LM96:
+ 762 02aa 81E0      		ldi r24,lo8(1)
+ 763 02ac 90E0      		ldi r25,hi8(1)
+ 765               	.LM97:
+ 766 02ae 0895      		ret
+ 767               	/* epilogue: frame size=0 */
+ 768 02b0 0895      		ret
+ 769               	/* epilogue end (size=1) */
+ 770               	/* function cc2420_setreg size 114 (113) */
+ 772               	.Lscope6:
+ 777               	.global	cc2420_readlargeram
+ 779               	cc2420_readlargeram:
+ 226:cc2420.c      **** 
+ 227:cc2420.c      **** uint8_t cc2420_readlargeram(uint16_t addr, uint8_t length, uint8_t *buffer)
+ 228:cc2420.c      **** {
+ 781               	.LM98:
+ 782               	/* prologue: frame size=0 */
+ 783 02b2 DF92      		push r13
+ 784 02b4 EF92      		push r14
+ 785 02b6 FF92      		push r15
+ 786 02b8 0F93      		push r16
+ 787 02ba 1F93      		push r17
+ 788 02bc CF93      		push r28
+ 789 02be DF93      		push r29
+ 790               	/* prologue end (size=7) */
+ 791 02c0 EC01      		movw r28,r24
+ 792 02c2 062F      		mov r16,r22
+ 793 02c4 7A01      		movw r14,r20
+ 229:cc2420.c      ****    uint8_t i = 0;
+ 795               	.LM99:
+ 796 02c6 10E0      		ldi r17,lo8(0)
+ 230:cc2420.c      ****    uint8_t status;
+ 231:cc2420.c      ****   if (!cc2420_bramspi) {
+ 798               	.LM100:
+ 799 02c8 8091 0000 		lds r24,cc2420_bramspi
+ 800 02cc 8823      		tst r24
+ 801 02ce 59F1      		breq .L31
+ 802               	.LBB5:
+ 232:cc2420.c      ****     return FALSE;
+ 233:cc2420.c      ****     }
+ 234:cc2420.c      **** 
+ 235:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 804               	.LM101:
+ 805 02d0 0E94 0000 		call os_atomic_start
+ 806 02d4 D82E      		mov r13,r24
+ 236:cc2420.c      **** 
+ 237:cc2420.c      ****     {
+ 238:cc2420.c      ****       cc2420_bramspi = FALSE;
+ 808               	.LM102:
+ 809 02d6 1093 0000 		sts cc2420_bramspi,r17
+ 239:cc2420.c      ****       //cc2420_ramaddr = addr;
+ 240:cc2420.c      ****      // cc2420_ramlen = length;
+ 241:cc2420.c      ****       
+ 242:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 811               	.LM103:
+ 812 02da 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 243:cc2420.c      **** 		  
+ 244:cc2420.c      ****       SPDR = (addr & 0x7F) | 0x80;
+ 814               	.LM104:
+ 815 02de 8C2F      		mov r24,r28
+ 816 02e0 8068      		ori r24,lo8(-128)
+ 817 02e2 8FB9      		out 47-0x20,r24
+ 818               	.L33:
+ 245:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 820               	.LM105:
+ 821 02e4 779B      		sbis 46-0x20,7
+ 822 02e6 FECF      		rjmp .L33
+ 246:cc2420.c      ****         }
+ 247:cc2420.c      ****       ;
+ 248:cc2420.c      ****       status = SPDR;
+ 824               	.LM106:
+ 825 02e8 8FB1      		in r24,47-0x20
+ 249:cc2420.c      ****       //printf("status1 is %x\n",status);
+ 250:cc2420.c      ****        
+ 251:cc2420.c      ****        SPDR = (addr >> 1) & 0xe0;
+ 827               	.LM107:
+ 828 02ea D695      		lsr r29
+ 829 02ec C795      		ror r28
+ 830 02ee 8C2F      		mov r24,r28
+ 831 02f0 807E      		andi r24,lo8(-32)
+ 832 02f2 8FB9      		out 47-0x20,r24
+ 833               	.L36:
+ 252:cc2420.c      ****        while (!(SPSR & 0x80)) ;
+ 835               	.LM108:
+ 836 02f4 779B      		sbis 46-0x20,7
+ 837 02f6 FECF      		rjmp .L36
+ 253:cc2420.c      **** 	status=SPDR;
+ 839               	.LM109:
+ 840 02f8 8FB1      		in r24,47-0x20
+ 254:cc2420.c      ****       	SPDR=0;
+ 842               	.LM110:
+ 843 02fa 1FB8      		out 47-0x20,__zero_reg__
+ 255:cc2420.c      **** 	for (i = 0; i < length; i++) {
+ 845               	.LM111:
+ 846 02fc 10E0      		ldi r17,lo8(0)
+ 847               	.L51:
+ 848 02fe 1017      		cp r17,r16
+ 849 0300 50F4      		brsh .L47
+ 850               	.L50:
+ 256:cc2420.c      **** 		 	 
+ 257:cc2420.c      ****                       while (!(SPSR & 0x80)) {
+ 852               	.LM112:
+ 853 0302 779B      		sbis 46-0x20,7
+ 854 0304 FECF      		rjmp .L50
+ 258:cc2420.c      **** 					  	
+ 259:cc2420.c      ****                        }
+ 260:cc2420.c      **** 		        buffer[i]=SPDR;
+ 856               	.LM113:
+ 857 0306 F701      		movw r30,r14
+ 858 0308 E10F      		add r30,r17
+ 859 030a F11D      		adc r31,__zero_reg__
+ 860 030c 8FB1      		in r24,47-0x20
+ 861 030e 8083      		st Z,r24
+ 261:cc2420.c      **** 			 SPDR=0;
+ 863               	.LM114:
+ 864 0310 1FB8      		out 47-0x20,__zero_reg__
+ 866               	.LM115:
+ 867 0312 1F5F      		subi r17,lo8(-(1))
+ 868 0314 F4CF      		rjmp .L51
+ 869               	.L47:
+ 262:cc2420.c      **** 		 	//printf("%x\n",buffer[i]);
+ 263:cc2420.c      ****         }
+ 264:cc2420.c      ****     }
+ 265:cc2420.c      ****   OS_SET_CC_CS_PIN();
+ 871               	.LM116:
+ 872 0316 0E94 0000 		call OS_SET_CC_CS_PIN
+ 266:cc2420.c      ****   os_atomic_end(_nesc_atomic); }
+ 874               	.LM117:
+ 875 031a 8D2D      		mov r24,r13
+ 876 031c 0E94 0000 		call os_atomic_end
+ 877               	.LBE5:
+ 267:cc2420.c      ****   cc2420_bramspi = TRUE;
+ 879               	.LM118:
+ 880 0320 81E0      		ldi r24,lo8(1)
+ 881 0322 8093 0000 		sts cc2420_bramspi,r24
+ 882               	.L31:
+ 268:cc2420.c      ****   return SUCCESS;
+ 269:cc2420.c      **** }
+ 884               	.LM119:
+ 885 0326 80E0      		ldi r24,lo8(0)
+ 886 0328 90E0      		ldi r25,hi8(0)
+ 887               	/* epilogue: frame size=0 */
+ 888 032a DF91      		pop r29
+ 889 032c CF91      		pop r28
+ 890 032e 1F91      		pop r17
+ 891 0330 0F91      		pop r16
+ 892 0332 FF90      		pop r15
+ 893 0334 EF90      		pop r14
+ 894 0336 DF90      		pop r13
+ 895 0338 0895      		ret
+ 896               	/* epilogue end (size=8) */
+ 897               	/* function cc2420_readlargeram size 68 (53) */
+ 906               	.Lscope7:
+ 911               	.global	cc2420_writelargeram
+ 913               	cc2420_writelargeram:
+ 270:cc2420.c      **** 
+ 271:cc2420.c      **** //---------------------------------------------------------连续写cc2420ram
+ 272:cc2420.c      **** uint8_t cc2420_writelargeram(uint16_t addr, uint8_t length, uint8_t *buffer)
+ 273:cc2420.c      **** {
+ 915               	.LM120:
+ 916               	/* prologue: frame size=0 */
+ 917 033a DF92      		push r13
+ 918 033c EF92      		push r14
+ 919 033e FF92      		push r15
+ 920 0340 0F93      		push r16
+ 921 0342 1F93      		push r17
+ 922 0344 CF93      		push r28
+ 923 0346 DF93      		push r29
+ 924               	/* prologue end (size=7) */
+ 925 0348 EC01      		movw r28,r24
+ 926 034a 062F      		mov r16,r22
+ 927 034c 7A01      		movw r14,r20
+ 274:cc2420.c      ****   uint8_t i = 0;
+ 929               	.LM121:
+ 930 034e 10E0      		ldi r17,lo8(0)
+ 275:cc2420.c      ****   uint8_t status;
+ 276:cc2420.c      **** 
+ 277:cc2420.c      ****   if (!cc2420_bramspi) {
+ 932               	.LM122:
+ 933 0350 8091 0000 		lds r24,cc2420_bramspi
+ 934 0354 8823      		tst r24
+ 935 0356 49F1      		breq .L52
+ 936               	.LBB6:
+ 278:cc2420.c      ****     return FALSE;
+ 279:cc2420.c      ****     }
+ 280:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 938               	.LM123:
+ 939 0358 0E94 0000 		call os_atomic_start
+ 940 035c D82E      		mov r13,r24
+ 281:cc2420.c      **** 
+ 282:cc2420.c      ****     {
+ 283:cc2420.c      ****       cc2420_bramspi = FALSE;
+ 942               	.LM124:
+ 943 035e 1093 0000 		sts cc2420_bramspi,r17
+ 284:cc2420.c      ****       //cc2420_ramaddr = addr;
+ 285:cc2420.c      ****       //cc2420_ramlen = length;
+ 286:cc2420.c      ****       //cc2420_rambuf = buffer;
+ 287:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 945               	.LM125:
+ 946 0362 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 288:cc2420.c      ****       SPDR = (addr & 0x7F) | 0x80;
+ 948               	.LM126:
+ 949 0366 8C2F      		mov r24,r28
+ 950 0368 8068      		ori r24,lo8(-128)
+ 951 036a 8FB9      		out 47-0x20,r24
+ 952               	.L54:
+ 289:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 954               	.LM127:
+ 955 036c 779B      		sbis 46-0x20,7
+ 956 036e FECF      		rjmp .L54
+ 290:cc2420.c      ****         }
+ 291:cc2420.c      ****       ;
+ 292:cc2420.c      ****       status = SPDR;
+ 958               	.LM128:
+ 959 0370 8FB1      		in r24,47-0x20
+ 293:cc2420.c      ****       
+ 294:cc2420.c      ****       SPDR = (addr >> 1) & 0xC0;
+ 961               	.LM129:
+ 962 0372 D695      		lsr r29
+ 963 0374 C795      		ror r28
+ 964 0376 8C2F      		mov r24,r28
+ 965 0378 807C      		andi r24,lo8(-64)
+ 966 037a 8FB9      		out 47-0x20,r24
+ 967               	.L57:
+ 295:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 969               	.LM130:
+ 970 037c 779B      		sbis 46-0x20,7
+ 971 037e FECF      		rjmp .L57
+ 296:cc2420.c      ****         }
+ 297:cc2420.c      ****       ;
+ 298:cc2420.c      ****       status = SPDR;
+ 973               	.LM131:
+ 974 0380 8FB1      		in r24,47-0x20
+ 299:cc2420.c      ****       //for (i = 0; i < length; i++) 
+ 300:cc2420.c      ****       	//printf("\nwrite is %02x\n", buffer[i]);
+ 301:cc2420.c      ****       for (i = 0; i < length; i++) {
+ 976               	.LM132:
+ 977 0382 10E0      		ldi r17,lo8(0)
+ 978               	.L69:
+ 979 0384 1017      		cp r17,r16
+ 980 0386 48F4      		brsh .L68
+ 302:cc2420.c      ****           SPDR = buffer[i];
+ 982               	.LM133:
+ 983 0388 F701      		movw r30,r14
+ 984 038a E10F      		add r30,r17
+ 985 038c F11D      		adc r31,__zero_reg__
+ 986 038e 8081      		ld r24,Z
+ 987 0390 8FB9      		out 47-0x20,r24
+ 988               	.L63:
+ 303:cc2420.c      ****           while (!(SPSR & 0x80)) {
+ 990               	.LM134:
+ 991 0392 779B      		sbis 46-0x20,7
+ 992 0394 FECF      		rjmp .L63
+ 994               	.LM135:
+ 995 0396 1F5F      		subi r17,lo8(-(1))
+ 996 0398 F5CF      		rjmp .L69
+ 997               	.L68:
+ 304:cc2420.c      ****             }
+ 305:cc2420.c      ****           ;
+ 306:cc2420.c      ****         }
+ 307:cc2420.c      ****     }
+ 308:cc2420.c      ****     OS_SET_CC_CS_PIN();
+ 999               	.LM136:
+ 1000 039a 0E94 0000 		call OS_SET_CC_CS_PIN
+ 309:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+ 1002               	.LM137:
+ 1003 039e 8D2D      		mov r24,r13
+ 1004 03a0 0E94 0000 		call os_atomic_end
+ 1005               	.LBE6:
+ 310:cc2420.c      ****   cc2420_bramspi = TRUE;
+ 1007               	.LM138:
+ 1008 03a4 81E0      		ldi r24,lo8(1)
+ 1009 03a6 8093 0000 		sts cc2420_bramspi,r24
+ 1010               	.L52:
+ 311:cc2420.c      ****   return SUCCESS;
+ 312:cc2420.c      **** }
+ 1012               	.LM139:
+ 1013 03aa 80E0      		ldi r24,lo8(0)
+ 1014 03ac 90E0      		ldi r25,hi8(0)
+ 1015               	/* epilogue: frame size=0 */
+ 1016 03ae DF91      		pop r29
+ 1017 03b0 CF91      		pop r28
+ 1018 03b2 1F91      		pop r17
+ 1019 03b4 0F91      		pop r16
+ 1020 03b6 FF90      		pop r15
+ 1021 03b8 EF90      		pop r14
+ 1022 03ba DF90      		pop r13
+ 1023 03bc 0895      		ret
+ 1024               	/* epilogue end (size=8) */
+ 1025               	/* function cc2420_writelargeram size 66 (51) */
+ 1034               	.Lscope8:
+ 1038               	.global	cc2420_writetxfifo
+ 1040               	cc2420_writetxfifo:
+ 313:cc2420.c      **** 
+ 314:cc2420.c      **** //-------------------------------------------------------------------------
+ 315:cc2420.c      **** uint8_t cc2420_writetxfifo(uint8_t len, uint8_t *msg)//modified by zhouqiang in 2005.11.30
+ 316:cc2420.c      **** {
+ 1042               	.LM140:
+ 1043               	/* prologue: frame size=0 */
+ 1044 03be FF92      		push r15
+ 1045 03c0 0F93      		push r16
+ 1046 03c2 1F93      		push r17
+ 1047 03c4 CF93      		push r28
+ 1048               	/* prologue end (size=4) */
+ 1049 03c6 F82E      		mov r15,r24
+ 1050 03c8 8B01      		movw r16,r22
+ 1051               	.LBB7:
+ 317:cc2420.c      ****   uint8_t i = 0;
+ 318:cc2420.c      ****   uint8_t status;
+ 319:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 1053               	.LM141:
+ 1054 03ca 0E94 0000 		call os_atomic_start
+ 1055 03ce C82F      		mov r28,r24
+ 320:cc2420.c      ****     {
+ 321:cc2420.c      ****       cc2420fifo_bspi = FALSE;
+ 1057               	.LM142:
+ 1058 03d0 1092 0000 		sts cc2420fifo_bspi,__zero_reg__
+ 322:cc2420.c      ****       cc2420fifo_txlength = len;
+ 1060               	.LM143:
+ 1061 03d4 F092 0000 		sts cc2420fifo_txlength,r15
+ 323:cc2420.c      ****       cc2420fifo_txbuf = msg;
+ 1063               	.LM144:
+ 1064 03d8 1093 0000 		sts (cc2420fifo_txbuf)+1,r17
+ 1065 03dc 0093 0000 		sts cc2420fifo_txbuf,r16
+ 324:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 1067               	.LM145:
+ 1068 03e0 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 325:cc2420.c      ****       SPDR = 0x3E;
+ 1070               	.LM146:
+ 1071 03e4 8EE3      		ldi r24,lo8(62)
+ 1072 03e6 8FB9      		out 47-0x20,r24
+ 1073               	.L71:
+ 326:cc2420.c      ****       while (!(SPSR & 0x80)) {
+ 1075               	.LM147:
+ 1076 03e8 779B      		sbis 46-0x20,7
+ 1077 03ea FECF      		rjmp .L71
+ 327:cc2420.c      ****         }
+ 328:cc2420.c      ****       ;
+ 329:cc2420.c      ****        status = SPDR;
+ 1079               	.LM148:
+ 1080 03ec 0FB1      		in r16,47-0x20
+ 330:cc2420.c      **** 	//added by zhouqiang in 2005.11.30//write length field to the rxfifo
+ 331:cc2420.c      ****        SPDR=cc2420fifo_txlength+2;
+ 1082               	.LM149:
+ 1083 03ee 9091 0000 		lds r25,cc2420fifo_txlength
+ 1084 03f2 9E5F      		subi r25,lo8(-(2))
+ 1085 03f4 9FB9      		out 47-0x20,r25
+ 1086 03f6 9250      		subi r25,lo8(-(-2))
+ 1087               	.L74:
+ 332:cc2420.c      **** 	while (!(SPSR & 0x80)) { };
+ 1089               	.LM150:
+ 1090 03f8 779B      		sbis 46-0x20,7
+ 1091 03fa FECF      		rjmp .L74
+ 333:cc2420.c      ****        status = SPDR;
+ 1093               	.LM151:
+ 1094 03fc 0FB1      		in r16,47-0x20
+ 334:cc2420.c      **** 	//----------------------------//
+ 335:cc2420.c      ****       for (i = 0; i < cc2420fifo_txlength; i++) {
+ 1096               	.LM152:
+ 1097 03fe 20E0      		ldi r18,lo8(0)
+ 1098               	.L86:
+ 1099 0400 2917      		cp r18,r25
+ 1100 0402 70F4      		brsh .L85
+ 336:cc2420.c      ****           SPDR = *cc2420fifo_txbuf;
+ 1102               	.LM153:
+ 1103 0404 E091 0000 		lds r30,cc2420fifo_txbuf
+ 1104 0408 F091 0000 		lds r31,(cc2420fifo_txbuf)+1
+ 1105 040c 8191      		ld r24,Z+
+ 1106 040e 8FB9      		out 47-0x20,r24
+ 337:cc2420.c      ****           cc2420fifo_txbuf++;
+ 1108               	.LM154:
+ 1109 0410 F093 0000 		sts (cc2420fifo_txbuf)+1,r31
+ 1110 0414 E093 0000 		sts cc2420fifo_txbuf,r30
+ 1111               	.L80:
+ 338:cc2420.c      ****           while (!(SPSR & 0x80)) {
+ 1113               	.LM155:
+ 1114 0418 779B      		sbis 46-0x20,7
+ 1115 041a FECF      		rjmp .L80
+ 1117               	.LM156:
+ 1118 041c 2F5F      		subi r18,lo8(-(1))
+ 1119 041e F0CF      		rjmp .L86
+ 1120               	.L85:
+ 339:cc2420.c      ****             }
+ 340:cc2420.c      ****           ;
+ 341:cc2420.c      ****         }
+ 342:cc2420.c      ****       cc2420fifo_bspi = TRUE;
+ 1122               	.LM157:
+ 1123 0420 81E0      		ldi r24,lo8(1)
+ 1124 0422 8093 0000 		sts cc2420fifo_bspi,r24
+ 343:cc2420.c      ****     }
+ 344:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+ 1126               	.LM158:
+ 1127 0426 8C2F      		mov r24,r28
+ 1128 0428 0E94 0000 		call os_atomic_end
+ 1129               	.LBE7:
+ 345:cc2420.c      ****   OS_SET_CC_CS_PIN();
+ 1131               	.LM159:
+ 1132 042c 0E94 0000 		call OS_SET_CC_CS_PIN
+ 346:cc2420.c      ****   
+ 347:cc2420.c      ****   //cc2420_sendcmd(cc2420_STXON); //do it in other process_2005.11.30
+ 348:cc2420.c      ****  
+ 349:cc2420.c      ****   return status;
+ 350:cc2420.c      **** }
+ 1134               	.LM160:
+ 1135 0430 802F      		mov r24,r16
+ 1136 0432 9927      		clr r25
+ 1137               	/* epilogue: frame size=0 */
+ 1138 0434 CF91      		pop r28
+ 1139 0436 1F91      		pop r17
+ 1140 0438 0F91      		pop r16
+ 1141 043a FF90      		pop r15
+ 1142 043c 0895      		ret
+ 1143               	/* epilogue end (size=5) */
+ 1144               	/* function cc2420_writetxfifo size 64 (55) */
+ 1153               	.Lscope9:
+ 1155               	.global	cc2420_readrxfifo
+ 1157               	cc2420_readrxfifo:
+ 351:cc2420.c      **** //-----------------------------------------------------------------------
+ 352:cc2420.c      **** void  cc2420_readrxfifo()
+ 353:cc2420.c      **** {
+ 1159               	.LM161:
+ 1160               	/* prologue: frame size=0 */
+ 1161 043e 0F93      		push r16
+ 1162 0440 1F93      		push r17
+ 1163 0442 CF93      		push r28
+ 1164               	/* prologue end (size=3) */
+ 1165               	.LBB8:
+ 354:cc2420.c      ****   uint8_t status;
+ 355:cc2420.c      ****   uint8_t i;
+ 356:cc2420.c      ****  //printf("开始一个读fifo任务\n");
+ 357:cc2420.c      ****   { os_atomic_t _nesc_atomic = os_atomic_start();
+ 1167               	.LM162:
+ 1168 0444 0E94 0000 		call os_atomic_start
+ 1169 0448 C82F      		mov r28,r24
+ 358:cc2420.c      ****     {
+ 359:cc2420.c      ****       cc2420fifo_bspi = FALSE;
+ 1171               	.LM163:
+ 1172 044a 1092 0000 		sts cc2420fifo_bspi,__zero_reg__
+ 360:cc2420.c      ****       OS_CLR_CC_CS_PIN();
+ 1174               	.LM164:
+ 1175 044e 0E94 0000 		call OS_CLR_CC_CS_PIN
+ 361:cc2420.c      **** 	  
+ 362:cc2420.c      ****       SPDR = 0x3F | 0x40;//read rxfifo
+ 1177               	.LM165:
+ 1178 0452 8FE7      		ldi r24,lo8(127)
+ 1179 0454 8FB9      		out 47-0x20,r24
+ 1180               	.L88:
+ 363:cc2420.c      ****       while (!(SPSR & 0x80))     ;
+ 1182               	.LM166:
+ 1183 0456 779B      		sbis 46-0x20,7
+ 1184 0458 FECF      		rjmp .L88
+ 364:cc2420.c      ****       status = SPDR;
+ 1186               	.LM167:
+ 1187 045a 8FB1      		in r24,47-0x20
+ 365:cc2420.c      ****       SPDR = 0;
+ 1189               	.LM168:
+ 1190 045c 1FB8      		out 47-0x20,__zero_reg__
+ 1191               	.L91:
+ 366:cc2420.c      ****       while (!(SPSR & 0x80))      ;
+ 1193               	.LM169:
+ 1194 045e 779B      		sbis 46-0x20,7
+ 1195 0460 FECF      		rjmp .L91
+ 367:cc2420.c      **** 	  
+ 368:cc2420.c      ****       cc2420_rxlength = SPDR;
+ 1197               	.LM170:
+ 1198 0462 9FB1      		in r25,47-0x20
+ 1199 0464 9093 0000 		sts cc2420_rxlength,r25
+ 369:cc2420.c      **** 	  
+ 370:cc2420.c      ****       //printf("开始分配空间给rxbuf,rxflag is %x\n",cc2420_rxflag);
+ 371:cc2420.c      **** 	  
+ 372:cc2420.c      ****     
+ 373:cc2420.c      ****       cc2420_rxbuf[cc2420_rxflag] =malloc(cc2420_rxlength +1);
+ 1201               	.LM171:
+ 1202 0468 8091 0000 		lds r24,cc2420_rxflag
+ 1203 046c 082F      		mov r16,r24
+ 1204 046e 1127      		clr r17
+ 1205 0470 000F      		add r16,r16
+ 1206 0472 111F      		adc r17,r17
+ 1207 0474 0050      		subi r16,lo8(-(cc2420_rxbuf))
+ 1208 0476 1040      		sbci r17,hi8(-(cc2420_rxbuf))
+ 1209 0478 892F      		mov r24,r25
+ 1210 047a 9927      		clr r25
+ 1211 047c 0196      		adiw r24,1
+ 1212 047e 0E94 0000 		call malloc
+ 1213 0482 F801      		movw r30,r16
+ 1214 0484 8083      		st Z,r24
+ 1215 0486 9183      		std Z+1,r25
+ 374:cc2420.c      ****      // printf("point is %04x\n",cc2420_rxbuf[cc2420_rxflag] );
+ 375:cc2420.c      ****    
+ 376:cc2420.c      **** 	  
+ 377:cc2420.c      ****       if (cc2420_rxlength > 0) {
+ 1217               	.LM172:
+ 1218 0488 9091 0000 		lds r25,cc2420_rxlength
+ 1219 048c 9923      		tst r25
+ 1220 048e 51F1      		breq .L94
+ 378:cc2420.c      ****           cc2420_rxbuf[cc2420_rxflag] [0] = cc2420_rxlength ;
+ 1222               	.LM173:
+ 1223 0490 8091 0000 		lds r24,cc2420_rxflag
+ 1224 0494 E82F      		mov r30,r24
+ 1225 0496 FF27      		clr r31
+ 1226 0498 EE0F      		add r30,r30
+ 1227 049a FF1F      		adc r31,r31
+ 1228 049c E050      		subi r30,lo8(-(cc2420_rxbuf))
+ 1229 049e F040      		sbci r31,hi8(-(cc2420_rxbuf))
+ 1230 04a0 0190      		ld __tmp_reg__,Z+
+ 1231 04a2 F081      		ld r31,Z
+ 1232 04a4 E02D      		mov r30,__tmp_reg__
+ 1233 04a6 9083      		st Z,r25
+ 379:cc2420.c      **** 
+ 380:cc2420.c      ****           cc2420_rxlength ++;
+ 1235               	.LM174:
+ 1236 04a8 8091 0000 		lds r24,cc2420_rxlength
+ 1237 04ac 8F5F      		subi r24,lo8(-(1))
+ 1238 04ae 8093 0000 		sts cc2420_rxlength,r24
+ 381:cc2420.c      **** 
+ 382:cc2420.c      ****           
+ 383:cc2420.c      ****           for (i = 1; i < cc2420_rxlength ; i++) {
+ 1240               	.LM175:
+ 1241 04b2 91E0      		ldi r25,lo8(1)
+ 1242               	.L103:
+ 1243 04b4 9817      		cp r25,r24
+ 1244 04b6 B0F4      		brsh .L94
+ 384:cc2420.c      ****               SPDR = 0;
+ 1246               	.LM176:
+ 1247 04b8 1FB8      		out 47-0x20,__zero_reg__
+ 1248               	.L98:
+ 385:cc2420.c      ****               while (!(SPSR & 0x80)) {
+ 1250               	.LM177:
+ 1251 04ba 779B      		sbis 46-0x20,7
+ 1252 04bc FECF      		rjmp .L98
+ 386:cc2420.c      ****                 }
+ 387:cc2420.c      ****               ;
+ 388:cc2420.c      ****               cc2420_rxbuf[cc2420_rxflag] [i] = SPDR;
+ 1254               	.LM178:
+ 1255 04be 8091 0000 		lds r24,cc2420_rxflag
+ 1256 04c2 E82F      		mov r30,r24
+ 1257 04c4 FF27      		clr r31
+ 1258 04c6 EE0F      		add r30,r30
+ 1259 04c8 FF1F      		adc r31,r31
+ 1260 04ca E050      		subi r30,lo8(-(cc2420_rxbuf))
+ 1261 04cc F040      		sbci r31,hi8(-(cc2420_rxbuf))
+ 1262 04ce 0190      		ld __tmp_reg__,Z+
+ 1263 04d0 F081      		ld r31,Z
+ 1264 04d2 E02D      		mov r30,__tmp_reg__
+ 1265 04d4 E90F      		add r30,r25
+ 1266 04d6 F11D      		adc r31,__zero_reg__
+ 1267 04d8 8FB1      		in r24,47-0x20
+ 1268 04da 8083      		st Z,r24
+ 1270               	.LM179:
+ 1271 04dc 9F5F      		subi r25,lo8(-(1))
+ 1272 04de 8091 0000 		lds r24,cc2420_rxlength
+ 1273 04e2 E8CF      		rjmp .L103
+ 1274               	.L94:
+ 389:cc2420.c      ****             }
+ 390:cc2420.c      ****         }
+ 391:cc2420.c      ****      
+ 392:cc2420.c      ****       cc2420fifo_bspi = TRUE;
+ 1276               	.LM180:
+ 1277 04e4 81E0      		ldi r24,lo8(1)
+ 1278 04e6 8093 0000 		sts cc2420fifo_bspi,r24
+ 393:cc2420.c      ****      
+ 394:cc2420.c      ****       rfpackernum--;
+ 1280               	.LM181:
+ 1281 04ea 8091 0000 		lds r24,rfpackernum
+ 1282 04ee 8150      		subi r24,lo8(-(-1))
+ 1283 04f0 8093 0000 		sts rfpackernum,r24
+ 395:cc2420.c      ****       cc2420_rxflag++;  
+ 1285               	.LM182:
+ 1286 04f4 8091 0000 		lds r24,cc2420_rxflag
+ 1287 04f8 8F5F      		subi r24,lo8(-(1))
+ 396:cc2420.c      ****       cc2420_rxflag&=0x01;
+ 1289               	.LM183:
+ 1290 04fa 8170      		andi r24,lo8(1)
+ 1291 04fc 8093 0000 		sts cc2420_rxflag,r24
+ 397:cc2420.c      ****       
+ 398:cc2420.c      ****     }
+ 399:cc2420.c      ****     os_atomic_end(_nesc_atomic); }
+ 1293               	.LM184:
+ 1294 0500 8C2F      		mov r24,r28
+ 1295 0502 0E94 0000 		call os_atomic_end
+ 1296               	.LBE8:
+ 400:cc2420.c      ****   OS_SET_CC_CS_PIN();
+ 1298               	.LM185:
+ 1299 0506 0E94 0000 		call OS_SET_CC_CS_PIN
+ 401:cc2420.c      ****   phy_handlepacket();//modied by zhouqiang in 2005.11.30 
+ 1301               	.LM186:
+ 1302 050a 0E94 0000 		call phy_handlepacket
+ 1303               	/* epilogue: frame size=0 */
+ 1304 050e CF91      		pop r28
+ 1305 0510 1F91      		pop r17
+ 1306 0512 0F91      		pop r16
+ 1307 0514 0895      		ret
+ 1308               	/* epilogue end (size=4) */
+ 1309               	/* function cc2420_readrxfifo size 108 (101) */
+ 1318               	.Lscope10:
+ 1320               	.global	cc2420_fifopintr
+ 1322               	cc2420_fifopintr:
+ 1324               	.LM187:
+ 1325               	/* prologue: frame size=0 */
+ 1326               	/* prologue end (size=0) */
+ 1328               	.LM188:
+ 1329 0516 0E94 0000 		call OS_READ_CC_FIFO_PIN
+ 1330 051a 892B      		or r24,r25
+ 1331 051c 61F4      		brne .L105
+ 1333               	.LM189:
+ 1334 051e 8FE3      		ldi r24,lo8(63)
+ 1335 0520 0E94 0000 		call cc2420_readreg
+ 1337               	.LM190:
+ 1338 0524 1092 0000 		sts rfpackernum,__zero_reg__
+ 1340               	.LM191:
+ 1341 0528 88E0      		ldi r24,lo8(8)
+ 1342 052a 0E94 0000 		call cc2420_sendcmd
+ 1344               	.LM192:
+ 1345 052e 88E0      		ldi r24,lo8(8)
+ 1346 0530 0E94 0000 		call cc2420_sendcmd
+ 1348               	.LM193:
+ 1349 0534 1AC0      		rjmp .L104
+ 1350               	.L105:
+ 1352               	.LM194:
+ 1353 0536 8091 0000 		lds r24,rfpackernum
+ 1354 053a 8F5F      		subi r24,lo8(-(1))
+ 1355 053c 8093 0000 		sts rfpackernum,r24
+ 1357               	.LM195:
+ 1358 0540 0E94 0000 		call get_timestamp32
+ 1359 0544 DC01      		movw r26,r24
+ 1360 0546 CB01      		movw r24,r22
+ 1361 0548 8093 0000 		sts receive_timestamp,r24
+ 1362 054c 9093 0000 		sts (receive_timestamp)+1,r25
+ 1363 0550 A093 0000 		sts (receive_timestamp)+2,r26
+ 1364 0554 B093 0000 		sts (receive_timestamp)+3,r27
+ 1366               	.LM196:
+ 1367 0558 8091 0000 		lds r24,cc2420_rxbufuse
+ 1368 055c 8230      		cpi r24,lo8(2)
+ 1369 055e 28F4      		brsh .L104
+ 1371               	.LM197:
+ 1372 0560 8F5F      		subi r24,lo8(-(1))
+ 1373 0562 8093 0000 		sts cc2420_rxbufuse,r24
+ 1375               	.LM198:
+ 1376 0566 0E94 0000 		call cc2420_readrxfifo
+ 1377               	.L104:
+ 1379               	.LM199:
+ 1380 056a 80E0      		ldi r24,lo8(0)
+ 1381 056c 90E0      		ldi r25,hi8(0)
+ 1382               	/* epilogue: frame size=0 */
+ 1383 056e 0895      		ret
+ 1384               	/* epilogue end (size=1) */
+ 1385               	/* function cc2420_fifopintr size 45 (44) */
+ 1387               	.Lscope11:
+ 1389               	.global	cc2420_oscon
+ 1391               	cc2420_oscon:
+ 402:cc2420.c      **** }
+ 403:cc2420.c      **** 
+ 404:cc2420.c      **** //-------------------------------------------------------------------------
+ 405:cc2420.c      **** inline  uint8_t cc2420_oscon(void)
+ 406:cc2420.c      **** 
+ 407:cc2420.c      **** {
+ 1393               	.LM200:
+ 1394               	/* prologue: frame size=0 */
+ 1395 0570 1F93      		push r17
+ 1396 0572 CF93      		push r28
+ 1397               	/* prologue end (size=2) */
+ 408:cc2420.c      ****   uint8_t i;
+ 409:cc2420.c      ****   uint8_t status;
+ 410:cc2420.c      ****   bool bXoscOn = FALSE;
+ 1399               	.LM201:
+ 1400 0574 10E0      		ldi r17,lo8(0)
+ 411:cc2420.c      ****   i = 0;
+ 1402               	.LM202:
+ 1403 0576 C12F      		mov r28,r17
+ 412:cc2420.c      ****   cc2420_sendcmd(cc2420_SXOSCON);
+ 1405               	.LM203:
+ 1406 0578 81E0      		ldi r24,lo8(1)
+ 1407 057a 0E94 0000 		call cc2420_sendcmd
+ 1408               	.L112:
+ 413:cc2420.c      ****   while (i < 200 && bXoscOn == FALSE) {
+ 414:cc2420.c      ****       OS_uwait(100);
+ 1410               	.LM204:
+ 1411 057e 84E6      		ldi r24,lo8(100)
+ 1412 0580 90E0      		ldi r25,hi8(100)
+ 1413 0582 0E94 0000 		call OS_uwait
+ 415:cc2420.c      ****       status = cc2420_sendcmd(cc2420_SNOP);
+ 1415               	.LM205:
+ 1416 0586 80E0      		ldi r24,lo8(0)
+ 1417 0588 0E94 0000 		call cc2420_sendcmd
+ 416:cc2420.c      ****       status = status & (1 << 6);
+ 417:cc2420.c      ****       if (status) {
+ 1419               	.LM206:
+ 1420 058c 86FD      		sbrc r24,6
+ 418:cc2420.c      **** 
+ 419:cc2420.c      ****         bXoscOn = TRUE;
+ 1422               	.LM207:
+ 1423 058e 11E0      		ldi r17,lo8(1)
+ 1424               	.L111:
+ 420:cc2420.c      ****         }
+ 421:cc2420.c      **** 
+ 422:cc2420.c      ****       i++;
+ 1426               	.LM208:
+ 1427 0590 CF5F      		subi r28,lo8(-(1))
+ 1428 0592 C83C      		cpi r28,lo8(-56)
+ 1429 0594 10F4      		brsh .L110
+ 1430 0596 1123      		tst r17
+ 1431 0598 91F3      		breq .L112
+ 1432               	.L110:
+ 423:cc2420.c      ****     }
+ 424:cc2420.c      ****   if (!bXoscOn) {
+ 425:cc2420.c      ****     //printf("osc is unsuccess now\n");
+ 426:cc2420.c      ****     return FAIL;
+ 427:cc2420.c      ****     }
+ 428:cc2420.c      **** //printf("osc is success now\n");
+ 429:cc2420.c      ****   return SUCCESS;
+ 430:cc2420.c      **** }
+ 1434               	.LM209:
+ 1435 059a 80E0      		ldi r24,lo8(0)
+ 1436 059c 90E0      		ldi r25,hi8(0)
+ 1437               	/* epilogue: frame size=0 */
+ 1438 059e CF91      		pop r28
+ 1439 05a0 1F91      		pop r17
+ 1440 05a2 0895      		ret
+ 1441               	/* epilogue end (size=3) */
+ 1442               	/* function cc2420_oscon size 27 (22) */
+ 1448               	.Lscope12:
+ 1450               	.global	cc2420_oscoff
+ 1452               	cc2420_oscoff:
+ 431:cc2420.c      **** 
+ 432:cc2420.c      **** inline uint8_t cc2420_oscoff(void) {
+ 1454               	.LM210:
+ 1455               	/* prologue: frame size=0 */
+ 1456               	/* prologue end (size=0) */
+ 433:cc2420.c      ****     cc2420_sendcmd(cc2420_SXOSCOFF);   //turn-off crystal
+ 1458               	.LM211:
+ 1459 05a4 87E0      		ldi r24,lo8(7)
+ 1460 05a6 0E94 0000 		call cc2420_sendcmd
+ 434:cc2420.c      ****     return SUCCESS;
+ 435:cc2420.c      ****   }
+ 1462               	.LM212:
+ 1463 05aa 80E0      		ldi r24,lo8(0)
+ 1464 05ac 90E0      		ldi r25,hi8(0)
+ 1465               	/* epilogue: frame size=0 */
+ 1466 05ae 0895      		ret
+ 1467               	/* epilogue end (size=1) */
+ 1468               	/* function cc2420_oscoff size 6 (5) */
+ 1470               	.Lscope13:
+ 1472               	.global	cc2420_VREFOn
+ 1474               	cc2420_VREFOn:
+ 436:cc2420.c      **** 
+ 437:cc2420.c      **** //--------------------------------------------------------
+ 438:cc2420.c      **** inline  uint8_t cc2420_VREFOn(void){
+ 1476               	.LM213:
+ 1477               	/* prologue: frame size=0 */
+ 1478               	/* prologue end (size=0) */
+ 439:cc2420.c      ****     OS_SET_CC_VREN_PIN();                    //turn-on  
+ 1480               	.LM214:
+ 1481 05b0 0E94 0000 		call OS_SET_CC_VREN_PIN
+ 440:cc2420.c      ****     OS_uwait(1800);    
+ 1483               	.LM215:
+ 1484 05b4 88E0      		ldi r24,lo8(1800)
+ 1485 05b6 97E0      		ldi r25,hi8(1800)
+ 1486 05b8 0E94 0000 		call OS_uwait
+ 441:cc2420.c      ****   //printf("vref is on now\n");
+ 442:cc2420.c      **** 	return SUCCESS;
+ 443:cc2420.c      ****   }
+ 1488               	.LM216:
+ 1489 05bc 80E0      		ldi r24,lo8(0)
+ 1490 05be 90E0      		ldi r25,hi8(0)
+ 1491               	/* epilogue: frame size=0 */
+ 1492 05c0 0895      		ret
+ 1493               	/* epilogue end (size=1) */
+ 1494               	/* function cc2420_VREFOn size 9 (8) */
+ 1496               	.Lscope14:
+ 1498               	.global	cc2420_VREFOff
+ 1500               	cc2420_VREFOff:
+ 444:cc2420.c      **** inline  uint8_t cc2420_VREFOff(void){
+ 1502               	.LM217:
+ 1503               	/* prologue: frame size=0 */
+ 1504               	/* prologue end (size=0) */
+ 445:cc2420.c      ****     OS_CLR_CC_VREN_PIN();                    //turn-off  
+ 1506               	.LM218:
+ 1507 05c2 0E94 0000 		call OS_CLR_CC_VREN_PIN
+ 446:cc2420.c      ****     OS_uwait(1800);  
+ 1509               	.LM219:
+ 1510 05c6 88E0      		ldi r24,lo8(1800)
+ 1511 05c8 97E0      		ldi r25,hi8(1800)
+ 1512 05ca 0E94 0000 		call OS_uwait
+ 447:cc2420.c      **** 	return SUCCESS;
+ 448:cc2420.c      ****   }
+ 1514               	.LM220:
+ 1515 05ce 80E0      		ldi r24,lo8(0)
+ 1516 05d0 90E0      		ldi r25,hi8(0)
+ 1517               	/* epilogue: frame size=0 */
+ 1518 05d2 0895      		ret
+ 1519               	/* epilogue end (size=1) */
+ 1520               	/* function cc2420_VREFOff size 9 (8) */
+ 1522               	.Lscope15:
+ 1524               	.global	cc2420_enableAutoAck
+ 1526               	cc2420_enableAutoAck:
+ 449:cc2420.c      **** //------------------------------------------------------------------
+ 450:cc2420.c      **** inline  uint8_t cc2420_enableAutoAck(void) {
+ 1528               	.LM221:
+ 1529               	/* prologue: frame size=0 */
+ 1530               	/* prologue end (size=0) */
+ 451:cc2420.c      ****     cc2420_currentparameters[CP_MDMCTRL0] |= (1 << cc2420_MDMCTRL0_AUTOACK);
+ 1532               	.LM222:
+ 1533 05d4 8091 0000 		lds r24,cc2420_currentparameters+2
+ 1534 05d8 9091 0000 		lds r25,(cc2420_currentparameters+2)+1
+ 1535 05dc 8061      		ori r24,lo8(16)
+ 1536 05de 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 1537 05e2 8093 0000 		sts cc2420_currentparameters+2,r24
+ 452:cc2420.c      ****     return cc2420_writereg(cc2420_MDMCTRL0,cc2420_currentparameters[CP_MDMCTRL0]);
+ 1539               	.LM223:
+ 1540 05e6 BC01      		movw r22,r24
+ 1541 05e8 81E1      		ldi r24,lo8(17)
+ 1542 05ea 0E94 0000 		call cc2420_writereg
+ 453:cc2420.c      ****   }
+ 1544               	.LM224:
+ 1545 05ee 9927      		clr r25
+ 1546               	/* epilogue: frame size=0 */
+ 1547 05f0 0895      		ret
+ 1548               	/* epilogue end (size=1) */
+ 1549               	/* function cc2420_enableAutoAck size 15 (14) */
+ 1551               	.Lscope16:
+ 1553               	.global	cc2420_disableAutoAck
+ 1555               	cc2420_disableAutoAck:
+ 454:cc2420.c      **** 
+ 455:cc2420.c      **** inline  uint8_t cc2420_disableAutoAck(void) {
+ 1557               	.LM225:
+ 1558               	/* prologue: frame size=0 */
+ 1559               	/* prologue end (size=0) */
+ 456:cc2420.c      ****     cc2420_currentparameters[CP_MDMCTRL0] &= ~(1 << cc2420_MDMCTRL0_AUTOACK);
+ 1561               	.LM226:
+ 1562 05f2 8091 0000 		lds r24,cc2420_currentparameters+2
+ 1563 05f6 9091 0000 		lds r25,(cc2420_currentparameters+2)+1
+ 1564 05fa 8F7E      		andi r24,lo8(-17)
+ 1565 05fc 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 1566 0600 8093 0000 		sts cc2420_currentparameters+2,r24
+ 457:cc2420.c      ****     return cc2420_writereg(cc2420_MDMCTRL0,cc2420_currentparameters[CP_MDMCTRL0]);
+ 1568               	.LM227:
+ 1569 0604 BC01      		movw r22,r24
+ 1570 0606 81E1      		ldi r24,lo8(17)
+ 1571 0608 0E94 0000 		call cc2420_writereg
+ 458:cc2420.c      ****   }
+ 1573               	.LM228:
+ 1574 060c 9927      		clr r25
+ 1575               	/* epilogue: frame size=0 */
+ 1576 060e 0895      		ret
+ 1577               	/* epilogue end (size=1) */
+ 1578               	/* function cc2420_disableAutoAck size 16 (15) */
+ 1580               	.Lscope17:
+ 1582               	.global	cc2420_enableAddrDecode
+ 1584               	cc2420_enableAddrDecode:
+ 459:cc2420.c      **** 
+ 460:cc2420.c      **** inline  uint8_t cc2420_enableAddrDecode(void) {
+ 1586               	.LM229:
+ 1587               	/* prologue: frame size=0 */
+ 1588               	/* prologue end (size=0) */
+ 461:cc2420.c      ****     cc2420_currentparameters[CP_MDMCTRL0] |= (1 << cc2420_MDMCTRL0_ADRDECODE);
+ 1590               	.LM230:
+ 1591 0610 8091 0000 		lds r24,cc2420_currentparameters+2
+ 1592 0614 9091 0000 		lds r25,(cc2420_currentparameters+2)+1
+ 1593 0618 9860      		ori r25,hi8(2048)
+ 1594 061a 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 1595 061e 8093 0000 		sts cc2420_currentparameters+2,r24
+ 462:cc2420.c      ****     return cc2420_writereg(cc2420_MDMCTRL0,cc2420_currentparameters[CP_MDMCTRL0]);
+ 1597               	.LM231:
+ 1598 0622 BC01      		movw r22,r24
+ 1599 0624 81E1      		ldi r24,lo8(17)
+ 1600 0626 0E94 0000 		call cc2420_writereg
+ 463:cc2420.c      ****   }
+ 1602               	.LM232:
+ 1603 062a 9927      		clr r25
+ 1604               	/* epilogue: frame size=0 */
+ 1605 062c 0895      		ret
+ 1606               	/* epilogue end (size=1) */
+ 1607               	/* function cc2420_enableAddrDecode size 15 (14) */
+ 1609               	.Lscope18:
+ 1611               	.global	cc2420_disableAddrDecode
+ 1613               	cc2420_disableAddrDecode:
+ 464:cc2420.c      **** 
+ 465:cc2420.c      **** inline  uint8_t cc2420_disableAddrDecode(void) {
+ 1615               	.LM233:
+ 1616               	/* prologue: frame size=0 */
+ 1617               	/* prologue end (size=0) */
+ 466:cc2420.c      ****     cc2420_currentparameters[CP_MDMCTRL0] &= ~(1 << cc2420_MDMCTRL0_ADRDECODE);
+ 1619               	.LM234:
+ 1620 062e 8091 0000 		lds r24,cc2420_currentparameters+2
+ 1621 0632 9091 0000 		lds r25,(cc2420_currentparameters+2)+1
+ 1622 0636 977F      		andi r25,hi8(-2049)
+ 1623 0638 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 1624 063c 8093 0000 		sts cc2420_currentparameters+2,r24
+ 467:cc2420.c      ****     return cc2420_writereg(cc2420_MDMCTRL0,cc2420_currentparameters[CP_MDMCTRL0]);
+ 1626               	.LM235:
+ 1627 0640 BC01      		movw r22,r24
+ 1628 0642 81E1      		ldi r24,lo8(17)
+ 1629 0644 0E94 0000 		call cc2420_writereg
+ 468:cc2420.c      ****   }
+ 1631               	.LM236:
+ 1632 0648 9927      		clr r25
+ 1633               	/* epilogue: frame size=0 */
+ 1634 064a 0895      		ret
+ 1635               	/* epilogue end (size=1) */
+ 1636               	/* function cc2420_disableAddrDecode size 16 (15) */
+ 1638               	.Lscope19:
+ 1640               	.global	cc2420_setrxmode
+ 1642               	cc2420_setrxmode:
+ 469:cc2420.c      **** 
+ 470:cc2420.c      **** //---------------------------------------------------------命令cc2420进入rx模式
+ 471:cc2420.c      **** 
+ 472:cc2420.c      **** inline   uint8_t cc2420_setrxmode(void)
+ 473:cc2420.c      **** 
+ 474:cc2420.c      **** {
+ 1644               	.LM237:
+ 1645               	/* prologue: frame size=0 */
+ 1646               	/* prologue end (size=0) */
+ 475:cc2420.c      ****   cc2420_sendcmd(cc2420_SRXON);
+ 1648               	.LM238:
+ 1649 064c 83E0      		ldi r24,lo8(3)
+ 1650 064e 0E94 0000 		call cc2420_sendcmd
+ 476:cc2420.c      ****   return SUCCESS;
+ 477:cc2420.c      **** }
+ 1652               	.LM239:
+ 1653 0652 80E0      		ldi r24,lo8(0)
+ 1654 0654 90E0      		ldi r25,hi8(0)
+ 1655               	/* epilogue: frame size=0 */
+ 1656 0656 0895      		ret
+ 1657               	/* epilogue end (size=1) */
+ 1658               	/* function cc2420_setrxmode size 6 (5) */
+ 1660               	.Lscope20:
+ 1662               	.global	cc2420_settxmode
+ 1664               	cc2420_settxmode:
+ 478:cc2420.c      **** 
+ 479:cc2420.c      **** inline   uint8_t cc2420_settxmode(void)
+ 480:cc2420.c      **** 
+ 481:cc2420.c      **** {
+ 1666               	.LM240:
+ 1667               	/* prologue: frame size=0 */
+ 1668               	/* prologue end (size=0) */
+ 482:cc2420.c      ****   cc2420_sendcmd(cc2420_STXON);
+ 1670               	.LM241:
+ 1671 0658 84E0      		ldi r24,lo8(4)
+ 1672 065a 0E94 0000 		call cc2420_sendcmd
+ 483:cc2420.c      ****   return SUCCESS;
+ 484:cc2420.c      **** }
+ 1674               	.LM242:
+ 1675 065e 80E0      		ldi r24,lo8(0)
+ 1676 0660 90E0      		ldi r25,hi8(0)
+ 1677               	/* epilogue: frame size=0 */
+ 1678 0662 0895      		ret
+ 1679               	/* epilogue end (size=1) */
+ 1680               	/* function cc2420_settxmode size 6 (5) */
+ 1682               	.Lscope21:
+ 1684               	.global	cc2420_settxccamode
+ 1686               	cc2420_settxccamode:
+ 485:cc2420.c      **** 
+ 486:cc2420.c      **** inline   uint8_t cc2420_settxccamode(void)
+ 487:cc2420.c      **** 
+ 488:cc2420.c      **** {
+ 1688               	.LM243:
+ 1689               	/* prologue: frame size=0 */
+ 1690               	/* prologue end (size=0) */
+ 489:cc2420.c      ****   cc2420_sendcmd(cc2420_STXONCCA);
+ 1692               	.LM244:
+ 1693 0664 85E0      		ldi r24,lo8(5)
+ 1694 0666 0E94 0000 		call cc2420_sendcmd
+ 490:cc2420.c      ****   return SUCCESS;
+ 491:cc2420.c      **** }
+ 1696               	.LM245:
+ 1697 066a 80E0      		ldi r24,lo8(0)
+ 1698 066c 90E0      		ldi r25,hi8(0)
+ 1699               	/* epilogue: frame size=0 */
+ 1700 066e 0895      		ret
+ 1701               	/* epilogue end (size=1) */
+ 1702               	/* function cc2420_settxccamode size 6 (5) */
+ 1704               	.Lscope22:
+ 1706               	.global	cc2420_setrfoff
+ 1708               	cc2420_setrfoff:
+ 492:cc2420.c      **** 
+ 493:cc2420.c      **** inline   uint8_t cc2420_setrfoff(void)
+ 494:cc2420.c      **** 
+ 495:cc2420.c      **** {
+ 1710               	.LM246:
+ 1711               	/* prologue: frame size=0 */
+ 1712               	/* prologue end (size=0) */
+ 496:cc2420.c      ****   cc2420_sendcmd(cc2420_SRFOFF);
+ 1714               	.LM247:
+ 1715 0670 86E0      		ldi r24,lo8(6)
+ 1716 0672 0E94 0000 		call cc2420_sendcmd
+ 497:cc2420.c      ****   return SUCCESS;
+ 498:cc2420.c      **** }
+ 1718               	.LM248:
+ 1719 0676 80E0      		ldi r24,lo8(0)
+ 1720 0678 90E0      		ldi r25,hi8(0)
+ 1721               	/* epilogue: frame size=0 */
+ 1722 067a 0895      		ret
+ 1723               	/* epilogue end (size=1) */
+ 1724               	/* function cc2420_setrfoff size 6 (5) */
+ 1726               	.Lscope23:
+ 1729               	.global	cc2420_setchnl
+ 1731               	cc2420_setchnl:
+ 499:cc2420.c      **** 
+ 500:cc2420.c      **** 
+ 501:cc2420.c      **** //---------------------------------------------------------设置cc2420 的频道
+ 502:cc2420.c      ****  inline uint8_t cc2420_setchnl(int8_t chnl)
+ 503:cc2420.c      **** 
+ 504:cc2420.c      **** {
+ 1733               	.LM249:
+ 1734               	/* prologue: frame size=0 */
+ 1735               	/* prologue end (size=0) */
+ 505:cc2420.c      ****   int fsctrl;
+ 506:cc2420.c      **** 
+ 507:cc2420.c      ****   fsctrl = 357 + 5 * (chnl - 11);
+ 1737               	.LM250:
+ 1738 067c 95E0      		ldi r25,lo8(5)
+ 1739 067e 8902      		muls r24,r25
+ 1740 0680 9001      		movw r18,r0
+ 1741 0682 1124      		clr r1
+ 1742 0684 225D      		subi r18,lo8(-(302))
+ 1743 0686 3E4F      		sbci r19,hi8(-(302))
+ 508:cc2420.c      ****   cc2420_currentparameters[CP_FSCTRL] = (cc2420_currentparameters[CP_FSCTRL] & 0xfc00) | (fsctrl <<
+ 1745               	.LM251:
+ 1746 0688 8091 0000 		lds r24,cc2420_currentparameters+16
+ 1747 068c 9091 0000 		lds r25,(cc2420_currentparameters+16)+1
+ 1748 0690 8070      		andi r24,lo8(-1024)
+ 1749 0692 9C7F      		andi r25,hi8(-1024)
+ 1750 0694 822B      		or r24,r18
+ 1751 0696 932B      		or r25,r19
+ 1752 0698 9093 0000 		sts (cc2420_currentparameters+16)+1,r25
+ 1753 069c 8093 0000 		sts cc2420_currentparameters+16,r24
+ 509:cc2420.c      ****   //printf("\n$$$$$channel state is %04x\n",cc2420_currentparameters[CP_FSCTRL] );
+ 510:cc2420.c      ****   cc2420_writereg(cc2420_FSCTRL, cc2420_currentparameters[CP_FSCTRL]);
+ 1755               	.LM252:
+ 1756 06a0 BC01      		movw r22,r24
+ 1757 06a2 88E1      		ldi r24,lo8(24)
+ 1758 06a4 0E94 0000 		call cc2420_writereg
+ 511:cc2420.c      ****   return SUCCESS;
+ 512:cc2420.c      **** }
+ 1760               	.LM253:
+ 1761 06a8 80E0      		ldi r24,lo8(0)
+ 1762 06aa 90E0      		ldi r25,hi8(0)
+ 1763               	/* epilogue: frame size=0 */
+ 1764 06ac 0895      		ret
+ 1765               	/* epilogue end (size=1) */
+ 1766               	/* function cc2420_setchnl size 25 (24) */
+ 1768               	.Lscope24:
+ 1771               	.global	cc2420_setshortaddress
+ 1773               	cc2420_setshortaddress:
+ 513:cc2420.c      **** 
+ 514:cc2420.c      **** //---------------------------------------------------------设置cc2420短地址，同时写入cc2420
+ 515:cc2420.c      **** inline uint8_t cc2420_setshortaddress(uint16_t addr)
+ 516:cc2420.c      **** 
+ 517:cc2420.c      **** {
+ 1775               	.LM254:
+ 1776               	/* prologue: frame size=2 */
+ 1777 06ae CF93      		push r28
+ 1778 06b0 DF93      		push r29
+ 1779 06b2 CDB7      		in r28,__SP_L__
+ 1780 06b4 DEB7      		in r29,__SP_H__
+ 1781 06b6 2297      		sbiw r28,2
+ 1782 06b8 0FB6      		in __tmp_reg__,__SREG__
+ 1783 06ba F894      		cli
+ 1784 06bc DEBF      		out __SP_H__,r29
+ 1785 06be 0FBE      		out __SREG__,__tmp_reg__
+ 1786 06c0 CDBF      		out __SP_L__,r28
+ 1787               	/* prologue end (size=10) */
+ 1788 06c2 8983      		std Y+1,r24
+ 1789 06c4 9A83      		std Y+2,r25
+ 518:cc2420.c      ****    addr = toLSB16(addr);
+ 1791               	.LM255:
+ 1792 06c6 0E94 0000 		call toLSB16
+ 1793 06ca 8983      		std Y+1,r24
+ 1794 06cc 9A83      		std Y+2,r25
+ 519:cc2420.c      ****    cc2420_writelargeram(cc2420_RAM_SHORTADR, 2, (uint8_t *)&addr);
+ 1796               	.LM256:
+ 1797 06ce AE01      		movw r20,r28
+ 1798 06d0 4F5F      		subi r20,lo8(-(1))
+ 1799 06d2 5F4F      		sbci r21,hi8(-(1))
+ 1800 06d4 62E0      		ldi r22,lo8(2)
+ 1801 06d6 8AE6      		ldi r24,lo8(362)
+ 1802 06d8 91E0      		ldi r25,hi8(362)
+ 1803 06da 0E94 0000 		call cc2420_writelargeram
+ 520:cc2420.c      ****  //printf("shortaddress is set\n");
+ 521:cc2420.c      ****    return SUCCESS;
+ 522:cc2420.c      **** }
+ 1805               	.LM257:
+ 1806 06de 80E0      		ldi r24,lo8(0)
+ 1807 06e0 90E0      		ldi r25,hi8(0)
+ 1808               	/* epilogue: frame size=2 */
+ 1809 06e2 2296      		adiw r28,2
+ 1810 06e4 0FB6      		in __tmp_reg__,__SREG__
+ 1811 06e6 F894      		cli
+ 1812 06e8 DEBF      		out __SP_H__,r29
+ 1813 06ea 0FBE      		out __SREG__,__tmp_reg__
+ 1814 06ec CDBF      		out __SP_L__,r28
+ 1815 06ee DF91      		pop r29
+ 1816 06f0 CF91      		pop r28
+ 1817 06f2 0895      		ret
+ 1818               	/* epilogue end (size=9) */
+ 1819               	/* function cc2420_setshortaddress size 35 (16) */
+ 1821               	.Lscope25:
+ 1824               	.global	cc2420_getshortaddress
+ 1826               	cc2420_getshortaddress:
+ 523:cc2420.c      **** 
+ 524:cc2420.c      **** inline uint8_t cc2420_getshortaddress(uint16_t * addr)
+ 525:cc2420.c      **** 
+ 526:cc2420.c      **** {
+ 1828               	.LM258:
+ 1829               	/* prologue: frame size=0 */
+ 1830               	/* prologue end (size=0) */
+ 527:cc2420.c      ****      cc2420_readlargeram(cc2420_RAM_SHORTADR, 2, (uint8_t *)addr);
+ 1832               	.LM259:
+ 1833 06f4 AC01      		movw r20,r24
+ 1834 06f6 62E0      		ldi r22,lo8(2)
+ 1835 06f8 8AE6      		ldi r24,lo8(362)
+ 1836 06fa 91E0      		ldi r25,hi8(362)
+ 1837 06fc 0E94 0000 		call cc2420_readlargeram
+ 528:cc2420.c      ****    //printf("shortaddress is get\n");
+ 529:cc2420.c      **** 	 return SUCCESS;
+ 530:cc2420.c      **** }
+ 1839               	.LM260:
+ 1840 0700 80E0      		ldi r24,lo8(0)
+ 1841 0702 90E0      		ldi r25,hi8(0)
+ 1842               	/* epilogue: frame size=0 */
+ 1843 0704 0895      		ret
+ 1844               	/* epilogue end (size=1) */
+ 1845               	/* function cc2420_getshortaddress size 9 (8) */
+ 1847               	.Lscope26:
+ 1850               	.global	cc2420_setpanid
+ 1852               	cc2420_setpanid:
+ 531:cc2420.c      **** 
+ 532:cc2420.c      ****  inline uint8_t cc2420_setpanid(uint16_t id)
+ 533:cc2420.c      ****  {
+ 1854               	.LM261:
+ 1855               	/* prologue: frame size=2 */
+ 1856 0706 CF93      		push r28
+ 1857 0708 DF93      		push r29
+ 1858 070a CDB7      		in r28,__SP_L__
+ 1859 070c DEB7      		in r29,__SP_H__
+ 1860 070e 2297      		sbiw r28,2
+ 1861 0710 0FB6      		in __tmp_reg__,__SREG__
+ 1862 0712 F894      		cli
+ 1863 0714 DEBF      		out __SP_H__,r29
+ 1864 0716 0FBE      		out __SREG__,__tmp_reg__
+ 1865 0718 CDBF      		out __SP_L__,r28
+ 1866               	/* prologue end (size=10) */
+ 1867 071a 8983      		std Y+1,r24
+ 1868 071c 9A83      		std Y+2,r25
+ 534:cc2420.c      ****  	id = toLSB16(id);
+ 1870               	.LM262:
+ 1871 071e 0E94 0000 		call toLSB16
+ 1872 0722 8983      		std Y+1,r24
+ 1873 0724 9A83      		std Y+2,r25
+ 535:cc2420.c      ****        cc2420_writelargeram(cc2420_RAM_PANID, 2, (uint8_t *)&id);
+ 1875               	.LM263:
+ 1876 0726 AE01      		movw r20,r28
+ 1877 0728 4F5F      		subi r20,lo8(-(1))
+ 1878 072a 5F4F      		sbci r21,hi8(-(1))
+ 1879 072c 62E0      		ldi r22,lo8(2)
+ 1880 072e 88E6      		ldi r24,lo8(360)
+ 1881 0730 91E0      		ldi r25,hi8(360)
+ 1882 0732 0E94 0000 		call cc2420_writelargeram
+ 536:cc2420.c      ****      //printf("PANID is set\n");
+ 537:cc2420.c      ****        return SUCCESS;
+ 538:cc2420.c      ****  }
+ 1884               	.LM264:
+ 1885 0736 80E0      		ldi r24,lo8(0)
+ 1886 0738 90E0      		ldi r25,hi8(0)
+ 1887               	/* epilogue: frame size=2 */
+ 1888 073a 2296      		adiw r28,2
+ 1889 073c 0FB6      		in __tmp_reg__,__SREG__
+ 1890 073e F894      		cli
+ 1891 0740 DEBF      		out __SP_H__,r29
+ 1892 0742 0FBE      		out __SREG__,__tmp_reg__
+ 1893 0744 CDBF      		out __SP_L__,r28
+ 1894 0746 DF91      		pop r29
+ 1895 0748 CF91      		pop r28
+ 1896 074a 0895      		ret
+ 1897               	/* epilogue end (size=9) */
+ 1898               	/* function cc2420_setpanid size 35 (16) */
+ 1900               	.Lscope27:
+ 1903               	.global	cc2420_getpanid
+ 1905               	cc2420_getpanid:
+ 539:cc2420.c      **** 
+ 540:cc2420.c      **** inline uint8_t cc2420_getpanid(uint16_t * id)
+ 541:cc2420.c      **** 
+ 542:cc2420.c      **** {
+ 1907               	.LM265:
+ 1908               	/* prologue: frame size=2 */
+ 1909 074c CF93      		push r28
+ 1910 074e DF93      		push r29
+ 1911 0750 CDB7      		in r28,__SP_L__
+ 1912 0752 DEB7      		in r29,__SP_H__
+ 1913 0754 2297      		sbiw r28,2
+ 1914 0756 0FB6      		in __tmp_reg__,__SREG__
+ 1915 0758 F894      		cli
+ 1916 075a DEBF      		out __SP_H__,r29
+ 1917 075c 0FBE      		out __SREG__,__tmp_reg__
+ 1918 075e CDBF      		out __SP_L__,r28
+ 1919               	/* prologue end (size=10) */
+ 1920 0760 8983      		std Y+1,r24
+ 1921 0762 9A83      		std Y+2,r25
+ 543:cc2420.c      ****      cc2420_readlargeram(cc2420_RAM_PANID, 2, (uint8_t *)&id);
+ 1923               	.LM266:
+ 1924 0764 AE01      		movw r20,r28
+ 1925 0766 4F5F      		subi r20,lo8(-(1))
+ 1926 0768 5F4F      		sbci r21,hi8(-(1))
+ 1927 076a 62E0      		ldi r22,lo8(2)
+ 1928 076c 88E6      		ldi r24,lo8(360)
+ 1929 076e 91E0      		ldi r25,hi8(360)
+ 1930 0770 0E94 0000 		call cc2420_readlargeram
+ 544:cc2420.c      ****    //printf("PANID is get\n");
+ 545:cc2420.c      ****      return SUCCESS;
+ 546:cc2420.c      **** }
+ 1932               	.LM267:
+ 1933 0774 80E0      		ldi r24,lo8(0)
+ 1934 0776 90E0      		ldi r25,hi8(0)
+ 1935               	/* epilogue: frame size=2 */
+ 1936 0778 2296      		adiw r28,2
+ 1937 077a 0FB6      		in __tmp_reg__,__SREG__
+ 1938 077c F894      		cli
+ 1939 077e DEBF      		out __SP_H__,r29
+ 1940 0780 0FBE      		out __SREG__,__tmp_reg__
+ 1941 0782 CDBF      		out __SP_L__,r28
+ 1942 0784 DF91      		pop r29
+ 1943 0786 CF91      		pop r28
+ 1944 0788 0895      		ret
+ 1945               	/* epilogue end (size=9) */
+ 1946               	/* function cc2420_getpanid size 31 (12) */
+ 1948               	.Lscope28:
+ 1950               	.global	cc2420_bcn_accept
+ 1952               	cc2420_bcn_accept:
+ 547:cc2420.c      **** 
+ 548:cc2420.c      **** inline void cc2420_bcn_accept(void)
+ 549:cc2420.c      **** {
+ 1954               	.LM268:
+ 1955               	/* prologue: frame size=0 */
+ 1956               	/* prologue end (size=0) */
+ 550:cc2420.c      **** 	
+ 551:cc2420.c      ****   cc2420_currentparameters[CP_IOCFG0] = cc2420_currentparameters[CP_IOCFG0]  | (1 << 11);
+ 1958               	.LM269:
+ 1959 078a 8091 0000 		lds r24,cc2420_currentparameters+24
+ 1960 078e 9091 0000 		lds r25,(cc2420_currentparameters+24)+1
+ 1961 0792 9860      		ori r25,hi8(2048)
+ 1962 0794 9093 0000 		sts (cc2420_currentparameters+24)+1,r25
+ 1963 0798 8093 0000 		sts cc2420_currentparameters+24,r24
+ 552:cc2420.c      ****   cc2420_writereg(cc2420_IOCFG0, cc2420_currentparameters[CP_IOCFG0]);
+ 1965               	.LM270:
+ 1966 079c BC01      		movw r22,r24
+ 1967 079e 8CE1      		ldi r24,lo8(28)
+ 1968 07a0 0E94 0000 		call cc2420_writereg
+ 1969               	/* epilogue: frame size=0 */
+ 1970 07a4 0895      		ret
+ 1971               	/* epilogue end (size=1) */
+ 1972               	/* function cc2420_bcn_accept size 14 (13) */
+ 1974               	.Lscope29:
+ 1977               	.global	cc2420_get_ieee
+ 1979               	cc2420_get_ieee:
+ 553:cc2420.c      ****   
+ 554:cc2420.c      **** }
+ 555:cc2420.c      **** //------------------------------------------------------------------------------
+ 556:cc2420.c      **** inline void  cc2420_get_ieee(uint8_t * buffer)
+ 557:cc2420.c      **** {
+ 1981               	.LM271:
+ 1982               	/* prologue: frame size=0 */
+ 1983               	/* prologue end (size=0) */
+ 558:cc2420.c      ****    
+ 559:cc2420.c      ****   cc2420_readlargeram(cc2420_RAM_IEEEADR,8,buffer);
+ 1985               	.LM272:
+ 1986 07a6 AC01      		movw r20,r24
+ 1987 07a8 68E0      		ldi r22,lo8(8)
+ 1988 07aa 80E6      		ldi r24,lo8(352)
+ 1989 07ac 91E0      		ldi r25,hi8(352)
+ 1990 07ae 0E94 0000 		call cc2420_readlargeram
+ 1991               	/* epilogue: frame size=0 */
+ 1992 07b2 0895      		ret
+ 1993               	/* epilogue end (size=1) */
+ 1994               	/* function cc2420_get_ieee size 7 (6) */
+ 1996               	.Lscope30:
+ 1999               	.global	cc2420_set_ieee
+ 2001               	cc2420_set_ieee:
+ 560:cc2420.c      ****    
+ 561:cc2420.c      **** }
+ 562:cc2420.c      **** 
+ 563:cc2420.c      ****  
+ 564:cc2420.c      **** inline void  cc2420_set_ieee(uint8_t * buffer)
+ 565:cc2420.c      **** {
+ 2003               	.LM273:
+ 2004               	/* prologue: frame size=0 */
+ 2005               	/* prologue end (size=0) */
+ 566:cc2420.c      ****    
+ 567:cc2420.c      ****   cc2420_writelargeram(cc2420_RAM_IEEEADR,8,buffer);
+ 2007               	.LM274:
+ 2008 07b4 AC01      		movw r20,r24
+ 2009 07b6 68E0      		ldi r22,lo8(8)
+ 2010 07b8 80E6      		ldi r24,lo8(352)
+ 2011 07ba 91E0      		ldi r25,hi8(352)
+ 2012 07bc 0E94 0000 		call cc2420_writelargeram
+ 2013               	/* epilogue: frame size=0 */
+ 2014 07c0 0895      		ret
+ 2015               	/* epilogue end (size=1) */
+ 2016               	/* function cc2420_set_ieee size 7 (6) */
+ 2018               	.Lscope31:
+ 2020               	.global	cc2420_set_cordinator
+ 2022               	cc2420_set_cordinator:
+ 568:cc2420.c      ****    
+ 569:cc2420.c      **** }
+ 570:cc2420.c      **** 
+ 571:cc2420.c      **** inline void cc2420_set_cordinator(void)
+ 572:cc2420.c      **** {
+ 2024               	.LM275:
+ 2025               	/* prologue: frame size=0 */
+ 2026               	/* prologue end (size=0) */
+ 573:cc2420.c      **** 	cc2420_currentparameters[CP_MDMCTRL0] = cc2420_currentparameters[CP_MDMCTRL0]  | (1 << 12);
+ 2028               	.LM276:
+ 2029 07c2 8091 0000 		lds r24,cc2420_currentparameters+2
+ 2030 07c6 9091 0000 		lds r25,(cc2420_currentparameters+2)+1
+ 2031 07ca 9061      		ori r25,hi8(4096)
+ 2032 07cc 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 2033 07d0 8093 0000 		sts cc2420_currentparameters+2,r24
+ 574:cc2420.c      ****        cc2420_writereg(cc2420_MDMCTRL0, cc2420_currentparameters[CP_MDMCTRL0]);
+ 2035               	.LM277:
+ 2036 07d4 BC01      		movw r22,r24
+ 2037 07d6 81E1      		ldi r24,lo8(17)
+ 2038 07d8 0E94 0000 		call cc2420_writereg
+ 2039               	/* epilogue: frame size=0 */
+ 2040 07dc 0895      		ret
+ 2041               	/* epilogue end (size=1) */
+ 2042               	/* function cc2420_set_cordinator size 14 (13) */
+ 2044               	.Lscope32:
+ 2046               	.global	cc2420_init
+ 2048               	cc2420_init:
+ 575:cc2420.c      **** }
+ 576:cc2420.c      **** 
+ 577:cc2420.c      **** inline void cc2420_init(void)
+ 578:cc2420.c      **** {
+ 2050               	.LM278:
+ 2051               	/* prologue: frame size=0 */
+ 2052 07de 0F93      		push r16
+ 2053 07e0 1F93      		push r17
+ 2054 07e2 CF93      		push r28
+ 2055               	/* prologue end (size=3) */
+ 579:cc2420.c      **** 	cc2420_rxbuf_now=0;//modified by zhouqiang in 2005.12.1  晚
+ 2057               	.LM279:
+ 2058 07e4 1092 0000 		sts (cc2420_rxbuf_now)+1,__zero_reg__
+ 2059 07e8 1092 0000 		sts cc2420_rxbuf_now,__zero_reg__
+ 580:cc2420.c      ****        cc2420_rxlength_now=0;
+ 2061               	.LM280:
+ 2062 07ec 1092 0000 		sts cc2420_rxlength_now,__zero_reg__
+ 581:cc2420.c      **** 	cc2420_rxflag=0;
+ 2064               	.LM281:
+ 2065 07f0 1092 0000 		sts cc2420_rxflag,__zero_reg__
+ 582:cc2420.c      **** 	cc2420_rxbufuse=0;
+ 2067               	.LM282:
+ 2068 07f4 1092 0000 		sts cc2420_rxbufuse,__zero_reg__
+ 583:cc2420.c      **** 	rfpackernum=0;
+ 2070               	.LM283:
+ 2071 07f8 1092 0000 		sts rfpackernum,__zero_reg__
+ 584:cc2420.c      **** 	receive_timestamp=0;
+ 2073               	.LM284:
+ 2074 07fc 1092 0000 		sts receive_timestamp,__zero_reg__
+ 2075 0800 1092 0000 		sts (receive_timestamp)+1,__zero_reg__
+ 2076 0804 1092 0000 		sts (receive_timestamp)+2,__zero_reg__
+ 2077 0808 1092 0000 		sts (receive_timestamp)+3,__zero_reg__
+ 585:cc2420.c      **** 	send_timestamp=0;
+ 2079               	.LM285:
+ 2080 080c 1092 0000 		sts send_timestamp,__zero_reg__
+ 2081 0810 1092 0000 		sts (send_timestamp)+1,__zero_reg__
+ 2082 0814 1092 0000 		sts (send_timestamp)+2,__zero_reg__
+ 2083 0818 1092 0000 		sts (send_timestamp)+3,__zero_reg__
+ 2084               	.LBB9:
+ 2085               	.LBB10:
+ 2087               	.LM286:
+ 2088 081c 01E0      		ldi r16,lo8(1)
+ 2089 081e 0093 0000 		sts cc2420_bramspi,r16
+ 2091               	.LM287:
+ 2092 0822 0E94 0000 		call OS_MAKE_MISO_INPUT
+ 2094               	.LM288:
+ 2095 0826 0E94 0000 		call OS_MAKE_MOSI_OUTPUT
+ 2097               	.LM289:
+ 2098 082a 0E94 0000 		call OS_MAKE_SPI_SCK_OUTPUT
+ 2100               	.LM290:
+ 2101 082e 0E94 0000 		call OS_MAKE_CC_RSTN_OUTPUT
+ 2103               	.LM291:
+ 2104 0832 0E94 0000 		call OS_MAKE_CC_VREN_OUTPUT
+ 2106               	.LM292:
+ 2107 0836 0E94 0000 		call OS_MAKE_CC_CS_OUTPUT
+ 2109               	.LM293:
+ 2110 083a 0E94 0000 		call OS_MAKE_CC_FIFOP1_INPUT
+ 2112               	.LM294:
+ 2113 083e 0E94 0000 		call OS_MAKE_CC_CCA_INPUT
+ 2115               	.LM295:
+ 2116 0842 0E94 0000 		call OS_MAKE_CC_SFD_INPUT
+ 2118               	.LM296:
+ 2119 0846 0E94 0000 		call OS_MAKE_CC_FIFO_INPUT
+ 2120               	.LBE10:
+ 2121               	.LBE9:
+ 2122               	.LBB11:
+ 2123               	.LBB12:
+ 2124               	.LBB13:
+ 2126               	.LM297:
+ 2127 084a 0E94 0000 		call os_atomic_start
+ 2128 084e 182F      		mov r17,r24
+ 2130               	.LM298:
+ 2131 0850 0E94 0000 		call OS_MAKE_SPI_SCK_OUTPUT
+ 2133               	.LM299:
+ 2134 0854 0E94 0000 		call OS_MAKE_MISO_INPUT
+ 2136               	.LM300:
+ 2137 0858 0E94 0000 		call OS_MAKE_MOSI_OUTPUT
+ 2139               	.LM301:
+ 2140 085c 709A      		sbi 46-0x20,0
+ 2142               	.LM302:
+ 2143 085e 6C9A      		sbi 45-0x20,4
+ 2145               	.LM303:
+ 2146 0860 6B98      		cbi 45-0x20,3
+ 2148               	.LM304:
+ 2149 0862 6A98      		cbi 45-0x20,2
+ 2151               	.LM305:
+ 2152 0864 6998      		cbi 45-0x20,1
+ 2154               	.LM306:
+ 2155 0866 6898      		cbi 45-0x20,0
+ 2157               	.LM307:
+ 2158 0868 6E9A      		sbi 45-0x20,6
+ 2160               	.LM308:
+ 2161 086a 812F      		mov r24,r17
+ 2162 086c 0E94 0000 		call os_atomic_end
+ 2163               	.LBE13:
+ 2164               	.LBE12:
+ 2165               	.LBE11:
+ 2166               	.LBB14:
+ 2167               	.LBB15:
+ 2169               	.LM309:
+ 2170 0870 0E94 0000 		call OS_SET_CC_VREN_PIN
+ 2172               	.LM310:
+ 2173 0874 88E0      		ldi r24,lo8(1800)
+ 2174 0876 97E0      		ldi r25,hi8(1800)
+ 2175 0878 0E94 0000 		call OS_uwait
+ 2176               	.LBE15:
+ 2177               	.LBE14:
+ 586:cc2420.c      **** 	cc2420_pin_init();
+ 587:cc2420.c      **** 	SPI_init();
+ 588:cc2420.c      **** 	cc2420_VREFOn();
+ 589:cc2420.c      **** 	OS_CLR_CC_RSTN_PIN();
+ 2179               	.LM311:
+ 2180 087c 0E94 0000 		call OS_CLR_CC_RSTN_PIN
+ 590:cc2420.c      **** 	OS_uwait(20);  
+ 2182               	.LM312:
+ 2183 0880 84E1      		ldi r24,lo8(20)
+ 2184 0882 90E0      		ldi r25,hi8(20)
+ 2185 0884 0E94 0000 		call OS_uwait
+ 591:cc2420.c      **** 	OS_uwait(20);  
+ 2187               	.LM313:
+ 2188 0888 84E1      		ldi r24,lo8(20)
+ 2189 088a 90E0      		ldi r25,hi8(20)
+ 2190 088c 0E94 0000 		call OS_uwait
+ 592:cc2420.c      **** 	OS_SET_CC_RSTN_PIN();
+ 2192               	.LM314:
+ 2193 0890 0E94 0000 		call OS_SET_CC_RSTN_PIN
+ 2194               	.LBB16:
+ 2195               	.LBB17:
+ 2197               	.LM315:
+ 2198 0894 C0E0      		ldi r28,lo8(0)
+ 2200               	.LM316:
+ 2201 0896 1C2F      		mov r17,r28
+ 2203               	.LM317:
+ 2204 0898 802F      		mov r24,r16
+ 2205 089a 0E94 0000 		call cc2420_sendcmd
+ 2206               	.L142:
+ 2208               	.LM318:
+ 2209 089e 84E6      		ldi r24,lo8(100)
+ 2210 08a0 90E0      		ldi r25,hi8(100)
+ 2211 08a2 0E94 0000 		call OS_uwait
+ 2213               	.LM319:
+ 2214 08a6 80E0      		ldi r24,lo8(0)
+ 2215 08a8 0E94 0000 		call cc2420_sendcmd
+ 2217               	.LM320:
+ 2218 08ac 86FD      		sbrc r24,6
+ 2220               	.LM321:
+ 2221 08ae C1E0      		ldi r28,lo8(1)
+ 2222               	.L141:
+ 2224               	.LM322:
+ 2225 08b0 1F5F      		subi r17,lo8(-(1))
+ 2226 08b2 183C      		cpi r17,lo8(-56)
+ 2227 08b4 10F4      		brsh .L140
+ 2228 08b6 CC23      		tst r28
+ 2229 08b8 91F3      		breq .L142
+ 2230               	.L140:
+ 2231               	.LBE17:
+ 2232               	.LBE16:
+ 2233               	.LBB18:
+ 2234               	.LBB19:
+ 2236               	.LM323:
+ 2237 08ba 80E0      		ldi r24,lo8(-2048)
+ 2238 08bc 98EF      		ldi r25,hi8(-2048)
+ 2239 08be 9093 0000 		sts (cc2420_currentparameters)+1,r25
+ 2240 08c2 8093 0000 		sts cc2420_currentparameters,r24
+ 2242               	.LM324:
+ 2243 08c6 82EE      		ldi r24,lo8(738)
+ 2244 08c8 92E0      		ldi r25,hi8(738)
+ 2245 08ca 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 2246 08ce 8093 0000 		sts cc2420_currentparameters+2,r24
+ 2248               	.LM325:
+ 2249 08d2 80E0      		ldi r24,lo8(1280)
+ 2250 08d4 95E0      		ldi r25,hi8(1280)
+ 2251 08d6 9093 0000 		sts (cc2420_currentparameters+4)+1,r25
+ 2252 08da 8093 0000 		sts cc2420_currentparameters+4,r24
+ 2254               	.LM326:
+ 2255 08de 80E8      		ldi r24,lo8(-8064)
+ 2256 08e0 90EE      		ldi r25,hi8(-8064)
+ 2257 08e2 9093 0000 		sts (cc2420_currentparameters+6)+1,r25
+ 2258 08e6 8093 0000 		sts cc2420_currentparameters+6,r24
+ 2260               	.LM327:
+ 2261 08ea 8FE0      		ldi r24,lo8(-22769)
+ 2262 08ec 97EA      		ldi r25,hi8(-22769)
+ 2263 08ee 9093 0000 		sts (cc2420_currentparameters+8)+1,r25
+ 2264 08f2 8093 0000 		sts cc2420_currentparameters+8,r24
+ 2266               	.LM328:
+ 2267 08f6 8FEF      		ldi r24,lo8(24831)
+ 2268 08f8 90E6      		ldi r25,hi8(24831)
+ 2269 08fa 9093 0000 		sts (cc2420_currentparameters+10)+1,r25
+ 2270 08fe 8093 0000 		sts cc2420_currentparameters+10,r24
+ 2272               	.LM329:
+ 2273 0902 85EE      		ldi r24,lo8(4837)
+ 2274 0904 92E1      		ldi r25,hi8(4837)
+ 2275 0906 9093 0000 		sts (cc2420_currentparameters+12)+1,r25
+ 2276 090a 8093 0000 		sts cc2420_currentparameters+12,r24
+ 2278               	.LM330:
+ 2279 090e 86E5      		ldi r24,lo8(2646)
+ 2280 0910 9AE0      		ldi r25,hi8(2646)
+ 2281 0912 9093 0000 		sts (cc2420_currentparameters+14)+1,r25
+ 2282 0916 8093 0000 		sts cc2420_currentparameters+14,r24
+ 2284               	.LM331:
+ 2285 091a 8DE3      		ldi r24,lo8(16701)
+ 2286 091c 91E4      		ldi r25,hi8(16701)
+ 2287 091e 9093 0000 		sts (cc2420_currentparameters+16)+1,r25
+ 2288 0922 8093 0000 		sts cc2420_currentparameters+16,r24
+ 2290               	.LM332:
+ 2291 0926 84EC      		ldi r24,lo8(452)
+ 2292 0928 91E0      		ldi r25,hi8(452)
+ 2293 092a 9093 0000 		sts (cc2420_currentparameters+18)+1,r25
+ 2294 092e 8093 0000 		sts cc2420_currentparameters+18,r24
+ 2296               	.LM333:
+ 2297 0932 1092 0000 		sts (cc2420_currentparameters+20)+1,__zero_reg__
+ 2298 0936 1092 0000 		sts cc2420_currentparameters+20,__zero_reg__
+ 2300               	.LM334:
+ 2301 093a 1092 0000 		sts (cc2420_currentparameters+22)+1,__zero_reg__
+ 2302 093e 1092 0000 		sts cc2420_currentparameters+22,__zero_reg__
+ 2304               	.LM335:
+ 2305 0942 8FE7      		ldi r24,lo8(639)
+ 2306 0944 92E0      		ldi r25,hi8(639)
+ 2307 0946 9093 0000 		sts (cc2420_currentparameters+24)+1,r25
+ 2308 094a 8093 0000 		sts cc2420_currentparameters+24,r24
+ 2310               	.LM336:
+ 2311 094e 1092 0000 		sts (cc2420_currentparameters+26)+1,__zero_reg__
+ 2312 0952 1092 0000 		sts cc2420_currentparameters+26,__zero_reg__
+ 2313               	.LBE19:
+ 2314               	.LBE18:
+ 593:cc2420.c      **** 	cc2420_oscon();
+ 594:cc2420.c      **** 	cc2420_reginit();
+ 595:cc2420.c      **** 	cc2420_setreg();
+ 2316               	.LM337:
+ 2317 0956 0E94 0000 		call cc2420_setreg
+ 596:cc2420.c      **** 	cc2420_sendcmd(cc2420_SFLUSHRX);
+ 2319               	.LM338:
+ 2320 095a 88E0      		ldi r24,lo8(8)
+ 2321 095c 0E94 0000 		call cc2420_sendcmd
+ 597:cc2420.c      **** 	cc2420_sendcmd(cc2420_SFLUSHRX);
+ 2323               	.LM339:
+ 2324 0960 88E0      		ldi r24,lo8(8)
+ 2325 0962 0E94 0000 		call cc2420_sendcmd
+ 2326               	.LBB20:
+ 2327               	.LBB21:
+ 2329               	.LM340:
+ 2330 0966 8091 0000 		lds r24,cc2420_currentparameters+2
+ 2331 096a 9091 0000 		lds r25,(cc2420_currentparameters+2)+1
+ 2332 096e 9061      		ori r25,hi8(4096)
+ 2333 0970 9093 0000 		sts (cc2420_currentparameters+2)+1,r25
+ 2334 0974 8093 0000 		sts cc2420_currentparameters+2,r24
+ 2336               	.LM341:
+ 2337 0978 BC01      		movw r22,r24
+ 2338 097a 81E1      		ldi r24,lo8(17)
+ 2339 097c 0E94 0000 		call cc2420_writereg
+ 2340               	.LBE21:
+ 2341               	.LBE20:
+ 2342               	/* epilogue: frame size=0 */
+ 2343 0980 CF91      		pop r28
+ 2344 0982 1F91      		pop r17
+ 2345 0984 0F91      		pop r16
+ 2346 0986 0895      		ret
+ 2347               	/* epilogue end (size=4) */
+ 2348               	/* function cc2420_init size 214 (207) */
+ 2361               	.Lscope33:
+ 2362               		.comm OS_queue,16,1
+ 2363               		.comm OS_sched_full,1,1
+ 2364               		.comm OS_sched_free,1,1
+ 2365               		.comm currentTime,2,1
+ 2366               		.comm head_of_systimer_queue,2,1
+ 2367               		.comm timestamp_H,2,1
+ 2368               		.comm mState,4,1
+ 2369               		.comm setIntervalFlag,1,1
+ 2370               		.comm mScale,1,1
+ 2371               		.comm mInterval,1,1
+ 2372               		.comm queue_head,1,1
+ 2373               		.comm queue_tail,1,1
+ 2374               		.comm queue_size,1,1
+ 2375               		.comm queue,3,1
+ 2376               		.comm mTimerList,33,1
+ 2377               		.comm backoff_timer_Set,1,1
+ 2378               		.comm backoff_call,2,1
+ 2379               		.comm GTSDirectionMask,1,1
+ 2380               		.comm phy_channel_state,1,1
+ 2381               		.comm rxbuf_flag,1,1
+ 2382               		.comm ppib,3,1
+ 2383               		.comm SENSOR_DATA_VALUE,20,1
+ 2384               		.comm ADC_INTERRUPT_FLAG,1,1
+ 2385               		.comm cc2420_bramspi,1,1
+ 2386               		.comm cc2420_rambuf,2,1
+ 2387               		.comm cc2420_ramlen,1,1
+ 2388               		.comm cc2420_ramaddr,2,1
+ 2389               		.comm cc2420fifo_bspi,1,1
+ 2390               		.comm cc2420fifo_txbuf,2,1
+ 2391               		.comm cc2420fifo_txlength,1,1
+ 2392               		.comm cc2420_rxbuf,4,1
+ 2393               		.comm cc2420_rxlength,1,1
+ 2394               		.comm cc2420_rxbuf_now,2,1
+ 2395               		.comm cc2420_rxlength_now,1,1
+ 2396               		.comm cc2420_rxbufuse,1,1
+ 2397               		.comm rfpackernum,1,1
+ 2398               		.comm cc2420_rxflag,1,1
+ 2399               		.comm cc2420_currentparameters,28,1
+ 2400               		.comm receive_timestamp,4,1
+ 2401               		.comm send_timestamp,4,1
+ 2402               		.comm cc2420_stateRadio,1,1
+ 2403               		.comm cc2420_LocalAddr,2,1
+ 2404               		.comm ieee_address,8,1
+ 2448               		.text
+ 2450               	Letext:
+ 2451               	/* File "cc2420.c": code 1224 = 0x04c8 (1062), prologues  67, epilogues  95 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 cc2420.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:221    .text:00000000 cc2420_pin_init
+                            *COM*:00000001 cc2420_bramspi
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:273    .text:00000034 cc2420_reginit
+                            *COM*:0000001c cc2420_currentparameters
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:369    .text:000000d6 cc2420_enablefifop
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:403    .text:000000ee cc2420_readreg
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:502    .text:0000014a cc2420_writereg
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:596    .text:000001a2 cc2420_sendcmd
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:652    .text:000001ce cc2420_setreg
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:779    .text:000002b2 cc2420_readlargeram
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:913    .text:0000033a cc2420_writelargeram
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1040   .text:000003be cc2420_writetxfifo
+                            *COM*:00000001 cc2420fifo_bspi
+                            *COM*:00000001 cc2420fifo_txlength
+                            *COM*:00000002 cc2420fifo_txbuf
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1157   .text:0000043e cc2420_readrxfifo
+                            *COM*:00000001 cc2420_rxlength
+                            *COM*:00000001 cc2420_rxflag
+                            *COM*:00000004 cc2420_rxbuf
+                            *COM*:00000001 rfpackernum
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1322   .text:00000516 cc2420_fifopintr
+                            *COM*:00000004 receive_timestamp
+                            *COM*:00000001 cc2420_rxbufuse
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1391   .text:00000570 cc2420_oscon
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1452   .text:000005a4 cc2420_oscoff
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1474   .text:000005b0 cc2420_VREFOn
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1500   .text:000005c2 cc2420_VREFOff
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1526   .text:000005d4 cc2420_enableAutoAck
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1555   .text:000005f2 cc2420_disableAutoAck
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1584   .text:00000610 cc2420_enableAddrDecode
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1613   .text:0000062e cc2420_disableAddrDecode
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1642   .text:0000064c cc2420_setrxmode
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1664   .text:00000658 cc2420_settxmode
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1686   .text:00000664 cc2420_settxccamode
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1708   .text:00000670 cc2420_setrfoff
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1731   .text:0000067c cc2420_setchnl
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1773   .text:000006ae cc2420_setshortaddress
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1826   .text:000006f4 cc2420_getshortaddress
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1852   .text:00000706 cc2420_setpanid
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1905   .text:0000074c cc2420_getpanid
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1952   .text:0000078a cc2420_bcn_accept
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:1979   .text:000007a6 cc2420_get_ieee
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:2001   .text:000007b4 cc2420_set_ieee
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:2022   .text:000007c2 cc2420_set_cordinator
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:2048   .text:000007de cc2420_init
+                            *COM*:00000002 cc2420_rxbuf_now
+                            *COM*:00000001 cc2420_rxlength_now
+                            *COM*:00000004 send_timestamp
+                            *COM*:00000010 OS_queue
+                            *COM*:00000001 OS_sched_full
+                            *COM*:00000001 OS_sched_free
+                            *COM*:00000002 currentTime
+                            *COM*:00000002 head_of_systimer_queue
+                            *COM*:00000002 timestamp_H
+                            *COM*:00000004 mState
+                            *COM*:00000001 setIntervalFlag
+                            *COM*:00000001 mScale
+                            *COM*:00000001 mInterval
+                            *COM*:00000001 queue_head
+                            *COM*:00000001 queue_tail
+                            *COM*:00000001 queue_size
+                            *COM*:00000003 queue
+                            *COM*:00000021 mTimerList
+                            *COM*:00000001 backoff_timer_Set
+                            *COM*:00000002 backoff_call
+                            *COM*:00000001 GTSDirectionMask
+                            *COM*:00000001 phy_channel_state
+                            *COM*:00000001 rxbuf_flag
+                            *COM*:00000003 ppib
+                            *COM*:00000014 SENSOR_DATA_VALUE
+                            *COM*:00000001 ADC_INTERRUPT_FLAG
+                            *COM*:00000002 cc2420_rambuf
+                            *COM*:00000001 cc2420_ramlen
+                            *COM*:00000002 cc2420_ramaddr
+                            *COM*:00000001 cc2420_stateRadio
+                            *COM*:00000002 cc2420_LocalAddr
+                            *COM*:00000008 ieee_address
+C:\Users\sunhejie\AppData\Local\Temp/ccwtbaaa.s:2450   .text:00000988 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+OS_MAKE_MISO_INPUT
+OS_MAKE_MOSI_OUTPUT
+OS_MAKE_SPI_SCK_OUTPUT
+OS_MAKE_CC_RSTN_OUTPUT
+OS_MAKE_CC_VREN_OUTPUT
+OS_MAKE_CC_CS_OUTPUT
+OS_MAKE_CC_FIFOP1_INPUT
+OS_MAKE_CC_CCA_INPUT
+OS_MAKE_CC_SFD_INPUT
+OS_MAKE_CC_FIFO_INPUT
+os_atomic_start
+OS_CLR_CC_CS_PIN
+OS_SET_CC_CS_PIN
+os_atomic_end
+malloc
+phy_handlepacket
+OS_READ_CC_FIFO_PIN
+get_timestamp32
+OS_uwait
+OS_SET_CC_VREN_PIN
+OS_CLR_CC_VREN_PIN
+toLSB16
+OS_CLR_CC_RSTN_PIN
+OS_SET_CC_RSTN_PIN
