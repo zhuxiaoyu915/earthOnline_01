@@ -105,71 +105,7 @@ requestAnimationFrame(loop = function(){
     ctx.lineCap = 'round';
     ctx.stroke();
   }
-  
-  if(showInstructions){
-    pos1.x = -70;
-    pos1.y = -35;
-    
-	//绘制目标汇聚的圆
-    if(time<10){
-      var x = -70,
-          y = -35,
-          r = 30-time*2,
-          a = time/10;
-    }else if(time<80){
-      var x = (time-10)*2-70,
-          y = (time-10)-35,
-          r = 10,
-          a = 1;
-    }else if(time<90){
-      var x = 70,
-          y = 35,
-          r = 10+(time-80)*2,
-          a = 1-(time-80)/10;
-    }else if(time<140){
-      var x = 70,
-          y = 35,
-          r = 30,
-          a = 0;
-    }
-	
-	//绘制引导线
-    var dx = pos1.x-x,
-        dy = pos1.y-y,
-        d = Math.sqrt(dx*dx+dy*dy);
-    if(time<80&&time>10){//只在10-80之间绘制
-      ctx.globalCompositeOperation = 'source-over';//后者覆盖前者
-      ctx.globalAlpha = 1;
-      var c = Math.floor(30+d/2);
-      ctx.strokeStyle = 'rgba('+c+','+c+','+c+',1)';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(pos1.x,pos1.y);
-      ctx.lineTo(x,y);
-      ctx.lineCap = 'round';
-      ctx.stroke();
-    }
-    if(time<140){
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = a;
-      ctx.beginPath();
-      ctx.arc(x,y,r,0,Math.PI*2);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#aaa';
-      ctx.stroke();
-    }
-    if(time==80){
-      newFireball(
-        x,
-        y,
-        dx*0.03,
-        dy*0.03,
-        240
-      );
-    }
-    time = (time+1)%180;
-  }
-  
+
   ctx.globalCompositeOperation = 'lighter';
   for(var i in particles){
     var p = particles[i];
@@ -194,12 +130,12 @@ requestAnimationFrame(loop = function(){
     f = fireballs[i];
     var numParticles = Math.sqrt(f.xv*f.xv+f.yv*f.yv)/5;//粒子数目与速度有关，速度越快，粒子数越多，成正比
     if(numParticles<1)numParticles=1;
-    var numParticlesInt = Math.ceil(numParticles),
+    var numParticlesInt = Math.ceil(numParticles),//Math.ceil(向上取整数）
         numParticlesDif = numParticles/numParticlesInt;
     for(var j=0;j<numParticlesInt;j++){
       newParticle(
-        f.x-f.xv*j/numParticlesInt,
-        f.y-f.yv*j/numParticlesInt,
+        f.x-f.xv*j/numParticlesInt,//从f.x 到f.x - f.xv之间均匀分布
+        f.y-f.yv*j/numParticlesInt,//从f.y 到f.y - f.yv之间均匀分布
         7,
         numParticlesDif,
         particleColor,
