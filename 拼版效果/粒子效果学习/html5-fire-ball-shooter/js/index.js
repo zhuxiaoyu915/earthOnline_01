@@ -55,6 +55,7 @@ onmousemove = function(e){
   var dx = mouse.x - pos1.x,
       dy = mouse.y - pos1.y;
   mouse.d = Math.sqrt(dx*dx+dy*dy);
+  console.log("mouse.d为：" + mouse.d);
 };
 
 charging = false;
@@ -64,7 +65,6 @@ onmousedown = function(e){
   pos1.x = mouse.x;
   pos1.y = mouse.y;
   charging = true;
-  showInstructions = false;
   console.log("x坐标为：" + x);
   console.log("y坐标为：" + y);
 };
