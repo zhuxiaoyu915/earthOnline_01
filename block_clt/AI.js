@@ -1,5 +1,4 @@
-﻿//使用新版本的文本编辑器来测试。
-//AI----目标搜寻
+﻿//AI----目标搜寻
 function detect_destination(s_b,map_info){
 	var dest = -1;
 	for(i in s_b){

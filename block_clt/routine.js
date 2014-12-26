@@ -210,18 +210,17 @@ function chara_auto_move(map_array,map_info,skill_info){
 		localStorage.setItem(key,npc_full_info);
 		//攻击
 		//攻击----读取可选技能列表
-		var skill_num = parseInt(npc_info[8][0]);
+		//console.log("npc_info为: " + npc_info[8][0]);
+		var skill_list_key = npc_info[8][0];
+		var skill_list_str = localStorage.getItem(skill_list_key);
+		var skill_list = skill_list_str.split(";");
 		var skill_array = [];
-		for(i = 1;i < skill_num + 1;i++){
-			var key = npc_info[8][i];
-			var val = localStorage.getItem(key);
+		for(i = 1;i < skill_list.length;i++){
 			var skill_info = [];
-			if(val != ""){
-				var skill_information = val.split(",");
-				for(m in skill_information){
-					skill_info_detail = skill_information[m].split("|");
-					skill_info.push(skill_info_detail);
-				}
+			var skill_information = skill_list[i].split(",");
+			for(m in skill_information){
+				skill_info_detail = skill_information[m].split("|");
+				skill_info.push(skill_info_detail);
 			}
 			skill_array.push(skill_info);
 		}
@@ -230,6 +229,9 @@ function chara_auto_move(map_array,map_info,skill_info){
 		if(dest != -1){
 			//执行攻击动作
 			for(i in skill_array){
+				var skill_info = skill_array[i];
+				var skill_demand = skill_castable_test(npc_info,skill_info);
+
 				if(skill_array[i][1]== 2 && skill_array[i][6] < 0){//指向性伤害类
 					var skill_info = skill_array[i];
 					directional_cast();
@@ -239,7 +241,7 @@ function chara_auto_move(map_array,map_info,skill_info){
 						var skill_efficacy = skill_info[4];
 						var canvas = document.getElementById("skillCanvas");
 						var destination = skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,skill_efficacy,skill_info);
-						damage_count(map_array,map_info,destination,skill_info);
+						damage_count(map_array,map_info,destination,skill_info,npc_info);
 					}
 				}
 			}

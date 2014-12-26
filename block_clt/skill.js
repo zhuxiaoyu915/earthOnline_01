@@ -3,47 +3,41 @@
 function skill_spread(chara,map_info,map_array,loc_num){
 	//设置0.5s延迟
 	var moveable = neighbor_block(loc_num,map_array,map_info,1,0);
+	
 	var chara_info = [];
-	for(i in chara){
-		var chara_info_detail = chara[i].split("|");
+	var chara_str = localStorage.character;
+	var chara_content = chara_str.split(";");
+	for(i in chara_content){
+		var chara_info_detail = chara_content[i].split("|");
 		chara_info.push(chara_info_detail);
 	}
-	var skill_content = chara_info[8];
-	var skill_num = parseInt(skill_content[0]);
+	
+	var skill_key = chara_info[8][0];
+	//console.log("技能信息为：" + localStorage.character_skill);
+	var skill_array_str = localStorage.getItem(skill_key);
+	var skill_array = skill_array_str.split(";");
+
+	var skill_num = parseInt(skill_array[0]);
 	var skill_loc =[];
 	for(i = 1;i <= skill_num;i++){
 		if(moveable[i-1] >= 0){
 			var skill_info = [];
-			var key = skill_content[i];
-			var skill_info_str = localStorage.getItem(key);
+			var skill_info_str = skill_array[i];
 			var skill_info_1 = skill_info_str.split(",");
 			for(m in skill_info_1){
 				skill_info_2 = skill_info_1[m].split("|");
 				skill_info.push(skill_info_2);
 			}
 			//检测当前技能状态
-			//1)检测人物状态
-			var chara_state = chara_info[6][0];
-			//2)读取技能信息
-			var skill_demand = 1;//默认skill_demand为1，即满足施放要求
-			var skill_type = parseInt(skill_info[1][0]);
-			switch(skill_type){
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
+			var skill_demand = skill_castable_test(chara_info,skill_info);
+			//console.log("技能是否可执行："+ skill_demand);			
+			if(skill_demand){
+				var color = skill_info[8][0];
+			}else{
+				var color = "grey";
 			}
-			
-			
-			
-			
-			
-			var color = skill_info[8][0];	
 			skill_loc_num = moveable[i-1];
-			console.log("可移动范围为：" + moveable);
-			console.log("技能位置为：" + skill_loc_num);
+
 			var canvas = document.getElementById("skillCanvas");
 			var loc_bgc = map_array[skill_loc_num];
 			drawBgColor(loc_bgc,map_array,canvas,color,color,0,0.5);
@@ -53,10 +47,9 @@ function skill_spread(chara,map_info,map_array,loc_num){
 			cxt.fillStyle = "white";
 			cxt.textAlign = "center";
 			cxt.fillText(skill_name,map_array[skill_loc_num].x , map_array[skill_loc_num].y + 7);
-			skill_loc.push(skill_loc_num);
+			if(skill_demand)skill_loc.push(skill_loc_num);//只有满足了释放需求的函数才会被推入待选名单
 		}
 	}
-	console.log(skill_loc);
 	return skill_loc;
 }
 
@@ -64,14 +57,9 @@ function skill_spread(chara,map_info,map_array,loc_num){
 function skill_chosing(map_array,map_info,map_num,skill_num,loc){
 	var canvas = document.getElementById("skillCanvas");
 	var cxt = canvas.getContext("2d");
-	skill_str = localStorage.skill;
+	skill_str = localStorage.character_skill;
 	skill_group = skill_str.split(";");
-	skill_info = skill_group[skill_num].split(",");
-	//console.log("技能总信息为:" + skill_group);
-	//skill_info分析
-	//----------skill_info[0]技能名称
-	//----------skill_info[1]技能分类--非指向性--指向性--被动
-	//----------skill_info[2]是否受其他技能影响
+	skill_info = skill_group[parseInt(skill_num) + 1].split(",");
 
 	if(skill_info[1] == "1"){//非指向性技能
 		skill_cast_1();
@@ -127,31 +115,134 @@ function skill_chosing(map_array,map_info,map_num,skill_num,loc){
 	}
 }
 	
-//技能--技能施放结束
+//技能--技能完成选择
 function skill_chosed(map_array,map_info,map_num,skill_num,loc){
+
 	var canvas = document.getElementById("skillCanvas");
 	var cxt = canvas.getContext("2d");
-	skill_str = localStorage.skill;
-	skill_group = skill_str.split(";");
-	skill_info = skill_group[skill_num].split(",");
-	var skill_casted = false;
+	var skill_casted = false;//技能没有释放
+	//获取角色信息----角色属性
+	var chara = localStorage.character;
+	var chara_info_content = chara.split(";");
+	var chara_info = [];
+	for (i in chara_info_content){
+		var chara_info_1 = chara_info_content[i].split("|");
+		chara_info.push(chara_info_1);
+	}
+	chara_info.push("character");
+	//获取角色信息----角色位置
 	var loc_num = localStorage.temporary_character_loc;
-	if(skill_info[1] == "1"){
+	//获取技能信息
+	skill_str = localStorage.character_skill;
+	skill_group = skill_str.split(";");
+	skill_info_all = [];
+	for(i = 1; i < skill_group.length; i++){
+		var skill_info_str = skill_group[i].split(",");
+		var skill_info_1 = [];
+		for(m in skill_info_str){
+			var skill_info_detail = skill_info_str[m].split("|");
+			skill_info_1.push(skill_info_detail);
+		}
+		skill_info_all.push(skill_info_1);
+	}
+	skill_info = skill_info_all[skill_num];
+
+	if(skill_info[1][0] == "1"){
 		skill_cast_1();
 	}
-	if(skill_info[1] == "2"){
+	if(skill_info[1][0] == "2"){
 		skill_cast_2();
 	}
-	if(skill_info[1] == "3"){
+	if(skill_info[1][0] == "3"){
 		skill_cast_3();
 	}
 	
 	function skill_cast_1(){
+		//当skill_info[10]==4时，该技能指向特定功能
+		if(parseInt(skill_info[10][0]) == 4){
+			var a = parseInt(skill_info[10][1]);
+			if(a == 1){
+				round_finish(map_array , map_info);
+			}
+			else if (a == 2){
+				console.log("lesautre function");
+			}
+		}else if(parseInt(skill_info[10][0]) == 3){//当skill_info[10] == 3时，该技能为技能改变型
+			var skill_change = skill_info[10][1];
+			//console.log(skill_change);
+			//技能信息：2[不爽(愤怒{不爽[0[0[0[0(0(0[0[-1[0[0([0(0{愤怒[0[0[0[0(0(0[0[-1[0[0([0(0
+			var change_skill_info = skill_change.split("{");
+			var change_skill_content = change_skill_info[0].split("[");
+			var change_num = parseInt(change_skill_content[0]);
+			var skill_name = "";
+			var change_array = change_skill_content[1].split("(");
+			//将可更改技能列表与现在的技能列表匹配
+			//!-------为什么不直接写现有技能编号而是写技能名称？----------------
+			//是为了保证技能的复用性，这样的话，可以使得角色随意变换现有技能，而不需要每次变换技能都要
+			//重新更改非指向性技能的适用范围
+
+			for(i in change_array){
+				//读取角色技能列表
+				//console.log(change_array);
+				for(m in skill_info_all){
+					if(skill_info_all[m][0][0] == change_array[i]){//如果面向的技能对象与技能编号匹配，则执行如下
+						//读取加成因子
+						var skill_plus_str = change_skill_info[parseInt(i)+ 1];
+						var skill_plus = [];
+						var skill_plus_detail_str = skill_plus_str.split("[");
+						for (n in skill_plus_detail_str){
+							var skill_p_1 = skill_plus_detail_str[n].split("(");
+							skill_plus.push(skill_p_1);
+						}
+						console.log(skill_plus[6][0]);
+						//读取技能
+						var skill_compare = skill_info_all[m];
+						//加成因子与技能匹配
+						for(n =1;n<skill_plus.length;n++){
+							for(x in skill_plus[m]){
+								if(skill_plus[n][x]!= "0"){
+									skill_compare[n][x] = parseInt(skill_compare[n][x]) + parseInt(skill_plus[n][x]);
+									skill_info_all[m][n][x] = skill_compare[n][x];
+									console.log(skill_compare[n][x]);
+								}
+							}
+						}
+					}
+				}				
+			}
+			//设置效果持续时间
+			
+			//匹配完成后重新生成技能信息
+			var compare_result = [];
+			var c_r_2 = [];
+			c_r_2.push(skill_info_all.length);
+			for(i in skill_info_all){
+				var c_r_1 = [];
+				for(m in skill_info_all[i]){
+					var s_c_1 = skill_info_all[i][m].join("|");
+					c_r_1.push(s_c_1);
+				}
+				var s_c_2 = c_r_1.join(",");
+				c_r_2.push(s_c_2);
+			}
+			var skill_info_after_compare = c_r_2.join(";");
+			localStorage.character_skill = skill_info_after_compare;
+			//console.log(localStorage.character_skill);
+		}else if(parseInt(skill_info[10][0]) == 2){
+			
+		}
+		
+		//添加技能冷却时间
+		skill_info_all = read_skill_array("character_skill",3);
+		skill_info_all[parseInt(skill_num) + 1][9][1] = skill_info_all[parseInt(skill_num) + 1][9][0];
+		skill_array = package_skill_array(skill_info_all);
+		localStorage.character_skill = skill_array;	
 	}
+	
 	function skill_cast_2(){//指向性技能释放
 		if(parseInt(skill_info[2]) != 0){
 		}
-		choseable_block = neighbor_block(loc_num,map_array,map_info,skill_info[3],0);
+		choseable_block = neighbor_block(loc_num,map_array,map_info,skill_info[3][0],0);
 		choseable_block.push(loc_num);
 		cxt.clearRect(0,0,1400,700);
 		for(i in choseable_block){
@@ -162,15 +253,10 @@ function skill_chosed(map_array,map_info,map_num,skill_num,loc){
 				}else{
 					var orient_loc = loc_num;
 					var desti_loc = num;
-					var skill_efficacy = skill_info[4].split("|");
+					var skill_efficacy = skill_info[4];
 					var destination = skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,skill_efficacy,skill_info);
-
-					var chara_skill_info = [];
-					for(i in skill_info){
-						var skill_info_detail = skill_info[i].split("|");
-						chara_skill_info.push(skill_info_detail);
-					}
-					damage_count(map_array,map_info,destination,chara_skill_info);
+					console.log("目标区域为：" + destination);
+					damage_count(map_array,map_info,destination,skill_info,chara_info);
 					localStorage.loc_changable = 0;
 				}
 				skill_casted = true;
@@ -183,15 +269,28 @@ function skill_chosed(map_array,map_info,map_num,skill_num,loc){
 	function skill_cast_3(){
 	}
 	
+	//添加技能冷却时间
+	if(skill_casted){
+		skill_info[9][1] = skill_info[9][0];
+		var skill_join_1 = [];
+		for(i in skill_info){
+			skill_join_1.push(skill_info[i].join("|"));
+		}
+		var skill_join = skill_join_1.join(",");
+		skill_group[parseInt(skill_num) + 1] = skill_join;
+		var skill_last = skill_group.join(";");
+		localStorage.character_skill = skill_last;
+	}
+	//人物重绘
 	var loc_bgc = map_array[loc_num];
-	draw_character("character",0,loc_bgc,map_info);
-	
+	draw_character("character",0,loc_bgc,map_info);	
 	return false;//返回一个鼠标是否可以移动的值
 }
 
 //技能--技能特效计算--获取（多个）目标点坐标
 function skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,skill_efficacy,skill_info){
 
+	
 	var num = parseInt(skill_efficacy[1]);
 	var destination = [];
 
@@ -203,12 +302,15 @@ function skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,ski
 	function get_range_dest(){//对范围内的拼版，分层检测匹配，然后对匹配层内拼版进行排序
 		var cast_style = parseInt(skill_efficacy[2]);
 		if(cast_style == 1){//扇形投射
-			for(range = skill_info[3];range > 0;range--){
+			console.log("扇形投射");
+			for(range = skill_info[3][0];range > 0;range--){
+				console.log("环形分析 ");
 				var moveable = count_circle(orient_loc,map_array,map_info,range,0);
 				for(i in moveable){
 					if(moveable[i].loc == desti_loc){
 						var move_num = i;//获取当前匹配的拼版在扇形中的序号
 						destination.push(moveable[move_num].loc);
+						console.log(destination);
 						var count_num = skill_efficacy[1];
 						var side_num = parseInt((skill_efficacy[1] -1 ) / 2);
 						//顺时针添加
@@ -234,6 +336,7 @@ function skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,ski
 							}
 							destination.push(moveable[move_num].loc);
 						}
+						console.log(destination);
 						return destination;
 					}
 				}
@@ -315,11 +418,11 @@ function skill_efficacy_count(canvas,map_array,map_info,orient_loc,desti_loc,ski
 			console.log("区域范围为：" + destination);
 		}
 	}
-	return destination;
+	return destination;	
 }
 
 //技能--伤害结算
-function damage_count(map_array,map_info,destination,skill_info){
+function damage_count(map_array,map_info,destination,skill_info,ori_chara_info){
 	for(i in destination){
 		var block_info = map_info[parseInt(destination[i]) + 1];
 		var influ_level = skill_info[5][0];
@@ -345,6 +448,7 @@ function damage_count(map_array,map_info,destination,skill_info){
 						chara_info.push(chara_detail);
 					}
 					//计算伤害效果
+					//console.log("damage:  " + damage);
 					chara_info[4][0] = parseInt(chara_info[4][0]) + damage;
 					//角色信息重写
 					var string_array = [];
@@ -401,4 +505,60 @@ function damage_count(map_array,map_info,destination,skill_info){
 			}	
 		}		
 	}
+	
+	//重新绘制施法角色信息
+	var miner_cost = skill_info[7][0];
+	//console.log("技能的魔法消耗：" + miner_cost);
+	//console.log("现有魔法量为：" + ori_chara_info[4][1]);
+	ori_chara_info[4][1] = parseInt(ori_chara_info[4][1]) + parseInt(miner_cost);
+	//console.log("计算后的魔法量为：" + ori_chara_info[4][1]);
+	var string_array =[];
+	for(i =0;i<ori_chara_info.length-1;i++){
+		var string_array_1 = ori_chara_info[i].join("|");
+		string_array.push(string_array_1);
+	}
+	var string_new = string_array.join(";");
+	var key = ori_chara_info[ori_chara_info.length -1];
+	localStorage.setItem(key,string_new);
+	//console.log(localStorage.character);
+}
+
+//技能--可释放性检测
+function skill_castable_test(chara_info,skill_info){
+	var skill_demand = 1;//默认skill_demand为1，即满足施放要求
+	//1)检测人物状态
+	var chara_state = parseInt(chara_info[6][0]);
+
+	var skill_type = parseInt(skill_info[1][0]);
+
+	switch(skill_type){
+	case 1://非指向性技能
+		if(chara_state == 1||chara_state ==2||chara_state ==3
+				||chara_state ==8||chara_state == 11){
+			skill_demand = 0;
+		}
+		break;
+	case 2://指向性技能
+		if(chara_state == 1||chara_state ==2||chara_state ==3
+				||chara_state ==8||chara_state == 11){
+			skill_demand = 0;
+			console.log("技能与人物状态匹配有问题。");
+		}				
+		break;
+	case 3://被动技能
+		if(chara_state == 1||chara_state ==2||chara_state ==3
+				||chara_state ==8||chara_state == 11){
+			skill_demand = 0;
+		}
+		break;
+	}
+	//2)检测技能状态
+	var cold_time = parseInt(skill_info[9][1]);//如果技能没有冷却完成那么不满足释放要求
+	if(cold_time > 0)skill_demand = 0;
+	//console.log("技能冷却时间为：" + cold_time);
+	
+	var miner_demand = parseInt(skill_info[7][0]);//如果魔法消耗量大于现存魔法量那么不满足释放要求
+	var miner_exist = parseInt(chara_info[4][1]);
+	if((miner_exist + miner_demand) < 0)skill_demand = 0;
+	return skill_demand;
 }

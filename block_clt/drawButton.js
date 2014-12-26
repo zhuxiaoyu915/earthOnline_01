@@ -5,7 +5,7 @@ function drawButton()
 	var character_move_begin = false;//mouse_event
 	var temporary_state = false;//mouse_event
 	var up_num = -1;//mouse_event
-	var skill_loc =[];
+	skill_loc =[];
 	var skill_move_begin = false;//mouse_event
 	
 	var skill_chosen_num = -1;//mouse_event 断定的技能的编号
@@ -13,7 +13,6 @@ function drawButton()
 	
 	var str = localStorage.message;
 	var str_old = str;
-	//str_num = str.split(";");
 	
 	var ptArray = [];
 	var chosen_num = -1;
@@ -114,16 +113,19 @@ function getPointOnCanvas(canvas, x, y) {
 }
 		
 function doMouseDown(event) {
-    
+	
+	started = true;
 	var x = event.pageX;
 	var y = event.pageY;
 	var canvas = document.getElementById("myCanvas");
 	var loc = getPointOnCanvas(canvas, x, y);
 	//console.log("mouse down at point( x:" + loc.x + ", y:" + loc.y + ")");
-	started = true;
-
+	
 	for(i = 0;i< map_width * map_height; i++){
-		if(loc.x > (parseInt(map_array[i].x)-map_length/2) && loc.x < (parseInt(map_array[i].x) + map_length/2) && loc.y > (parseInt(map_array[i].y) - map_length* 0.866) && loc.y < (parseInt(map_array[i].y) + map_length*0.866) )
+		if(loc.x > (parseInt(map_array[i].x)-map_length/2) 
+				&& loc.x < (parseInt(map_array[i].x) + map_length/2) 
+				&& loc.y > (parseInt(map_array[i].y) - map_length* 0.866) 
+				&& loc.y < (parseInt(map_array[i].y) + map_length*0.866) )
 		{
 			chosen_num = i;
 		}
@@ -145,8 +147,9 @@ function doMouseDown(event) {
 	}
 	
 	function turnOn_1(){
+		//留的接口吗？
 		var character_info = localStorage.character;
-	    chara = character_info.split(";");
+	    var chara = character_info.split(";");
 
 		if(temporary_state){
 			var character_loc = localStorage.temporary_character_loc;
@@ -158,6 +161,7 @@ function doMouseDown(event) {
 		    move = chara_ready(chara,map_info,map_array,loc);//将当前位置也添加进来
 			character_move_begin = true;	
 	    }else if(skill_loc != ""){
+	    	//console.log("技能所处的位置为"+ skill_loc);
 			for(i in skill_loc){
 				if(chosen_num == skill_loc[i]){
 					skill_chosen_num = i;
@@ -172,7 +176,7 @@ function doMouseDown(event) {
 	
 	function turnOn_2(){
 		var character_info = localStorage.character;
-	    chara = character_info.split(";");
+	    var chara = character_info.split(";");
 
 		if(temporary_state){
 			var character_loc = localStorage.temporary_character_loc;
@@ -186,11 +190,10 @@ function doMouseDown(event) {
 				move = chara_ready(chara,map_info,map_array,loc);
 				character_move_begin = true;
 			}else{
-				//console.log("人物角色在释放技能后不能再进行移动");
 				var context = canvas.getContext("2d");
 				context.clearRect(0,0,1400,700);
-				move_finish(map_array , map_info);
-				localStorage.turnOn =3;
+				round_finish(map_array , map_info);
+				//localStorage.turnOn =3;
 			}
 	    }else if(skill_loc != ""){//在drawButton中定义，记录各个技能的位置
 			for(i in skill_loc){
@@ -217,7 +220,7 @@ function doMouseMove(event) {
 	var canvas = document.getElementById("myCanvas");
 	var loc = getPointOnCanvas(canvas, x, y);
 	var character_info = localStorage.character;
-	chara = character_info.split(";");
+	var chara = character_info.split(";");
 	if(started){
 		switch(localStorage.turnOn){
 			case '1':			
@@ -252,6 +255,8 @@ function doMouseMove(event) {
 }
 
 function doMouseUp(event) {
+	var character_info = localStorage.character;
+	var chara = character_info.split(";");
     var x = event.pageX;
 	var y = event.pageY;
 	var canvas = document.getElementById("myCanvas");
@@ -272,33 +277,22 @@ function doMouseUp(event) {
 				var canvas = document.getElementById("skillCanvas");
 				cxt = canvas.getContext("2d");
 				cxt.clearRect(0,0,1400,700);
-				skill_move_begin = skill_chosed(map_array,map_info,skill_map_num,skill_chosen_num,loc);
-				loc_info_now = localStorage.temporary_loc;//获取当前坐标
-				skill_finish_button();//"结束了"三个字
-				skill_loc_2 = skill_spread(chara,map_info,map_array,loc_info_now);
+				skill_chosed(map_array,map_info,skill_map_num,skill_chosen_num,loc);
+				skill_move_begin = 0;
+				if(localStorage.turnOn == 2){
+					loc_info_now = localStorage.temporary_loc;//获取当前坐标
+					skill_finish_button();//"结束了"三个字
+					skill_loc = skill_spread(chara,map_info,map_array,loc_info_now);
+				}
+				
 			}
+			//console.log(skill_loc);
 			break;
 		case '3':
-			//人物重绘
-			var canvas = document.getElementById("myCanvas");
-			loc_info_now = localStorage.temporary_loc;
-			var loc_bgc = map_array[loc_info_now];
-			draw_character("character",0,loc_bgc,map_info);
-			//特效清除
-			var canvas = document.getElementById("effiCanvas");
-			var cxt = canvas.getContext("2d");
-			cxt.clearRect(0,0,1400,700);
-			//技能显示清除
-			var canvas2 = document.getElementById("skillCanvas");
-			var cxt2 = canvas2.getContext("2d");
-			cxt2.clearRect(0,0,1400,700);
 			
-			localStorage.turnOn = 4;
-			//进入其他角色流程
-			localStorage.npc_move_turn = 1;
-			wait_routine(map_array,map_info);
 			break;
 	}
+	//console.log("技能位置信息为：" + skill_loc);
 	function skill_finish_button(){
 		var canvas = document.getElementById("myCanvas");
 		var context = canvas.getContext("2d");
