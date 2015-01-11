@@ -1,5 +1,5 @@
 bgColor = '#000';
-gravity = 0.1;
+gravity = 0.01;
 particleColor = '#f73';
 
 canvas = document.querySelector('canvas');
@@ -107,15 +107,18 @@ requestAnimationFrame(loop = function(){
   }
 
   ctx.globalCompositeOperation = 'lighter';
+  
+  //粒子绘制
   for(var i in particles){
     var p = particles[i];
     ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);//实际上只是画圆
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
     ctx.globalAlpha = p.o;
     ctx.fillStyle = p.c;
     ctx.fill();
   }
   
+  //粒子物理属性（位置、半径）的实时更新
   for(var i in particles){
     var p = particles[i];
     p.x += p.xv;
@@ -128,7 +131,7 @@ requestAnimationFrame(loop = function(){
   
   for(var i in fireballs){
     f = fireballs[i];
-    var numParticles = Math.sqrt(f.xv*f.xv+f.yv*f.yv)/5;//粒子数目与速度有关，速度越快，粒子数越多，成正比
+    var numParticles = Math.sqrt(f.xv*f.xv+f.yv*f.yv)/5;//粒子数目: 与速度有关，速度越快，粒子数越多，成正比
     if(numParticles<1)numParticles=1;
     var numParticlesInt = Math.ceil(numParticles),//Math.ceil(向上取整数）
         numParticlesDif = numParticles/numParticlesInt;
@@ -148,21 +151,21 @@ requestAnimationFrame(loop = function(){
     f.x += f.xv;
     f.y += f.yv;
     f.yv += gravity;
-    var boundary;
-    if(f.y<(boundary = edge.top+7)){
-      f.y = boundary;
-      f.yv *= -1;
-    }else if(f.y>(boundary = edge.bottom-7)){
-      f.y = boundary;
-      f.yv *= -1;
-    }
-    if(f.x>(boundary = edge.right-7)){
-      f.x = boundary;
-      f.xv *= -1;
-    }else if(f.x<(boundary = edge.left+7)){
-      f.x = boundary;
-      f.xv *= -1;
-    }
+//    var boundary;
+//    if(f.y<(boundary = edge.top+7)){
+//      f.y = boundary;
+//      f.yv *= -1;
+//    }else if(f.y>(boundary = edge.bottom-7)){
+//      f.y = boundary;
+//      f.yv *= -1;
+//    }
+//   if(f.x>(boundary = edge.right-7)){
+//      f.x = boundary;
+//      f.xv *= -1;
+//    }else if(f.x<(boundary = edge.left+7)){
+//      f.x = boundary;
+//      f.xv *= -1;
+//    }
     if(--f.life<0)delete fireballs[f.index];
   }
   
