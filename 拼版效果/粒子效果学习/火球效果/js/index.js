@@ -78,11 +78,24 @@ onmouseup = function(){
     );
     charging = false;
   }
+  frame_num = 15;//帧数为15
+  frame_time = 30;//每帧时间为30ms
+  var intervalID = window.setInterval(draw_begin , frame_time);
 };
 
+function draw_begin(){
+	var count = 0;
+	if(count < frame_num){
+		requestAnimationFrame();
+		count++;
+	}else{
+		window.clearInterval(intervalID);
+	}
+}
+
 time = 0;
-requestAnimationFrame(loop = function(){
-  ctx.setTransform(1,0,0,1,0,0);
+function requestAnimationFrame(){
+	ctx.setTransform(1,0,0,1,0,0);
   ctx.globalCompositeOperation = 'source-over';//图像覆盖方式：新图像会覆盖旧图片
   ctx.globalAlpha = 1;//透明度为不透明
   ctx.fillStyle = bgColor;
@@ -143,6 +156,4 @@ requestAnimationFrame(loop = function(){
 
     if(--f.life<0)delete fireballs[f.index];
   }
-  
-  requestAnimationFrame(loop);
-});
+}
